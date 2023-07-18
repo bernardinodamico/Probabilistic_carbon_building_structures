@@ -1,5 +1,6 @@
 import os
-import graphviz
+import graphviz 
+
 os.environ["PATH"] += os.pathsep + 'C:/Program Files/Graphviz/bin/'
 
 
@@ -64,18 +65,10 @@ u.attr('node',
         style='filled',
         ) 
 
-#u.node('Embodied \n carbon') Superstruct. weight
-
-
 u.edge('Cladding \ntype', 'Masonry & \nblockworks qty.')
-
-
 u.edge('No. \nstoreys', 'Foundations \ntype')
-
-
 u.edge('Foundations \ntype', 'Concrete \nqty.')
 u.edge('Foundations \ntype', 'Reinforcement \nqty.')
-
 u.edge('Basement', 'Concrete \nqty.')
 
 u.edge('Superstructure \ntype', 'Masonry & \nblockworks qty.')
@@ -88,17 +81,6 @@ u.edge('Superstructure \nunit-weight', 'Foundations \ntype')
 u.edge('Concrete \nelements', 'Reinforcement \nqty.')
 
 #------------------------------
-'''
-u.edge('Masonry & \nblockworks', 'Embodied \n carbon')
-u.edge('Timber \n(plain)', 'Embodied \n carbon')
-u.edge('Steel \n(other)', 'Embodied \n carbon')
-u.edge('Reinforcement', 'Embodied \n carbon')
-u.edge('Concrete', 'Embodied \n carbon')
-u.edge('Timber \n(products)', 'Embodied \n carbon')
-u.edge('Steel \n(sections)', 'Embodied \n carbon')
-'''
 
 c = u.unflatten(stagger=3) 
-
-c.view()
-
+c.render(directory=str(os.getcwd())+"/DAG_Script").replace('\\', '/')
