@@ -13,7 +13,6 @@ u = graphviz.Digraph('G',
                                  }
                      )  
 
-
 u.attr('edge',
         arrowsize='0.7',
         arrowhead='normal',
