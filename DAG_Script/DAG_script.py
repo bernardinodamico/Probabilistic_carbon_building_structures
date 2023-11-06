@@ -3,6 +3,7 @@ import graphviz
 
 os.environ["PATH"] += os.pathsep + 'C:/Program Files/Graphviz/bin/'
 
+a = 3
 
 u = graphviz.Digraph('G', 
                      engine= 'dot',#'dot', #fdp
