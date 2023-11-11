@@ -19,6 +19,8 @@ class Build_ProbTables():
         Else, the joint probability table of those variables is returned insted.
         '''
         series = self.dataset.value_counts(vars, normalize=True)
+        if len(vars) > 1:
+            series = series.unstack(fill_value=0).stack()
         df_1 = series.index.to_frame().reset_index(drop=True)
         df_2 = series.to_frame().reset_index(drop=True)
         df_3 = df_1.join(other=df_2)
@@ -28,7 +30,7 @@ class Build_ProbTables():
             st = st+str(name)+","
         st = st[:-1]
         
-        j_prob_table =  df_3.rename(columns={'proportion': 'Pr('+st+')'})
+        j_prob_table =  df_3.rename(columns={df_3.columns[-1]: 'Pr('+st+')'})
         
         return j_prob_table
 
@@ -38,6 +40,8 @@ class Build_ProbTables():
         Returns the conditional probability table of one single variable "var" given a list of evidence variables.
         '''
         series = self.dataset.value_counts([var] + given_vars, normalize=True) / self.dataset.value_counts(given_vars, normalize=True)
+        series = series.unstack(fill_value=0).stack()
+
         df_1 = series.index.to_frame().reset_index(drop=True)
         df_2 = series.to_frame().reset_index(drop=True)
         df_3 = df_1.join(other=df_2)
@@ -47,11 +51,12 @@ class Build_ProbTables():
             st_ev = st_ev+str(name)+","
         st_ev = st_ev[:-1]
         
-        c_prob_table = df_3.rename(columns={'proportion': 'Pr('+st_ev+')'})
+        c_prob_table = df_3.rename(columns={df_3.columns[-1]: 'Pr('+st_ev+')'})
         
         return c_prob_table
 
-#### Add a method to check if there are UNDEFINED probabilities in the CPTs so that a warning or error is triggered 
+#### Now istantiations of non-existing events in the dataset are accounted for in the joint and cond. tables
+# mening that zero probabilities are entered for these....Add a method to check if there are UNDEFINED probabilities in the CPTs so that a warning or error is triggered 
 #### test these methods properly!!!
 
 probTables = Build_ProbTables()
