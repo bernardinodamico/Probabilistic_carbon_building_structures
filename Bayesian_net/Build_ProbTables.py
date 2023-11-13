@@ -55,10 +55,10 @@ class Build_ProbTables():
         
         return c_prob_table
 
-#### Now istantiations of non-existing events in the dataset are accounted for in the joint and cond. tables
+#### Now istantiations of non-existing outcomes in the dataset are accounted for in the joint and cond. tables
 # mening that zero probabilities are entered for these....Add a method to check if there are UNDEFINED probabilities in the CPTs so that a warning or error is triggered 
 #### test these methods properly!!!
-
+'''
 probTables = Build_ProbTables()
 probTables.load_dataset(path="Bayesian_net/tests/dummy_dataset.csv")
 
@@ -72,3 +72,4 @@ print(jpt)
 cpt = probTables.cond_pr_table(var='Weather', given_vars=['Temp'])
 
 print(cpt)
+'''
