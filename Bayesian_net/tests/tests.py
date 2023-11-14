@@ -67,6 +67,28 @@ class TestBuild_ProbTables(unittest.TestCase):
         
         self.assertEqual(jpt4, bench4, 'joint prob table error')
 
+
+    def test_conditional_probs(self):
+        cpt = self.probTables.cond_pr_table(var='Temp', given_vars=['Weather', 'Wildfire'])
+        cpt = cpt.to_dict()
+
+        bench = {'Temp': {0: 3.5, 1: 3.5, 2: 3.5, 3: 3.5, 4: 3.5, 5: 3.5, 6: 10.2, 7: 10.2, 8: 10.2, 9: 10.2, 10: 10.2, 11: 10.2, 12: 26.8, 13: 26.8, 14: 26.8, 15: 26.8, 16: 26.8, 17: 26.8}, 
+                 'Weather': {0: 'cloudy', 1: 'cloudy', 2: 'rain', 3: 'rain', 4: 'sunny', 5: 'sunny', 6: 'cloudy', 7: 'cloudy', 8: 'rain', 9: 'rain', 10: 'sunny', 11: 'sunny', 12: 'cloudy', 13: 'cloudy', 14: 'rain', 15: 'rain', 16: 'sunny', 17: 'sunny'}, 
+                 'Wildfire': {0: False, 1: True, 2: False, 3: True, 4: False, 5: True, 6: False, 7: True, 8: False, 9: True, 10: False, 11: True, 12: False, 13: True, 14: False, 15: True, 16: False, 17: True}, 
+                 'Pr(Temp | Weather, Wildfire)': {0: 0.5, 1: 0.0, 2: 0.75, 3: 1.0, 4: 0.0, 5: 0.3333333333333333, 6: 0.25, 7: 1.0, 8: 0.25, 9: 0.0, 10: 1.0, 11: 0.0, 12: 0.25, 13: 0.0, 14: 0.0, 15: 0.0, 16: 0.0, 17: 0.6666666666666666}
+                 }
+        
+        self.assertEqual(cpt, bench, 'cond. prob table error')
+
+        cpt2 = self.probTables.cond_pr_table(var='Temp', given_vars=['Wildfire'])
+        cpt2 = cpt2.to_dict()
+        
+        bench2 = {'Temp': {0: 3.5, 1: 3.5, 2: 10.2, 3: 10.2, 4: 26.8, 5: 26.8}, 
+                  'Wildfire': {0: False, 1: True, 2: False, 3: True, 4: False, 5: True}, 
+                  'Pr(Temp | Wildfire)': {0: 0.5555555555555556, 1: 0.39999999999999997, 2: 0.3333333333333333, 3: 0.19999999999999998, 4: 0.11111111111111109, 5: 0.39999999999999997}}
+
+        self.assertEqual(cpt2, bench2, 'cond. prob table error')
+
 #--------------------------------------------------------------------------------
 if __name__ == '__main__':
     unittest.main()

@@ -85,6 +85,7 @@ class Build_ProbTables():
 
 #### Discretisation of cont. variables!!!
 
+'''
 probTables = Build_ProbTables()
 probTables.load_dataset(path="Bayesian_net/tests/dummy_dataset.csv")
 
@@ -102,3 +103,4 @@ given_vars = ['Superstructure_Type', 'Foundation_Type']
 
 jpt = probTables.cond_pr_table(var=var, given_vars=given_vars)
 print(jpt)
+'''
