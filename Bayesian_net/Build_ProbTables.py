@@ -85,11 +85,11 @@ class Build_ProbTables():
 # mening that zero probabilities are entered for these....Add a method to check if there are UNDEFINED probabilities in the CPTs so that a warning or error is triggered 
 #### test these methods properly!!!
 
-#probTables = Build_ProbTables()
-#probTables.load_dataset(path="Bayesian_net/tests/dummy_dataset.csv")
+probTables = Build_ProbTables()
+probTables.load_dataset(path="Data/training_dataset.csv")
 
-#xxx = probTables.pr_table(vars=['Weather', 'Temp', 'Wildfire'])
-
+xxx = probTables.pr_table(vars=['Foundation_Type', 'Superstructure_Concrete_elements'])
+print(xxx)
 #mpt = probTables.pr_table(vars=['Temp'])
 #print(mpt)
 #mpt2 = probTables.pr_table(vars=['Weather'])
