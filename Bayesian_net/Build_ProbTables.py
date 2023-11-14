@@ -61,42 +61,44 @@ class Build_ProbTables():
     def cond_pr_table(self, var: str, given_vars: list[str]) -> DataFrame:
         '''
         Returns the conditional probability table of one single variable "var" given a list of evidence variables.
+        When a combination of values for the given variables does not exist in the dataset: the cond. pr. is undefined. 
         '''
-        ini_series = self._init_pr_table(vars=[var] + given_vars)
-        series = self.dataset.value_counts([var] + given_vars, normalize=True) / self.dataset.value_counts(given_vars, normalize=True)
-        series = series.reorder_levels(order=[var] + given_vars)
-        series = ini_series.combine(other=series, func=max)
-        series = series.unstack(fill_value=0).stack()
-        
-        df_1 = series.index.to_frame().reset_index(drop=True)
-        df_2 = series.to_frame().reset_index(drop=True)
-        df_3 = df_1.join(other=df_2)
+        joint_prob_table = self.pr_table(vars=[var] + given_vars) 
+        margin_prob_table = self.pr_table(vars=given_vars) # containing the normalisation factors "Z"
+        merged = joint_prob_table.merge(margin_prob_table, how='left', on=given_vars)
+
+        key_joint_pr_col: str = joint_prob_table.keys()[-1]
+        key_prior_pr_col: str = margin_prob_table.keys()[-1]
 
         st_ev = var+" | "
         for name in given_vars:
             st_ev = st_ev+str(name)+", "
         st_ev = st_ev[:-2]
-        
-        c_prob_table = df_3.rename(columns={df_3.columns[-1]: 'Pr('+st_ev+')'})
-        
-        return c_prob_table
 
-#### Now istantiations of non-existing outcomes in the dataset are accounted for in the joint and cond. tables
-# mening that zero probabilities are entered for these....Add a method to check if there are UNDEFINED probabilities in the CPTs so that a warning or error is triggered 
-#### test these methods properly!!!
+        merged['Pr('+st_ev+')'] = merged[key_joint_pr_col] / merged[key_prior_pr_col]
+        cond_prob_table = merged.drop(columns=[key_joint_pr_col, key_prior_pr_col])
+
+        #----------------------------------------------------------------------------
+        cond_prob_table['Pr('+st_ev+')'] = cond_prob_table['Pr('+st_ev+')'].fillna('undefined')
+
+        return cond_prob_table
+
+#### Discretisation of cont. variables!!!
+
+probTables = Build_ProbTables()
+probTables.load_dataset(path="Bayesian_net/tests/dummy_dataset.csv")
+
+var = 'Temp'
+given_vars = ['Weather', 'Wildfire']
+
+jpt = probTables.cond_pr_table(var=var, given_vars=given_vars)
+print(jpt)
 
 probTables = Build_ProbTables()
 probTables.load_dataset(path="Data/training_dataset.csv")
 
-xxx = probTables.pr_table(vars=['Foundation_Type', 'Superstructure_Concrete_elements'])
-print(xxx)
-#mpt = probTables.pr_table(vars=['Temp'])
-#print(mpt)
-#mpt2 = probTables.pr_table(vars=['Weather'])
-#print(mpt2)
-#jpt = probTables.pr_table(vars=['Temp', 'Weather'])
-#print(jpt)
+var = 'Basement'
+given_vars = ['Superstructure_Type', 'Foundation_Type']
 
-#cpt = probTables.cond_pr_table(var='Weather', given_vars=['Temp'])
-
-#print(cpt)
+jpt = probTables.cond_pr_table(var=var, given_vars=given_vars)
+print(jpt)
