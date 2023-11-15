@@ -1,4 +1,5 @@
 import pandas as pd 
+pd.set_option('display.max_rows', None)
 import itertools
 import numpy as np
 from pandas import DataFrame 
@@ -72,13 +73,14 @@ class Build_ProbTables():
         return j_prob_table
 
 
-    def cond_pr_table(self, var: str, given_vars: list[str]) -> DataFrame:
+    def cond_pr_table(self, var: str, given_vars: list[str], replace_undef: bool = False) -> DataFrame:
         '''
         Returns the conditional probability table of one single variable "var" given a list of evidence variables.
-        When a combination of values for the given variables does not exist in the dataset: the cond. pr. is undefined. 
+        When a combination of values for the given variables does not exist in the dataset: the cond. pr. is "undefined".
+        If the parameter "replace_undef" is set to True (default=False): undefinded probabilities are set to zero.
         '''
         joint_prob_table = self.pr_table(vars=[var] + given_vars) 
-        margin_prob_table = self.pr_table(vars=given_vars) # containing the normalisation factors "Z"
+        margin_prob_table = self.pr_table(vars=given_vars) # containing the normalisation constant "Z"
         merged = joint_prob_table.merge(margin_prob_table, how='left', on=given_vars)
 
         key_joint_pr_col: str = joint_prob_table.keys()[-1]
@@ -93,7 +95,10 @@ class Build_ProbTables():
         cond_prob_table = merged.drop(columns=[key_joint_pr_col, key_prior_pr_col])
 
         #----------------------------------------------------------------------------
-        cond_prob_table['Pr('+st_ev+')'] = cond_prob_table['Pr('+st_ev+')'].fillna('undefined')
+        if replace_undef == False:
+            cond_prob_table['Pr('+st_ev+')'] = cond_prob_table['Pr('+st_ev+')'].fillna('undefined')
+        else:
+            cond_prob_table['Pr('+st_ev+')'] = cond_prob_table['Pr('+st_ev+')'].fillna(0.)
 
         return cond_prob_table
 
