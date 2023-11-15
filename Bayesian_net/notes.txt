@@ -1,0 +1,54 @@
+
+
+
+
+
+
+
+These are the query variables we always(!) want to query a distribution for.
+Tp = 'Timber_(Products)_Mass_(kg/m2)'
+Sts = 'Steel_(Sections)_Mass_(kg/m2)'
+Rf = 'Reinforcement_Mass_(kg/m2)'
+Cn = 'Concrete_Mass_(kg/m2)'
+Mb = 'Masonry_&_Blockwork_Area_(m2/m2)'
+
+These are the evidence variables we might(!) or might not have: none, all five of them or anything in between.
+Ct = 'Cladding_Type'
+Sst = 'Superstructure_Type'
+Ns = 'No_storeys'
+B = 'Basement'
+Ft = 'Foundation_Type'
+
+Therefore we'll have several probability combinations for each one of the five query variable:
+
+Pr(Tp)
+
+Pr(Tp | Ct=ct)
+Pr(Tp | Sst=sst)
+Pr(Tp | Ns=ns)
+Pr(Tp | B=b)
+Pr(Tp | Ft=ft)
+
+Pr(Tp | Ct=ct, Sst=sst)
+Pr(Tp | Ct=ct, Ns=ns)
+Pr(Tp | Ct=ct, B=b)
+Pr(Tp | Ct=ct, Ft=ft)
+Pr(Tp | Sst=sst, Ns=ns) 
+Pr(Tp | Sst=sst, B=b)
+Pr(Tp | Sst=sst, Ft=ft)
+Pr(Tp | Ns=ns, B=b)
+Pr(Tp | Ns=ns, Ft=ft)
+Pr(Tp | B=b, Ft=ft)
+
+Pr(Tp | Ct=ct, Sst=sst, Ns=ns)
+
+...etc. and thes only for one query variable Timber products. However because of independencies among variables, a lot of these conditional 
+probabilities are redundant. For instance we have that:
+
+Pr(Tp | Sst=sst, Ns=ns) = Pr(Tp | Sst=sst) 
+
+knowing the number of storeys does not change the prob of timber products if superstruct type is known. 
+Timber prod is independent of Num storeys given Superstr type.
+
+These independencies can be 
+read directly from the graph using d-separation algorithm. 
