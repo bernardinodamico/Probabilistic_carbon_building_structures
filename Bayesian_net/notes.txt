@@ -51,4 +51,9 @@ knowing the number of storeys does not change the prob of timber products if sup
 Timber prod is independent of Num storeys given Superstr type.
 
 These independencies can be 
-read directly from the graph using d-separation algorithm. 
+read directly from the graph using d-separation algorithm.
+
+!!! explain all of the above when talking about making queries (and report all the independencies in the appendix).
+!!! for this proof-of-concep implement ad-hoc metods for few queries for all 5 variables...so to show in the paper and to report 
+the variable elimination (belief propagation) steps in the appendix.  
+
