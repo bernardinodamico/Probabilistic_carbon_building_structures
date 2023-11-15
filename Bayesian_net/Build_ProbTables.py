@@ -2,7 +2,7 @@ import pandas as pd
 import itertools
 import numpy as np
 from pandas import DataFrame 
-from Utilities import discretizer
+from Bayesian_net.Utilities import discretizer
 
 class Build_ProbTables():
 
