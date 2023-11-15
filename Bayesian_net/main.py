@@ -41,3 +41,6 @@ cpt_found_type = pt.cond_pr_table(var='Foundation_Type', given_vars=['No_storeys
 cpt_reinforcement = pt.cond_pr_table(var='Reinforcement_Mass_(kg/m2)', given_vars=['Superstructure_Concrete_elements', 'Foundation_Type'])
 cpt_concrete_qty = pt.cond_pr_table(var='Concrete_Mass_(kg/m2)', given_vars=['Superstructure_Concrete_elements', 'Foundation_Type', 'Basement'])
 
+print(cpt_steel_secs)
+
+
