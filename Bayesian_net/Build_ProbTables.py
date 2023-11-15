@@ -9,7 +9,7 @@ class Build_ProbTables():
     dataset: DataFrame = None
     
     def load_dataset(self, path: str) -> None:
-        self.dataset = pd.read_csv(path)  
+        self.dataset = pd.read_csv(filepath_or_buffer=path)  
         
         return
     

@@ -67,7 +67,6 @@ class TestBuild_ProbTables(unittest.TestCase):
         
         self.assertEqual(jpt4, bench4, 'joint prob table error')
 
-
     def test_conditional_probs(self):
         cpt = self.probTables.cond_pr_table(var='Temp', given_vars=['Weather', 'Wildfire'])
         cpt = cpt.to_dict()
