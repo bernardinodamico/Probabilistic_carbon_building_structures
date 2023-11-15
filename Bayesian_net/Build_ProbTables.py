@@ -2,7 +2,7 @@ import pandas as pd
 import itertools
 import numpy as np
 from pandas import DataFrame 
-from tabulate import tabulate
+from Utilities import discretizer
 
 class Build_ProbTables():
 
@@ -12,6 +12,20 @@ class Build_ProbTables():
         self.dataset = pd.read_csv(filepath_or_buffer=path)  
         
         return
+    
+    def discretize_cont_vars(self, cont_vars: list[dict]) -> DataFrame:
+        vars_list = []
+        bins_list = []
+        for v in cont_vars:
+            vars_list.append(v['name'])
+            bins_list.append(v['bins'])
+        
+        self.dataset = discretizer(dataset=self.dataset,
+                                   vars=vars_list,
+                                   bin_counts=bins_list,
+                                   mid_vals=False)
+        
+        return self.dataset
     
     def _init_pr_table(self, vars: list[str]) -> DataFrame:
         '''
@@ -82,8 +96,6 @@ class Build_ProbTables():
         cond_prob_table['Pr('+st_ev+')'] = cond_prob_table['Pr('+st_ev+')'].fillna('undefined')
 
         return cond_prob_table
-
-#### Discretisation of cont. variables!!!
 
 '''
 probTables = Build_ProbTables()
