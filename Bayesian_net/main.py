@@ -41,4 +41,9 @@ cpt_found_type = pt.cond_pr_table(var='Foundation_Type', given_vars=['No_storeys
 cpt_reinforcement = pt.cond_pr_table(var='Reinforcement_Mass_(kg/m2)', given_vars=['Superstructure_Concrete_elements', 'Foundation_Type'])
 cpt_concrete_qty = pt.cond_pr_table(var='Concrete_Mass_(kg/m2)', given_vars=['Superstructure_Concrete_elements', 'Foundation_Type', 'Basement'])
 
+#create functions for the lagrange smoothing in the Utilities.py and
+#apply it to the above cpts and mpts here, as well as a general method to plot distributions.
 
+# Then work out the equation for the belief prop (Variable Elimin algo) and write them down 
+#in the manuscript appendix, based on independencies via d-separation etc. (see notes.txt) for the specific "example" of showing the figures in mind for the
+#paper.
