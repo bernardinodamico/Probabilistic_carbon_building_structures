@@ -2,6 +2,7 @@ import pandas as pd
 from pandas import DataFrame
 from Bayesian_net.Build_ProbTables import Build_ProbTables
 
+from matplotlib import pyplot as plt
 
 pt = Build_ProbTables()
 pt.load_dataset(path='Data/training_dataset.csv')
@@ -40,6 +41,21 @@ cpt_steel_secs = pt.cond_pr_table(var='Steel_(Sections)_Mass_(kg/m2)', given_var
 cpt_found_type = pt.cond_pr_table(var='Foundation_Type', given_vars=['No_storeys', 'Superstructure_unit_weight'])
 cpt_reinforcement = pt.cond_pr_table(var='Reinforcement_Mass_(kg/m2)', given_vars=['Superstructure_Concrete_elements', 'Foundation_Type'])
 cpt_concrete_qty = pt.cond_pr_table(var='Concrete_Mass_(kg/m2)', given_vars=['Superstructure_Concrete_elements', 'Foundation_Type', 'Basement'])
+
+
+print(mpt_superstr_type)
+print(mpt_superstr_type['Superstructure_Type'].tolist())
+
+fig = plt.figure(figsize=[5, 5])
+ax=fig.add_subplot(111)
+ax.set_ylim([0, 1])
+plt.bar(x=mpt_superstr_type['Superstructure_Type'].tolist(), 
+        height=mpt_superstr_type['Pr(Superstructure_Type)'],
+        width=0.99,
+        color='dodgerblue',
+        )
+plt.xticks(rotation=90)
+plt.show()
 
 #create functions for the lagrange smoothing in the Utilities.py and
 #apply it to the above cpts and mpts here, as well as a general method to plot distributions.
