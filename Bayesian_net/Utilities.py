@@ -1,6 +1,61 @@
 import pandas as pd 
 from pandas import DataFrame
+from matplotlib import pyplot as plt
 
+class ProbTableError(Exception):
+    '''
+    Exception raised for errors in the Plotting method.
+    '''
+    def __init__(self, table):
+        self.table = table
+
+        self.message = "the probability_table must have exactly two columns"
+        super().__init__(self.message)
+
+
+class Plotter():
+
+    _aspect: float = 4.3
+    _bottom: float = 0.45
+
+    def plot_pr_table(self, prob_table: DataFrame, savefig_loc_folder: str, size_inches: int = 6, dpi: int = 300, color: str = 'dodgerblue') -> None:
+        '''
+        Plots a hystogram showing the probability distibution (marginal or conditional) of a variable
+        Inputs: 
+        - prob_table: a two-column Dataframe
+        - savefig_loc_folder: the path of the folder where to safe the figure (the figure filename is not needed)
+        - size_inches (optional, default = 6): the Figure width and depth
+        - dpi (optional, default = 300)
+        - color (optional, default = 'dodgerblue')
+        '''
+        x_labels = []
+        for val in prob_table[list(prob_table.columns)[0]].tolist():
+            x_labels.append(str(val))
+
+        if len(prob_table.columns) != 2:
+            raise ProbTableError(table=prob_table)
+        fig, ax = plt.subplots()
+        fig.set_size_inches(size_inches, size_inches)
+        fig.set_dpi(dpi)
+        ax.set(ylim=[0, 1.], aspect=self._aspect)
+        plt.subplots_adjust(bottom=self._bottom)
+
+        plt.bar(x=x_labels, 
+                height=prob_table[list(prob_table.columns)[1]],
+                width=0.96,
+                color=color,
+                )
+        plt.xticks(rotation=90)
+        plt.xlabel(list(prob_table.columns)[0], fontweight='bold')
+        plt.ylabel(list(prob_table.columns)[1], fontweight='bold')
+        #plt.show()
+
+        fn: str = list(prob_table.columns)[1]
+        fn = fn.replace('/', '@')
+        filename = fn.replace('|', 'given')
+        plt.savefig(savefig_loc_folder+f'/{filename}.png')
+
+        return
 
 def discretizer(dataset: DataFrame, vars: list[str], bin_counts: list[int], mid_vals: bool = False) -> DataFrame:
     '''
@@ -27,15 +82,3 @@ def discretizer(dataset: DataFrame, vars: list[str], bin_counts: list[int], mid_
 
     return dataset
         
-
-'''
-dataset = pd.read_csv(filepath_or_buffer="Bayesian_net/tests/dummy_dataset_2.csv")
-print(len(dataset.columns))
-
-cont_vars = ['Degrees', 'Wind_speed']
-bin_counts = [2, 10]
-
-discrete_dataset = discretizer(dataset=dataset, vars=cont_vars, bin_counts=bin_counts, mid_vals=False)
-discrete_dataset.to_csv(path_or_buf="Bayesian_net/tests/dummy_dataset_3.csv", index=False)
-print(len(discrete_dataset.columns))
-'''

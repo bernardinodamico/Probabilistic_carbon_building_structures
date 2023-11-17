@@ -1,8 +1,7 @@
 import pandas as pd 
 from pandas import DataFrame
 from Bayesian_net.Build_ProbTables import Build_ProbTables
-
-from matplotlib import pyplot as plt
+from Utilities import Plotter
 
 pt = Build_ProbTables()
 pt.load_dataset(path='Data/training_dataset.csv')
@@ -43,31 +42,15 @@ cpt_reinforcement = pt.cond_pr_table(var='Reinforcement_Mass_(kg/m2)', given_var
 cpt_concrete_qty = pt.cond_pr_table(var='Concrete_Mass_(kg/m2)', given_vars=['Superstructure_Concrete_elements', 'Foundation_Type', 'Basement'])
 
 
-print(mpt_superstr_type)
+print(mpt_cladding_type)
 
-# def plot_pr_table()
-fig, ax = plt.subplots()
-fig.set_size_inches(6,6)
-fig.set_dpi(300)
-_aspect = 4.3 # this parm must have assigned the same val for all plots (it can be an internal property of the Plotter() class)
-_bottom = 0.45 # this parm must have assigned the same val for all plots 
-ax.set(ylim=[0, 1.], aspect=_aspect)
-plt.subplots_adjust(bottom=_bottom)
+figure = Plotter()
+figure.plot_pr_table(prob_table=mpt_superstr_type, savefig_loc_folder='Figures')
 
-ax.set_ylim([0, 1])
-plt.bar(x=mpt_superstr_type['Superstructure_Type'].tolist(), 
-        height=mpt_superstr_type['Pr(Superstructure_Type)'],
-        width=0.96,
-        color='dodgerblue',
-        )
-plt.xticks(rotation=90)
-plt.xlabel('Superstructure_Type', fontweight='bold')
-plt.ylabel('Pr(Superstructure_Type)', fontweight='bold')
-#plt.show()
-plt.savefig('Figures/fig_name2.png')
+
+
 
 #create functions for the lagrange smoothing in the Utilities.py and
-#apply it to the above cpts and mpts here, as well as a general method to plot distributions.
 
 # Then work out the equation for the belief prop (Variable Elimin algo) and write them down 
 #in the manuscript appendix, based on independencies via d-separation etc. (see notes.txt) for the specific "example" of showing the figures in mind for the
