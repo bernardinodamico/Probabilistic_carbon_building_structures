@@ -44,18 +44,27 @@ cpt_concrete_qty = pt.cond_pr_table(var='Concrete_Mass_(kg/m2)', given_vars=['Su
 
 
 print(mpt_superstr_type)
-print(mpt_superstr_type['Superstructure_Type'].tolist())
 
-fig = plt.figure(figsize=[5, 5])
-ax=fig.add_subplot(111)
+# def plot_pr_table()
+fig, ax = plt.subplots()
+fig.set_size_inches(6,6)
+fig.set_dpi(300)
+_aspect = 4.3 # this parm must have assigned the same val for all plots (it can be an internal property of the Plotter() class)
+_bottom = 0.45 # this parm must have assigned the same val for all plots 
+ax.set(ylim=[0, 1.], aspect=_aspect)
+plt.subplots_adjust(bottom=_bottom)
+
 ax.set_ylim([0, 1])
 plt.bar(x=mpt_superstr_type['Superstructure_Type'].tolist(), 
         height=mpt_superstr_type['Pr(Superstructure_Type)'],
-        width=0.99,
+        width=0.96,
         color='dodgerblue',
         )
 plt.xticks(rotation=90)
-plt.show()
+plt.xlabel('Superstructure_Type', fontweight='bold')
+plt.ylabel('Pr(Superstructure_Type)', fontweight='bold')
+#plt.show()
+plt.savefig('Figures/fig_name2.png')
 
 #create functions for the lagrange smoothing in the Utilities.py and
 #apply it to the above cpts and mpts here, as well as a general method to plot distributions.
