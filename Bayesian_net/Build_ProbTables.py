@@ -101,23 +101,22 @@ class Build_ProbTables():
             cond_prob_table['Pr('+st_ev+')'] = cond_prob_table['Pr('+st_ev+')'].fillna(0.)
 
         return cond_prob_table
+    
+    def assign_evidence(self, prob_table: DataFrame, assignment_vals: list[dict])-> DataFrame:
+        
+        #!!!!!!!!!!!!!Add checks to raise errors here to see if: assigned variable are in the table and if assigned values a
+        # are in the variables domain. e.g. the returned dataframe is empty right now
+        
+        
+        for i in range(len(assignment_vals)):
+            vr_name = assignment_vals[i]['vr_name']
+            val = assignment_vals[i]['val']
+            prob_table = prob_table.loc[(prob_table[vr_name] == val)]
+        
+        for i in range(len(assignment_vals)):
+            vr_name = assignment_vals[i]['vr_name']
+            prob_table = prob_table.drop(labels=vr_name, axis='columns')
 
-'''
-probTables = Build_ProbTables()
-probTables.load_dataset(path="Bayesian_net/tests/dummy_dataset.csv")
+        return prob_table
 
-var = 'Temp'
-given_vars = ['Weather', 'Wildfire']
 
-jpt = probTables.cond_pr_table(var=var, given_vars=given_vars)
-print(jpt)
-
-probTables = Build_ProbTables()
-probTables.load_dataset(path="Data/training_dataset.csv")
-
-var = 'Basement'
-given_vars = ['Superstructure_Type', 'Foundation_Type']
-
-jpt = probTables.cond_pr_table(var=var, given_vars=given_vars)
-print(jpt)
-'''

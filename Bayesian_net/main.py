@@ -42,13 +42,24 @@ cpt_reinforcement = pt.cond_pr_table(var='Reinforcement_Mass_(kg/m2)', given_var
 cpt_concrete_qty = pt.cond_pr_table(var='Concrete_Mass_(kg/m2)', given_vars=['Superstructure_Concrete_elements', 'Foundation_Type', 'Basement'])
 
 
-print(mpt_cladding_type)
+print(cpt_concrete_qty)
+
+
+given_vars_vals: dict = [
+    {'vr_name': 'Superstructure_Concrete_elements', 
+     'val': 'Frame&Floors'},
+    {'vr_name': 'Foundation_Type', 
+     'val': 'Piled(Ground-beams/Caps)'},
+     {'vr_name': 'Basement', 
+     'val': 'False'}
+    ]
+
+x = pt.assign_evidence(prob_table=cpt_concrete_qty, assignment_vals=given_vars_vals)
+
+print(x)
 
 figure = Plotter()
-figure.plot_pr_table(prob_table=mpt_superstr_type, savefig_loc_folder='Figures')
-
-
-
+figure.plot_pr_table(prob_table=x, savefig_loc_folder='Figures')
 
 #create functions for the lagrange smoothing in the Utilities.py and
 
