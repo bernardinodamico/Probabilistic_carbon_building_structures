@@ -25,7 +25,7 @@ continuous_vars = [
 ]
 
 dd = pt.discretize_cont_vars(cont_vars=continuous_vars)
-#dd.to_csv(path_or_buf='Data/discrete_training_dataset.csv', index=False)
+#dd.to_csv(path_or_buf='Data/discrete_training_dataset.csv', index=False) xxx
 
 mpt_superstr_type = pt.pr_table(vars=['Superstructure_Type'])
 mpt_cladding_type = pt.pr_table(vars=['Cladding_Type'])
