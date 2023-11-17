@@ -105,7 +105,7 @@ class Build_ProbTables():
     def assign_evidence(self, prob_table: DataFrame, assignment_vals: list[dict])-> DataFrame:
         
         #!!!!!!!!!!!!!Add checks to raise errors here to see if: assigned variable are in the table and if assigned values a
-        # are in the variables domain. e.g. the returned dataframe is empty right now
+        # are in the variables domain. 
         
         
         for i in range(len(assignment_vals)):

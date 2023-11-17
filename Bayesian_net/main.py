@@ -51,7 +51,7 @@ given_vars_vals: dict = [
     {'vr_name': 'Foundation_Type', 
      'val': 'Piled(Ground-beams/Caps)'},
      {'vr_name': 'Basement', 
-     'val': 'False'}
+     'val': True}
     ]
 
 x = pt.assign_evidence(prob_table=cpt_concrete_qty, assignment_vals=given_vars_vals)
