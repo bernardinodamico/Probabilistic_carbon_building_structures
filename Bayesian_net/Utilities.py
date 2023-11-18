@@ -5,11 +5,10 @@ from Bayesian_net.customExceptions import ProbTableError
 
 class Plotter():
 
-    _aspect: float = 4.3
     _bottom: float = 0.4
     _left: float = 0.2
 
-    def plot_pr_table(self, prob_table: DataFrame, savefig_loc_folder: str, size_inches: int = 6, dpi: int = 300, color: str = 'dodgerblue') -> None:
+    def plot_pr_table(self, prob_table: DataFrame, savefig_loc_folder: str, size_inches: int = 6, dpi: int = 300, color: str = 'dodgerblue', break_text_label: bool = False, y_axis: str = 'dynamic') -> None:
         '''
         Plots a hystogram showing the probability distibution (marginal or conditional) of a variable
         Inputs: 
@@ -18,6 +17,8 @@ class Plotter():
         - size_inches (optional, default = 6): the Figure width and depth
         - dpi (optional, default = 300)
         - color (optional, default = 'dodgerblue')
+        - y_axis (optional, defaul = 'dynamic'): if y_axis='dynamic' the 'y' axis is scaled to the max probability vale in the distribution
+        if y_axis='constant' the 'y' axis is scaled to 100% probability value.
         '''
         x_labels = []
         for val in prob_table[list(prob_table.columns)[0]].tolist():
@@ -28,7 +29,7 @@ class Plotter():
         fig, ax = plt.subplots()
         fig.set_size_inches(size_inches, size_inches)
         fig.set_dpi(dpi)
-        ax.set(ylim=[0, 1.], aspect=self._aspect)
+        if y_axis == 'constant': ax.set(ylim=[0, 1])
         plt.subplots_adjust(bottom=self._bottom, left=self._left)
 
         plt.bar(x=x_labels, 
@@ -39,10 +40,12 @@ class Plotter():
         plt.xticks(rotation=90)
         
         plt.xlabel(list(prob_table.columns)[0], fontweight='bold')
-        y_label = self.break_labels(text=list(prob_table.columns)[1])
+        if break_text_label is True: y_label = break_labels(text=list(prob_table.columns)[1])
+        else: y_label = list(prob_table.columns)[1]
         plt.ylabel(y_label, fontweight='bold')
         #plt.show()
 
+        #----Save figure---------------------------------
         fn: str = list(prob_table.columns)[1]
         fn = fn.replace('/', '@')
         filename = fn.replace('|', 'given')
@@ -50,10 +53,10 @@ class Plotter():
 
         return
 
-    def break_labels(self, text: str)-> str:
-        text = text.replace('|', '|\n')
-        btext = text.replace(',', ',\n')
-        return btext
+def break_labels(text: str)-> str:
+    text = text.replace('|', '|\n')
+    btext = text.replace(',', ',\n')
+    return btext
 
 def discretizer(dataset: DataFrame, vars: list[str], bin_counts: list[int], mid_vals: bool = False) -> DataFrame:
     '''

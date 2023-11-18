@@ -5,6 +5,7 @@ import numpy as np
 from pandas import DataFrame 
 from Bayesian_net.Utilities import discretizer
 from Bayesian_net.customExceptions import Variable_assignmentError, Value_assignmentError
+from Bayesian_net.Utilities import break_labels
 
 class Build_ProbTables():
 
@@ -14,7 +15,7 @@ class Build_ProbTables():
         self.dataset = pd.read_csv(filepath_or_buffer=path)  
         
         return
-    
+
     def discretize_cont_vars(self, cont_vars: list[dict], mid_vals: bool = False) -> DataFrame:
         vars_list = []
         bins_list = []
