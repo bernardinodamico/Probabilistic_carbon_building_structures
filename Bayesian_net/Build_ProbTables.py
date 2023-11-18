@@ -15,7 +15,7 @@ class Build_ProbTables():
         
         return
     
-    def discretize_cont_vars(self, cont_vars: list[dict]) -> DataFrame:
+    def discretize_cont_vars(self, cont_vars: list[dict], mid_vals: bool = False) -> DataFrame:
         vars_list = []
         bins_list = []
         for v in cont_vars:
@@ -25,7 +25,7 @@ class Build_ProbTables():
         self.dataset = discretizer(dataset=self.dataset,
                                    vars=vars_list,
                                    bin_counts=bins_list,
-                                   mid_vals=False)
+                                   mid_vals=mid_vals)
         
         return self.dataset
     
@@ -131,6 +131,14 @@ class Build_ProbTables():
         for i in range(len(assignment_vals)):
             vr_name = assignment_vals[i]['vr_name']
             prob_table = prob_table.drop(labels=vr_name, axis='columns')
+
+        #------- rename Pr column-------------------------------------------
+        Pr_heading: str = prob_table.keys().to_list()[-1]
+        for i in range(len(assignment_vals)):
+            vr_name = assignment_vals[i]['vr_name']
+            val = str(assignment_vals[i]['val'])
+            Pr_heading = Pr_heading.replace(vr_name, vr_name+'='+val)
+        prob_table = prob_table.rename(columns={prob_table.keys().to_list()[-1]: Pr_heading})
 
         return prob_table
 

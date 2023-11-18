@@ -6,7 +6,8 @@ from Bayesian_net.customExceptions import ProbTableError
 class Plotter():
 
     _aspect: float = 4.3
-    _bottom: float = 0.45
+    _bottom: float = 0.4
+    _left: float = 0.2
 
     def plot_pr_table(self, prob_table: DataFrame, savefig_loc_folder: str, size_inches: int = 6, dpi: int = 300, color: str = 'dodgerblue') -> None:
         '''
@@ -28,7 +29,7 @@ class Plotter():
         fig.set_size_inches(size_inches, size_inches)
         fig.set_dpi(dpi)
         ax.set(ylim=[0, 1.], aspect=self._aspect)
-        plt.subplots_adjust(bottom=self._bottom)
+        plt.subplots_adjust(bottom=self._bottom, left=self._left)
 
         plt.bar(x=x_labels, 
                 height=prob_table[list(prob_table.columns)[1]],
@@ -36,8 +37,10 @@ class Plotter():
                 color=color,
                 )
         plt.xticks(rotation=90)
+        
         plt.xlabel(list(prob_table.columns)[0], fontweight='bold')
-        plt.ylabel(list(prob_table.columns)[1], fontweight='bold')
+        y_label = self.break_labels(text=list(prob_table.columns)[1])
+        plt.ylabel(y_label, fontweight='bold')
         #plt.show()
 
         fn: str = list(prob_table.columns)[1]
@@ -46,6 +49,11 @@ class Plotter():
         plt.savefig(savefig_loc_folder+f'/{filename}.png')
 
         return
+
+    def break_labels(self, text: str)-> str:
+        text = text.replace('|', '|\n')
+        btext = text.replace(',', ',\n')
+        return btext
 
 def discretizer(dataset: DataFrame, vars: list[str], bin_counts: list[int], mid_vals: bool = False) -> DataFrame:
     '''

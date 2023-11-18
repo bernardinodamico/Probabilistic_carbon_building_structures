@@ -24,8 +24,8 @@ continuous_vars = [
      },
 ]
 
-dd = pt.discretize_cont_vars(cont_vars=continuous_vars)
-#dd.to_csv(path_or_buf='Data/discrete_training_dataset.csv', index=False) xxx
+dd = pt.discretize_cont_vars(cont_vars=continuous_vars, mid_vals=True)
+dd.to_csv(path_or_buf='Data/discrete_training_dataset.csv', index=False) 
 
 mpt_superstr_type = pt.pr_table(vars=['Superstructure_Type'])
 mpt_cladding_type = pt.pr_table(vars=['Cladding_Type'])
@@ -59,7 +59,7 @@ x = pt.assign_evidence(prob_table=cpt_concrete_qty, assignment_vals=ass_vars_val
 print(x)
 
 figure = Plotter()
-figure.plot_pr_table(prob_table=x, savefig_loc_folder='Figures')
+figure.plot_pr_table(prob_table=x, savefig_loc_folder='Figures', size_inches=10)
 
 #create functions for the lagrange smoothing in the Utilities.py and
 
