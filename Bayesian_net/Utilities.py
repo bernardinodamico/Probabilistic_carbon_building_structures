@@ -1,17 +1,7 @@
 import pandas as pd 
 from pandas import DataFrame
 from matplotlib import pyplot as plt
-
-class ProbTableError(Exception):
-    '''
-    Exception raised for errors in the Plotting method.
-    '''
-    def __init__(self, table):
-        self.table = table
-
-        self.message = "the probability_table must have exactly two columns"
-        super().__init__(self.message)
-
+from Bayesian_net.customExceptions import ProbTableError
 
 class Plotter():
 

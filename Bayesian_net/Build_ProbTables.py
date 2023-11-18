@@ -4,6 +4,7 @@ import itertools
 import numpy as np
 from pandas import DataFrame 
 from Bayesian_net.Utilities import discretizer
+from Bayesian_net.customExceptions import Variable_assignmentError, Value_assignmentError
 
 class Build_ProbTables():
 
@@ -103,11 +104,25 @@ class Build_ProbTables():
         return cond_prob_table
     
     def assign_evidence(self, prob_table: DataFrame, assignment_vals: list[dict])-> DataFrame:
+        '''
+        Inputs:
+        - prob_table: a FULL conditional probability table (i.e. with all possible instantiation value combinations)
+        - assignment_vals: a list of dictionaries with 'vr_name' and 'val' as keys. 'vr_name' is the variable to which
+        a value 'val' is to be assigned. 
         
-        #!!!!!!!!!!!!!Add checks to raise errors here to see if: assigned variable are in the table and if assigned values a
-        # are in the variables domain. 
+        Output:
+        - A subset of the input conditional probability table, containing only the instantions matching the assigned values.
         
-        
+        Note: if values are assigned to all evidence variables in 'prob_table': the resulting CPT output will contain only two
+        columns, i.e. the query variable and its probability distribution.
+        '''
+        for variable in assignment_vals:
+            if variable['vr_name'] not in prob_table.keys().to_list():
+                raise Variable_assignmentError(variable=variable['vr_name'])
+            if variable['val'] not in prob_table.values:
+                raise Value_assignmentError(variable=variable['vr_name'], value=variable['val'])
+
+        #--------------------------------------------------------------------
         for i in range(len(assignment_vals)):
             vr_name = assignment_vals[i]['vr_name']
             val = assignment_vals[i]['val']

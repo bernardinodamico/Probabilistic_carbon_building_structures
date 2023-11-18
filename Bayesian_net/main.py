@@ -42,10 +42,10 @@ cpt_reinforcement = pt.cond_pr_table(var='Reinforcement_Mass_(kg/m2)', given_var
 cpt_concrete_qty = pt.cond_pr_table(var='Concrete_Mass_(kg/m2)', given_vars=['Superstructure_Concrete_elements', 'Foundation_Type', 'Basement'])
 
 
-print(cpt_concrete_qty)
+#print(cpt_concrete_qty)
 
 
-given_vars_vals: dict = [
+ass_vars_vals: dict = [
     {'vr_name': 'Superstructure_Concrete_elements', 
      'val': 'Frame&Floors'},
     {'vr_name': 'Foundation_Type', 
@@ -54,7 +54,7 @@ given_vars_vals: dict = [
      'val': True}
     ]
 
-x = pt.assign_evidence(prob_table=cpt_concrete_qty, assignment_vals=given_vars_vals)
+x = pt.assign_evidence(prob_table=cpt_concrete_qty, assignment_vals=ass_vars_vals)
 
 print(x)
 
