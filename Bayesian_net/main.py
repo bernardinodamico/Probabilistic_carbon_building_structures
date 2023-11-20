@@ -54,14 +54,14 @@ ass_vars_vals: dict = [
      'val': True}
     ]
 
-print(cpt_concrete_qty.is_valid)
+print(cpt_concrete_qty.assigned_ev_values)
 x = pt.assign_evidence(prT=cpt_concrete_qty, assignment_vals=ass_vars_vals)
-print(x.is_valid)
-print(cpt_concrete_qty.is_valid)
+print(x.assigned_ev_values)
+print(cpt_concrete_qty.assigned_ev_values)
 
 a = 3
-#figure = Plotter()
-#figure.plot_pr_distrib(prob_table=x, savefig_loc_folder='Figures', size_inches=9, break_text_label=True, y_axis='dynamic')
+figure = Plotter()
+figure.plot_pr_distrib(prob_table=x, savefig_loc_folder='Figures', size_inches=9, break_text_label=True, y_axis='dynamic')
 
 #y = pt.bld_pr_table(vars=['Concr(kg/m2)'])
 
