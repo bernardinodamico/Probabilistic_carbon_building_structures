@@ -54,23 +54,16 @@ ass_vars_vals: dict = [
      'val': True}
     ]
 
-print(cpt_concrete_qty.assigned_ev_values)
 x = pt.assign_evidence(prT=cpt_concrete_qty, assignment_vals=ass_vars_vals)
-print(x.assigned_ev_values)
-print(cpt_concrete_qty.assigned_ev_values)
-
+print(x.smoothing_factor)
+smooted_x = pt.add_lapl_smooth(prT=x, K=2.2)
+print(smooted_x.smoothing_factor)
+print(x.smoothing_factor)
 a = 3
 figure = Plotter()
-figure.plot_pr_distrib(prob_table=x, savefig_loc_folder='Figures', size_inches=9, break_text_label=True, y_axis='dynamic')
+figure.plot_pr_distrib(prT=x, savefig_loc_folder='Figures', size_inches=9, break_text_label=True, y_axis='dynamic')
 
-#y = pt.bld_pr_table(vars=['Concr(kg/m2)'])
 
-#figure.plot_pr_distrib(prT=x, savefig_loc_folder='Figures', size_inches=9, break_text_label=False, y_axis='dynamic')
-#print(x.table)
-
-#x = pt.laplace_smooth(prT=x, K=5.)
-#figure.plot_pr_distrib(prT=x, savefig_loc_folder='Figures', size_inches=9, break_text_label=False, y_axis='dynamic')
-#print(x.table)
 
 # Then work out the equation for the belief prop (Variable Elimin algo) and write them down 
 #in the manuscript appendix, based on independencies via d-separation etc. (see notes.txt) for the specific "example" of showing the figures in mind for the
