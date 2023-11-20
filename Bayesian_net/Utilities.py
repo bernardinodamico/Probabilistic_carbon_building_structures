@@ -2,13 +2,14 @@ import pandas as pd
 from pandas import DataFrame
 from matplotlib import pyplot as plt
 from Bayesian_net.customExceptions import ProbTableError
+import time
 
 class Plotter():
 
     _bottom: float = 0.4
     _left: float = 0.2
 
-    def plot_pr_table(self, prob_table: DataFrame, savefig_loc_folder: str, size_inches: int = 6, dpi: int = 300, color: str = 'dodgerblue', break_text_label: bool = False, y_axis: str = 'dynamic') -> None:
+    def plot_pr_distrib(self, prob_table: DataFrame, savefig_loc_folder: str, size_inches: int = 6, dpi: int = 300, color: str = 'dodgerblue', break_text_label: bool = False, y_axis: str = 'dynamic') -> None:
         '''
         Plots a hystogram showing the probability distibution (marginal or conditional) of a variable
         Inputs: 
@@ -49,9 +50,15 @@ class Plotter():
         fn: str = list(prob_table.columns)[1]
         fn = fn.replace('/', '@')
         filename = fn.replace('|', 'given')
-        plt.savefig(savefig_loc_folder+f'/{filename}.png')
+        filename = filename + current_time_millisecond()
+        path: str = savefig_loc_folder+f'/{filename}.png'
+    
+        plt.savefig(path)
 
         return
+
+def current_time_millisecond():
+    return str(round(time.time() * 1000))
 
 def break_labels(text: str)-> str:
     text = text.replace('|', '|\n')

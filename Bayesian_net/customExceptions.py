@@ -30,3 +30,9 @@ class Value_assignmentError(Exception):
 
         self.message = f"the value <{self.value}> of variable <{self.variable}> does not exist in the probability table"
         super().__init__(self.message)
+
+class NonPositiveValueError(Exception):
+    def __init__(self):
+
+        self.message = f"a value greater greater than zero must be assigned to the smoothing parmater K"
+        super().__init__(self.message)

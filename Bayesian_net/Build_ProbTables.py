@@ -4,7 +4,7 @@ import itertools
 import numpy as np
 from pandas import DataFrame 
 from Bayesian_net.Utilities import discretizer
-from Bayesian_net.customExceptions import Variable_assignmentError, Value_assignmentError
+from Bayesian_net.customExceptions import Variable_assignmentError, Value_assignmentError, ProbTableError, NonPositiveValueError
 from Bayesian_net.Utilities import break_labels
 
 class Build_ProbTables():
@@ -143,4 +143,18 @@ class Build_ProbTables():
 
         return prob_table
 
+    def laplace_smooth(self, prob_table: DataFrame, K: float) -> DataFrame:
+        '''
+        Inputs:
+        - prob_table: a two-column Dataframe (either a MPT or a CPT with all evidence variables istantiated)
+        - K: smoothing parameter (>0)
+        '''
+        if len(prob_table.columns) != 2:
+            raise ProbTableError(table=prob_table)
+        if K <= 0.:
+            raise NonPositiveValueError()
+        var_range: int = prob_table.shape[0]
 
+        prob_table.iloc[:,-1:] = (prob_table.iloc[:,-1:] * 100. + K) / (100. + var_range * K)
+
+        return prob_table
