@@ -50,7 +50,7 @@ class Build_ProbTables():
 
         return _ini_series
 
-    def pr_table(self, vars: list[str]) -> ProbTable:
+    def bld_pr_table(self, vars: list[str]) -> ProbTable:
         '''
         Returns the probability table of a list of variables.
         If 'vars' contains only one variable -> the marginal probability table of that variable is returned, 
@@ -80,7 +80,7 @@ class Build_ProbTables():
         return j_prob_table
 
 
-    def cond_pr_table(self, var: str, given_vars: list[str], replace_undef: bool = False) -> ProbTable:
+    def bld_cond_pr_table(self, var: str, given_vars: list[str], replace_undef: bool = False) -> ProbTable:
         '''
         Returns the conditional probability table of one single variable "var" given a list of evidence variables.
         When a combination of values for the given variables does not exist in the dataset: the cond. pr. is "undefined".
@@ -89,8 +89,8 @@ class Build_ProbTables():
         joint_prob_table = ProbTable()
         margin_prob_table = ProbTable()
 
-        joint_prob_table.table = self.pr_table(vars=[var] + given_vars).table 
-        margin_prob_table.table = self.pr_table(vars=given_vars).table # containing the normalisation constant "Z"
+        joint_prob_table.table = self.bld_pr_table(vars=[var] + given_vars).table 
+        margin_prob_table.table = self.bld_pr_table(vars=given_vars).table # containing the normalisation constant "Z"
         merged = joint_prob_table.table.merge(margin_prob_table.table, how='left', on=given_vars)
 
         key_joint_pr_col: str = joint_prob_table.table.keys()[-1]
@@ -128,7 +128,7 @@ class Build_ProbTables():
         Output:
         - A subset of the input conditional probability table, containing only the instantions matching the assigned values.
         
-        Note: if values are assigned to all evidence variables in 'prob_table': the resulting CPT output will contain only two
+        Note: if values are assigned to all evidence variables in 'prT': the resulting CPT output will contain only two
         columns, i.e. the query variable and its probability distribution.
         '''
         if prT.is_conditional is True:
