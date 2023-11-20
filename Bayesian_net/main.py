@@ -70,8 +70,6 @@ x = pt.laplace_smooth(prob_table=x, K=5.)
 figure.plot_pr_distrib(prob_table=x, savefig_loc_folder='Figures', size_inches=9, break_text_label=False, y_axis='dynamic')
 print(x)
 
-#create functions for the Laplace smoothing in the Utilities.py and
-
 # Then work out the equation for the belief prop (Variable Elimin algo) and write them down 
 #in the manuscript appendix, based on independencies via d-separation etc. (see notes.txt) for the specific "example" of showing the figures in mind for the
 #paper.
