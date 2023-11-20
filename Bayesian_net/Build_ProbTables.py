@@ -4,8 +4,9 @@ import itertools
 import numpy as np
 from pandas import DataFrame 
 from Bayesian_net.Utilities import discretizer
-from Bayesian_net.customExceptions import Variable_assignmentError, Value_assignmentError, ProbTableError, NonPositiveValueError
+from Bayesian_net.customExceptions import *
 from Bayesian_net.Utilities import break_labels
+from Bayesian_net.prob_table import ProbTable
 
 class Build_ProbTables():
 
@@ -49,12 +50,13 @@ class Build_ProbTables():
 
         return _ini_series
 
-    def pr_table(self, vars: list[str]) -> DataFrame:
+    def pr_table(self, vars: list[str]) -> ProbTable:
         '''
         Returns the probability table of a list of variables.
         If 'vars' contains only one variable -> the marginal probability table of that variable is returned, 
         Else, the joint probability table of those variables is returned insted.
         '''
+        
         ini_series = self._init_pr_table(vars=vars)
         series = self.dataset.value_counts(vars, normalize=True)
         series = ini_series.combine(other=series, func=max)
@@ -70,23 +72,29 @@ class Build_ProbTables():
             st = st+str(name)+", "
         st = st[:-2]
         
-        j_prob_table =  df_3.rename(columns={df_3.columns[-1]: 'Pr('+st+')'})
-        
+        j_prob_table = ProbTable()
+        j_prob_table.table = df_3.rename(columns={df_3.columns[-1]: 'Pr('+st+')'})
+        j_prob_table.all_variables = vars
+        j_prob_table.is_conditional = False
+
         return j_prob_table
 
 
-    def cond_pr_table(self, var: str, given_vars: list[str], replace_undef: bool = False) -> DataFrame:
+    def cond_pr_table(self, var: str, given_vars: list[str], replace_undef: bool = False) -> ProbTable:
         '''
         Returns the conditional probability table of one single variable "var" given a list of evidence variables.
         When a combination of values for the given variables does not exist in the dataset: the cond. pr. is "undefined".
         If the parameter "replace_undef" is set to True (default=False): undefinded probabilities are set to zero.
         '''
-        joint_prob_table = self.pr_table(vars=[var] + given_vars) 
-        margin_prob_table = self.pr_table(vars=given_vars) # containing the normalisation constant "Z"
-        merged = joint_prob_table.merge(margin_prob_table, how='left', on=given_vars)
+        joint_prob_table = ProbTable()
+        margin_prob_table = ProbTable()
 
-        key_joint_pr_col: str = joint_prob_table.keys()[-1]
-        key_prior_pr_col: str = margin_prob_table.keys()[-1]
+        joint_prob_table.table = self.pr_table(vars=[var] + given_vars).table 
+        margin_prob_table.table = self.pr_table(vars=given_vars).table # containing the normalisation constant "Z"
+        merged = joint_prob_table.table.merge(margin_prob_table.table, how='left', on=given_vars)
+
+        key_joint_pr_col: str = joint_prob_table.table.keys()[-1]
+        key_prior_pr_col: str = margin_prob_table.table.keys()[-1]
 
         st_ev = var+" | "
         for name in given_vars:
@@ -102,9 +110,15 @@ class Build_ProbTables():
         else:
             cond_prob_table['Pr('+st_ev+')'] = cond_prob_table['Pr('+st_ev+')'].fillna(0.)
 
-        return cond_prob_table
+        prob_table = ProbTable()
+        prob_table.table = cond_prob_table
+        prob_table.given_variables = given_vars
+        prob_table.all_variables = [var] + given_vars
+        prob_table.is_conditional = True
+        
+        return prob_table
     
-    def assign_evidence(self, prob_table: DataFrame, assignment_vals: list[dict])-> DataFrame:
+    def assign_evidence(self, prT: ProbTable, assignment_vals: list[dict])-> ProbTable:
         '''
         Inputs:
         - prob_table: a FULL conditional probability table (i.e. with all possible instantiation value combinations)
@@ -117,44 +131,50 @@ class Build_ProbTables():
         Note: if values are assigned to all evidence variables in 'prob_table': the resulting CPT output will contain only two
         columns, i.e. the query variable and its probability distribution.
         '''
-        for variable in assignment_vals:
-            if variable['vr_name'] not in prob_table.keys().to_list():
-                raise Variable_assignmentError(variable=variable['vr_name'])
-            if variable['val'] not in prob_table.values:
-                raise Value_assignmentError(variable=variable['vr_name'], value=variable['val'])
+        if prT.is_conditional is True:
+            for variable in assignment_vals:
+                if variable['vr_name'] not in prT.table.keys().to_list():
+                    raise Variable_assignmentError(variable=variable['vr_name'])
+                if variable['val'] not in prT.table.values:
+                    raise Value_assignmentError(variable=variable['vr_name'], value=variable['val'])
 
-        #--------------------------------------------------------------------
-        for i in range(len(assignment_vals)):
-            vr_name = assignment_vals[i]['vr_name']
-            val = assignment_vals[i]['val']
-            prob_table = prob_table.loc[(prob_table[vr_name] == val)]
-        
-        for i in range(len(assignment_vals)):
-            vr_name = assignment_vals[i]['vr_name']
-            prob_table = prob_table.drop(labels=vr_name, axis='columns')
+            #--------------------------------------------------------------------
+            for i in range(len(assignment_vals)):
+                vr_name = assignment_vals[i]['vr_name']
+                val = assignment_vals[i]['val']
+                prT.table = prT.table.loc[(prT.table[vr_name] == val)]
+            
+            for i in range(len(assignment_vals)):
+                vr_name = assignment_vals[i]['vr_name']
+                prT.table = prT.table.drop(labels=vr_name, axis='columns')
 
-        #------- rename Pr column-------------------------------------------
-        Pr_heading: str = prob_table.keys().to_list()[-1]
-        for i in range(len(assignment_vals)):
-            vr_name = assignment_vals[i]['vr_name']
-            val = str(assignment_vals[i]['val'])
-            Pr_heading = Pr_heading.replace(vr_name, vr_name+'='+val)
-        prob_table = prob_table.rename(columns={prob_table.keys().to_list()[-1]: Pr_heading})
+            #------- rename Pr column-------------------------------------------
+            Pr_heading: str = prT.table.keys().to_list()[-1]
+            for i in range(len(assignment_vals)):
+                vr_name = assignment_vals[i]['vr_name']
+                val = str(assignment_vals[i]['val'])
+                Pr_heading = Pr_heading.replace(vr_name, vr_name+'='+val)
+            prT.table = prT.table.rename(columns={prT.table.keys().to_list()[-1]: Pr_heading})
+            prT.assigned_ev_values = assignment_vals
 
-        return prob_table
+            return prT
+        else:
+            raise NonConditionalProbTableError(variable=prT)
 
-    def laplace_smooth(self, prob_table: DataFrame, K: float) -> DataFrame:
+
+    def laplace_smooth(self, prT: ProbTable, K: float) -> ProbTable:
         '''
         Inputs:
         - prob_table: a two-column Dataframe (either a MPT or a CPT with all evidence variables istantiated)
         - K: smoothing parameter (>0)
         '''
-        if len(prob_table.columns) != 2:
-            raise ProbTableError(table=prob_table)
+        if len(prT.table.columns) != 2:
+            raise ProbTableError(table=prT.table)
         if K <= 0.:
             raise NonPositiveValueError()
-        var_range: int = prob_table.shape[0]
+        var_range: int = prT.table.shape[0]
 
-        prob_table.iloc[:,-1:] = (prob_table.iloc[:,-1:] * 100. + K) / (100. + var_range * K)
+        prT.table.iloc[:,-1:] = (prT.table.iloc[:,-1:] * 100. + K) / (100. + var_range * K)
+        prT.smoothing_factor = K
 
-        return prob_table
+        return prT

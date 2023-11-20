@@ -54,21 +54,20 @@ ass_vars_vals: dict = [
      'val': True}
     ]
 
-x = pt.assign_evidence(prob_table=cpt_concrete_qty, assignment_vals=ass_vars_vals)
-
-#print(x)
+x = pt.assign_evidence(prT=cpt_concrete_qty, assignment_vals=ass_vars_vals)
+print(x.table)
 
 figure = Plotter()
 #figure.plot_pr_distrib(prob_table=x, savefig_loc_folder='Figures', size_inches=9, break_text_label=True, y_axis='dynamic')
 
 y = pt.pr_table(vars=['Concr(kg/m2)'])
 
-figure.plot_pr_distrib(prob_table=x, savefig_loc_folder='Figures', size_inches=9, break_text_label=False, y_axis='dynamic')
-print(x)
+figure.plot_pr_distrib(prT=x, savefig_loc_folder='Figures', size_inches=9, break_text_label=False, y_axis='dynamic')
+print(x.table)
 
-x = pt.laplace_smooth(prob_table=x, K=5.)
-figure.plot_pr_distrib(prob_table=x, savefig_loc_folder='Figures', size_inches=9, break_text_label=False, y_axis='dynamic')
-print(x)
+x = pt.laplace_smooth(prT=x, K=5.)
+figure.plot_pr_distrib(prT=x, savefig_loc_folder='Figures', size_inches=9, break_text_label=False, y_axis='dynamic')
+print(x.table)
 
 # Then work out the equation for the belief prop (Variable Elimin algo) and write them down 
 #in the manuscript appendix, based on independencies via d-separation etc. (see notes.txt) for the specific "example" of showing the figures in mind for the

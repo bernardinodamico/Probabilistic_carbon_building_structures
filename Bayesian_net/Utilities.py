@@ -3,13 +3,14 @@ from pandas import DataFrame
 from matplotlib import pyplot as plt
 from Bayesian_net.customExceptions import ProbTableError
 import time
+from Bayesian_net.prob_table import ProbTable
 
 class Plotter():
 
     _bottom: float = 0.4
     _left: float = 0.2
 
-    def plot_pr_distrib(self, prob_table: DataFrame, savefig_loc_folder: str, size_inches: int = 6, dpi: int = 300, color: str = 'dodgerblue', break_text_label: bool = False, y_axis: str = 'dynamic') -> None:
+    def plot_pr_distrib(self, prT: ProbTable, savefig_loc_folder: str, size_inches: int = 6, dpi: int = 300, color: str = 'dodgerblue', break_text_label: bool = False, y_axis: str = 'dynamic') -> None:
         '''
         Plots a hystogram showing the probability distibution (marginal or conditional) of a variable
         Inputs: 
@@ -22,11 +23,11 @@ class Plotter():
         if y_axis='constant' the 'y' axis is scaled to 100% probability value.
         '''
         x_labels = []
-        for val in prob_table[list(prob_table.columns)[0]].tolist():
+        for val in prT.table[list(prT.table.columns)[0]].tolist():
             x_labels.append(str(val))
 
-        if len(prob_table.columns) != 2:
-            raise ProbTableError(table=prob_table)
+        if len(prT.table.columns) != 2:
+            raise ProbTableError(table=prT.table)
         fig, ax = plt.subplots()
         fig.set_size_inches(size_inches, size_inches)
         fig.set_dpi(dpi)
@@ -34,20 +35,20 @@ class Plotter():
         plt.subplots_adjust(bottom=self._bottom, left=self._left)
 
         plt.bar(x=x_labels, 
-                height=prob_table[list(prob_table.columns)[1]],
+                height=prT.table[list(prT.table.columns)[1]],
                 width=0.96,
                 color=color,
                 )
         plt.xticks(rotation=90)
         
-        plt.xlabel(list(prob_table.columns)[0], fontweight='bold')
-        if break_text_label is True: y_label = break_labels(text=list(prob_table.columns)[1])
-        else: y_label = list(prob_table.columns)[1]
+        plt.xlabel(list(prT.table.columns)[0], fontweight='bold')
+        if break_text_label is True: y_label = break_labels(text=list(prT.table.columns)[1])
+        else: y_label = list(prT.table.columns)[1]
         plt.ylabel(y_label, fontweight='bold')
         #plt.show()
 
         #----Save figure---------------------------------
-        fn: str = list(prob_table.columns)[1]
+        fn: str = list(prT.table.columns)[1]
         fn = fn.replace('/', '@')
         filename = fn.replace('|', 'given')
         filename = filename + current_time_millisecond()
