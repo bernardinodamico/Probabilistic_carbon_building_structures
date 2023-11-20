@@ -7,6 +7,7 @@ from Bayesian_net.Utilities import discretizer
 from Bayesian_net.customExceptions import *
 from Bayesian_net.Utilities import break_labels
 from Bayesian_net.prob_table import ProbTable
+import copy
 
 class Build_ProbTables():
 
@@ -71,11 +72,15 @@ class Build_ProbTables():
         for name in vars:
             st = st+str(name)+", "
         st = st[:-2]
-        
+    
         j_prob_table = ProbTable()
-        j_prob_table.table = df_3.rename(columns={df_3.columns[-1]: 'Pr('+st+')'})
         j_prob_table.all_variables = vars
+        j_prob_table.given_variables = None
+        j_prob_table.assigned_ev_values = None
+        j_prob_table.table = df_3.rename(columns={df_3.columns[-1]: 'Pr('+st+')'})
         j_prob_table.is_conditional = False
+        j_prob_table.smoothing_factor = None
+        j_prob_table.is_valid = j_prob_table.is_valid_distribution()
 
         return j_prob_table
 
@@ -111,11 +116,14 @@ class Build_ProbTables():
             cond_prob_table['Pr('+st_ev+')'] = cond_prob_table['Pr('+st_ev+')'].fillna(0.)
 
         prob_table = ProbTable()
-        prob_table.table = cond_prob_table
-        prob_table.given_variables = given_vars
         prob_table.all_variables = [var] + given_vars
+        prob_table.given_variables = given_vars
+        prob_table.assigned_ev_values = None
+        prob_table.table = cond_prob_table
         prob_table.is_conditional = True
-        
+        prob_table.smoothing_factor = None
+        prob_table.is_valid = prob_table.is_valid_distribution()
+
         return prob_table
     
     def assign_evidence(self, prT: ProbTable, assignment_vals: list[dict])-> ProbTable:
@@ -139,6 +147,7 @@ class Build_ProbTables():
                     raise Value_assignmentError(variable=variable['vr_name'], value=variable['val'])
 
             #--------------------------------------------------------------------
+            prT = copy.copy(prT)
             for i in range(len(assignment_vals)):
                 vr_name = assignment_vals[i]['vr_name']
                 val = assignment_vals[i]['val']
@@ -154,15 +163,16 @@ class Build_ProbTables():
                 vr_name = assignment_vals[i]['vr_name']
                 val = str(assignment_vals[i]['val'])
                 Pr_heading = Pr_heading.replace(vr_name, vr_name+'='+val)
-            prT.table = prT.table.rename(columns={prT.table.keys().to_list()[-1]: Pr_heading})
+            
             prT.assigned_ev_values = assignment_vals
+            prT.table = prT.table.rename(columns={prT.table.keys().to_list()[-1]: Pr_heading})
+            prT.is_valid = prT.is_valid_distribution()
 
             return prT
         else:
             raise NonConditionalProbTableError(variable=prT)
 
-
-    def laplace_smooth(self, prT: ProbTable, K: float) -> ProbTable:
+    def add_lapl_smooth(self, prT: ProbTable, K: float) -> ProbTable:
         '''
         Inputs:
         - prob_table: a two-column Dataframe (either a MPT or a CPT with all evidence variables istantiated)
@@ -172,8 +182,10 @@ class Build_ProbTables():
             raise ProbTableError(table=prT.table)
         if K <= 0.:
             raise NonPositiveValueError()
+        
         var_range: int = prT.table.shape[0]
-
+        
+        prT = copy.copy(prT)
         prT.table.iloc[:,-1:] = (prT.table.iloc[:,-1:] * 100. + K) / (100. + var_range * K)
         prT.smoothing_factor = K
 
