@@ -1,5 +1,3 @@
-import pandas as pd 
-from pandas import DataFrame
 from Bayesian_net.Build_ProbTables import Build_ProbTables
 from Utilities import Plotter
 
@@ -54,14 +52,15 @@ ass_vars_vals: dict = [
      'val': True}
     ]
 
+figure = Plotter()
 x = pt.assign_evidence(prT=cpt_concrete_qty, assignment_vals=ass_vars_vals)
+figure.plot_pr_distrib(prT=x, savefig_loc_folder='Figures', size_inches=9, break_text_label=True, y_axis='dynamic')
 print(x.smoothing_factor)
 smooted_x = pt.add_lapl_smooth(prT=x, K=2.2)
 print(smooted_x.smoothing_factor)
 print(x.smoothing_factor)
 a = 3
-figure = Plotter()
-figure.plot_pr_distrib(prT=x, savefig_loc_folder='Figures', size_inches=9, break_text_label=True, y_axis='dynamic')
+figure.plot_pr_distrib(prT=smooted_x, savefig_loc_folder='Figures', size_inches=9, break_text_label=True, y_axis='dynamic')
 
 
 
