@@ -3,7 +3,7 @@ pd.set_option('display.max_rows', None)
 import itertools
 import numpy as np
 from pandas import DataFrame 
-from Bayesian_net.Utilities import discretizer
+from Bayesian_net.utilities import discretizer
 from Bayesian_net.customExceptions import *
 from Bayesian_net.prob_table import ProbTable
 import copy

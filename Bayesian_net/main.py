@@ -1,5 +1,5 @@
 from Bayesian_net.Build_ProbTables import Build_ProbTables
-from Utilities import Plotter
+from utilities import Plotter
 
 pt = Build_ProbTables()
 pt.load_dataset(path='Data/training_dataset.csv')
