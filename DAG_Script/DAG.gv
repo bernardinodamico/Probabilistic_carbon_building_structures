@@ -5,7 +5,7 @@ digraph G {
 		splines=true
 	];
 	node [concentrate=true,
-		fillcolor=gray66,
+		fillcolor=darksalmon,
 		fontname=Sans,
 		fontsize=9,
 		penwidth=1,
@@ -17,65 +17,55 @@ digraph G {
 		color=gray30,
 		penwidth=1.2
 	];
-	"No. 
-storeys"	[fillcolor="",
-		penwidth=1.];
+	"Superstructure 
+unit-weight"	[concentrate="",
+		fillcolor=gray66];
 	"Foundations 
-type"	[fillcolor="",
+type"	[fillcolor=cornflowerblue,
+		penwidth=1.];
+	"Superstructure 
+unit-weight" -> "Foundations 
+type";
+	"Concrete 
+elements"	[concentrate="",
+		fillcolor=gray66];
+	"Concrete 
+elements" -> "Reinforcement 
+qty.";
+	"Concrete 
+elements" -> "Concrete 
+qty.";
+	"No. 
+storeys"	[fillcolor=cornflowerblue,
 		penwidth=1.];
 	"No. 
 storeys" -> "Foundations 
 type"	[minlen=1];
 	"Cladding 
-type"	[fillcolor="",
+type"	[fillcolor=cornflowerblue,
 		penwidth=1.];
-	"Masonry & 
-blockworks qty."	[fillcolor=""];
 	"Cladding 
 type" -> "Masonry & 
 blockworks qty."	[minlen=1];
 	"Superstructure 
-type"	[fillcolor="",
-		penwidth=1.];
-	"Superstructure 
-unit-weight"	[fillcolor="",
+type"	[fillcolor=cornflowerblue,
 		penwidth=1.];
 	"Superstructure 
 type" -> "Superstructure 
 unit-weight";
-	"Concrete 
-elements"	[fillcolor="",
-		penwidth=1.];
 	"Superstructure 
 type" -> "Concrete 
 elements";
 	"Superstructure 
 type" -> "Masonry & 
 blockworks qty.";
-	"Timber 
-(products) qty."	[fillcolor=""];
 	"Superstructure 
 type" -> "Timber 
 (products) qty."	[minlen=1];
-	"Steel 
-(sections) qty."	[fillcolor=""];
 	"Superstructure 
 type" -> "Steel 
 (sections) qty."	[minlen=2];
-	"Superstructure 
-unit-weight" -> "Foundations 
-type";
-	"Reinforcement 
-qty."	[fillcolor=""];
-	"Concrete 
-elements" -> "Reinforcement 
-qty.";
-	"Concrete 
-qty."	[fillcolor=""];
-	"Concrete 
-elements" -> "Concrete 
-qty.";
-	Basement	[fillcolor="",
+	Basement	[fillcolor=cornflowerblue,
 		penwidth=1.];
 	Basement -> "Concrete 
 qty."	[minlen=1];

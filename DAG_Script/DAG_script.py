@@ -20,13 +20,25 @@ u.attr('edge',
         penwidth='1.2',
         #weight='0.9'
         )
- 
+
+u.attr('node', 
+        fontname='Sans',
+        fontsize='9',
+        shape='oval',
+        penwidth='1',
+        fillcolor='gray66', 
+        style='filled',
+        ) 
+
+u.node('Superstructure \nunit-weight')#, pos='1.5,0!')
+u.node('Concrete \nelements')#, pos='1.5,0!')
+
 u.attr('node', 
         fontname='Sans',
         fontsize='9',
         shape='oval', #'cicrle'
         penwidth='1.',
-        #fillcolor='cornflowerblue', 
+        fillcolor='cornflowerblue', 
         style='filled',
         concentrate='true'
         ) 
@@ -35,17 +47,16 @@ u.attr('node',
 u.node('No. \nstoreys')#, pos='4.5,0!')
 u.node('Cladding \ntype')#, pos='0,0!')
 u.node('Superstructure \ntype')#, pos='1.5,0!')
-u.node('Superstructure \nunit-weight')#, pos='1.5,0!')
-u.node('Concrete \nelements')#, pos='1.5,0!')
 
 u.node('Basement')#, pos='7.5,0!')
 u.node('Foundations \ntype')#, pos='7.5,1.25!')
 
 u.attr('node', 
-        #fontname='Sans',
+        fontname='Sans',
+        fontsize='9',
         shape='oval',
         penwidth='1',
-        #fillcolor='coral', 
+        fillcolor='darksalmon', 
         style='filled',
         ) 
 #u.node('Query')
@@ -56,13 +67,6 @@ u.node('Concrete \nqty.')#, pos='5.25,2.5!')
 u.node('Timber \n(products) qty.')#, pos='2.25,2.5!')
 u.node('Steel \n(sections) qty.')#, pos='3.75,2.5!')
 
-u.attr('node', 
-        #fontname='Sans',
-        shape='oval',
-        penwidth='1',
-        fillcolor='gray66', 
-        style='filled',
-        ) 
 
 u.edge('Cladding \ntype', 'Masonry & \nblockworks qty.')
 u.edge('No. \nstoreys', 'Foundations \ntype')
@@ -78,6 +82,7 @@ u.edge('Superstructure \ntype', 'Steel \n(sections) qty.')
 u.edge('Superstructure \ntype', 'Superstructure \nunit-weight')
 u.edge('Superstructure \nunit-weight', 'Foundations \ntype')
 u.edge('Concrete \nelements', 'Reinforcement \nqty.')
+
 
 #------------------------------
 
