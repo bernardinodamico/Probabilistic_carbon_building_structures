@@ -36,3 +36,11 @@ class NonPositiveValueError(Exception):
 
         self.message = f"a value greater greater than zero must be assigned to the smoothing parmater K"
         super().__init__(self.message)
+
+class NonConditionalProbTableError(Exception):
+
+    def __init__(self, variable):
+        self.variable = variable
+
+        self.message = f"<{self.variable}> is not a CONDITIONAL probability table"
+        super().__init__(self.message)
