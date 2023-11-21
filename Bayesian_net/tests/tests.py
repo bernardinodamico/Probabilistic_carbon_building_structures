@@ -110,7 +110,6 @@ class TestBuild_ProbTables(unittest.TestCase):
     def test_conditional_probs(self):
         
         cpt = self.probTables.bld_cond_pr_table(var='Temp', given_vars=['Weather', 'Wildfire'])
-        print(cpt.table)
         cpt = cpt.table.to_dict()
 
         bench = {'Temp': {0: 3.5, 1: 3.5, 2: 3.5, 3: 3.5, 4: 3.5, 5: 3.5, 6: 10.2, 7: 10.2, 8: 10.2, 9: 10.2, 10: 10.2, 11: 10.2, 12: 26.8, 13: 26.8, 14: 26.8, 15: 26.8, 16: 26.8, 17: 26.8}, 
