@@ -50,11 +50,12 @@ class Build_ProbTables():
 
         return _ini_series
 
-    def bld_pr_table(self, vars: list[str]) -> ProbTable:
+    def bld_pr_table(self, vars: list[str], K: float = 0.000001) -> ProbTable:
         '''
-        Returns the probability table of a list of variables.
+        Returns the probability table of a list of variables 'vars'.
         If 'vars' contains only one variable -> the marginal probability table of that variable is returned, 
         Else, the joint probability table of those variables is returned insted.
+        K is the Laplace smoothing parameter (default value = 0.000001 i.e. almost no smoothing is applied).
         '''
         
         ini_series = self._init_pr_table(vars=vars)
@@ -78,18 +79,23 @@ class Build_ProbTables():
         j_prob_table.assigned_ev_values = None
         j_prob_table.table = df_3.rename(columns={df_3.columns[-1]: 'Pr('+st+')'})
         j_prob_table.is_conditional = False
-        j_prob_table.smoothing_factor = None
-        j_prob_table.is_valid = j_prob_table.is_valid_distribution()
+        j_prob_table.is_proper = j_prob_table.is_proper_distribution()
 
         return j_prob_table
 
 
-    def bld_cond_pr_table(self, var: str, given_vars: list[str], replace_undef: bool = False) -> ProbTable:
+    def bld_cond_pr_table(self, var: str, given_vars: list[str], K: float = 0.000001) -> ProbTable:
         '''
         Returns the conditional probability table of one single variable "var" given a list of evidence variables.
-        When a combination of values for the given variables does not exist in the dataset: the cond. pr. is "undefined".
-        If the parameter "replace_undef" is set to True (default=False): undefinded probabilities are set to zero.
+
+        Inputs:
+        - var: query variable
+        - given_vars: evidence variables
+        - K: Laplace smoothing parameter (default value = 0.000001 i.e. almost no smoothing is applied).
         '''
+        if K < 0.:
+            raise NonPositiveValueError()
+        
         joint_prob_table = ProbTable()
         margin_prob_table = ProbTable()
 
@@ -105,14 +111,14 @@ class Build_ProbTables():
             st_ev = st_ev+str(name)+", "
         st_ev = st_ev[:-2]
 
-        merged['Pr('+st_ev+')'] = merged[key_joint_pr_col] / merged[key_prior_pr_col]
+        merged[key_prior_pr_col] = merged[key_prior_pr_col].fillna(0.) #replace NaN values with 0.0
+
+        var_range = merged[var].nunique()
+
+        merged['Pr('+st_ev+')'] = (merged[key_joint_pr_col] + K) / (merged[key_prior_pr_col] + var_range * K)
         cond_prob_table = merged.drop(columns=[key_joint_pr_col, key_prior_pr_col])
 
         #----------------------------------------------------------------------------
-        if replace_undef == False:
-            cond_prob_table['Pr('+st_ev+')'] = cond_prob_table['Pr('+st_ev+')'].fillna('undefined')
-        else:
-            cond_prob_table['Pr('+st_ev+')'] = cond_prob_table['Pr('+st_ev+')'].fillna(0.)
 
         prob_table = ProbTable()
         prob_table.all_variables = [var] + given_vars
@@ -120,8 +126,7 @@ class Build_ProbTables():
         prob_table.assigned_ev_values = None
         prob_table.table = cond_prob_table
         prob_table.is_conditional = True
-        prob_table.smoothing_factor = None
-        prob_table.is_valid = prob_table.is_valid_distribution()
+        prob_table.is_proper = prob_table.is_proper_distribution()
 
         return prob_table
     
@@ -165,27 +170,10 @@ class Build_ProbTables():
             
             prT.assigned_ev_values = assignment_vals
             prT.table = prT.table.rename(columns={prT.table.keys().to_list()[-1]: Pr_heading})
-            prT.is_valid = prT.is_valid_distribution()
+            prT.is_proper = prT.is_proper_distribution()
 
             return prT
         else:
             raise NonConditionalProbTableError(variable=prT)
 
-    def add_lapl_smooth(self, prT: ProbTable, K: float) -> ProbTable:
-        '''
-        Inputs:
-        - prob_table: a two-column Dataframe (either a MPT or a CPT with all evidence variables istantiated)
-        - K: smoothing parameter (>0)
-        '''
-        if len(prT.table.columns) != 2:
-            raise ProbTableError(table=prT.table)
-        if K <= 0.:
-            raise NonPositiveValueError()
-        
-        var_range: int = prT.table.shape[0]
-        
-        prT = copy.copy(prT)
-        prT.table.iloc[:,-1:] = (prT.table.iloc[:,-1:] * 100. + K) / (100. + var_range * K)
-        prT.smoothing_factor = K
 
-        return prT

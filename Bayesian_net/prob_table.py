@@ -9,39 +9,38 @@ class ProbTable():
     assigned_ev_values: list[str] = None
     table: DataFrame = None
     is_conditional: bool = None
-    smoothing_factor: float = None
-    is_valid: bool = None
+    is_proper: bool = None
 
-    def is_valid_distribution(self) -> bool:
+    def is_proper_distribution(self) -> bool:
         '''
-        Checks whether it's a valid prob table i.e. essentially any ProbTable that is not also a 'factor' table.
-        Examples of valid ProbTable(s):
+        Checks whether it's a 'proper' prob table i.e. essentially any ProbTable that is not also a 'factor' table.
+        Examples of proper ProbTable(s):
         - P(A); P(A, B); P(A, B,...,Z)
         - P(A | B=b); P(A | B=b, C=c); P(A | B=b, C=c,...,Z=z)
         ...
 
-        Examples of invalid ProbTable(s):
+        Examples of improper ProbTable(s):
         - P(A, B=b); P(A, B,...Z=z)
         - P(A | B); P(A | B, C); P(A | B, C,...,Z); P(A | B=b, C,...,Z)
 
-        A valid joint/marginal table must have the Pr column summing up to 1.
+        A proper joint/marginal table must have the Pr column summing up to 1.
         
-        A valid cond. table must have the Pr column summing up to 1 AND have exactly two columns (a Pr column and a query variable column).
+        An improper cond. table must have the Pr column summing up to 1 AND have exactly two columns (a Pr column and a query variable column).
         '''
         tot_pr_col = round(self.table[self.table.keys().to_list()[-1]].sum(), 10)
         if self.is_conditional is False: 
             if tot_pr_col == 1.:
-                self.is_valid = True 
+                self.is_proper = True 
                 return True
             else:
-                self.is_valid = False
+                self.is_proper = False
                 return False
         elif self.is_conditional is True:
             if len(self.table.columns) == 2 and tot_pr_col == 1.:
-                self.is_valid = True
+                self.is_proper = True
                 return True
             else:
-                self.is_valid = False
+                self.is_proper = False
                 return False
         else:
             return None
