@@ -56,7 +56,20 @@ figure = Plotter()
 
 x = pt.assign_evidence(prT=cpt_concrete_qty, assignment_vals=ass_vars_vals)
 #figure.plot_pr_distrib(prT=x, savefig_loc_folder='Figures', size_inches=9, break_text_label=True, y_axis='dynamic')
-print(x.table)
+#print(x.table)
 # Then work out the equation for the belief prop (Variable Elimin algo) and write them down 
 #in the manuscript appendix, based on independencies via d-separation etc. (see notes.txt) for the specific "example" of showing the figures in mind for the
 #paper.
+
+ass_vars_vals = [
+    {'vr_name': 'Concr(kg/m2)', 
+     'val': 516.702},
+    {'vr_name': 'Supstr_Cr_elems', 
+     'val': 'Frame&Floors'},
+    {'vr_name': 'Found_Type', 
+     'val': 'Piled(Ground-beams/Caps)'},
+     {'vr_name': 'Basement', 
+     'val': True}
+    ]
+x = pt.assign_evidence(prT=cpt_concrete_qty, assignment_vals=ass_vars_vals)
+print(x.table)

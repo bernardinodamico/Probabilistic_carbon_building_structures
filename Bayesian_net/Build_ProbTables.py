@@ -146,10 +146,13 @@ class Build_ProbTables():
         a value 'val' is to be assigned. 
         
         Output:
-        - A subset of the input conditional probability table, where some/all of the evidence variables have a value assigned.
+        - A subset of the input conditional probability table, where some/all of the variables have a value assigned.
 
-        NOTE: if values are assigned to all evidence variables in 'prT': the resulting CPT output will contain only two
+        If values are assigned to all evidence variables in 'prT': the resulting CPT output will contain only two
         columns, i.e. the query variable and its probability distribution.
+        NOTE: value assignments are not limited to evidence variables. The query variable can also be assigned a value. E.g. 
+        if all variables in the table are assigned a value, the output is a one-column one-row table. 
+        
         '''
         if prT.is_conditional is True:
             for variable in assignment_vals:
