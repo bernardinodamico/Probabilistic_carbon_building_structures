@@ -106,8 +106,8 @@ class Build_ProbTables():
         joint_prob_table = ProbTable()
         margin_prob_table = ProbTable()
 
-        joint_prob_table.table = self.bld_pr_table(vars=[var] + given_vars).table 
-        margin_prob_table.table = self.bld_pr_table(vars=given_vars).table # containing the normalisation constant "Z"
+        joint_prob_table.table = self.bld_pr_table(vars=[var] + given_vars, K=0.).table 
+        margin_prob_table.table = self.bld_pr_table(vars=given_vars, K=0.).table # containing the normalisation constant "Z"
         merged = joint_prob_table.table.merge(margin_prob_table.table, how='left', on=given_vars)
 
         key_joint_pr_col: str = joint_prob_table.table.keys()[-1]
@@ -119,10 +119,14 @@ class Build_ProbTables():
         st_ev = st_ev[:-2]
 
         merged[key_prior_pr_col] = merged[key_prior_pr_col].fillna(0.) #replace NaN values with 0.0
+        count_joint = self.dataset.shape[0] * merged[key_joint_pr_col]
+        count_prior = self.dataset.shape[0] * merged[key_prior_pr_col]
+        var_range = merged[var].nunique()
 
-        merged['Pr('+st_ev+')'] = merged[key_joint_pr_col] / merged[key_prior_pr_col]
+        merged['Pr('+st_ev+')'] = (count_joint + K) / (count_prior + var_range * K)
         cond_prob_table = merged.drop(columns=[key_joint_pr_col, key_prior_pr_col])
-
+        #print(cond_prob_table)
+        #cond_prob_table['Pr('+st_ev+')'].round(decimals=1)
         #----------------------------------------------------------------------------
 
         prob_table = ProbTable()

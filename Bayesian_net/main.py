@@ -30,14 +30,14 @@ mpt_cladding_type = pt.bld_pr_table(vars=['Clad_Type'])
 mpt_No_storeys = pt.bld_pr_table(vars=['No_storeys'])
 mpt_basement = pt.bld_pr_table(vars=['Basement'])
 
-cpt_masonry_BW = pt.bld_cond_pr_table(var='Masnry&Blwk(m2/m2)', given_vars=['Clad_Type', 'Supstr_Type'])
+cpt_masonry_BW = pt.bld_cond_pr_table(var='Masnry&Blwk(m2/m2)', given_vars=['Clad_Type', 'Supstr_Type'], K=0.)
 cpt_superstr_UW = pt.bld_cond_pr_table(var='Supstr_uw', given_vars=['Supstr_Type'])
 cpt_timber_prods = pt.bld_cond_pr_table(var='Timber_Prod(kg/m2)', given_vars=['Supstr_Type'])
 cpt_concrete_elems = pt.bld_cond_pr_table(var='Supstr_Cr_elems', given_vars=['Supstr_Type'])
 cpt_steel_secs = pt.bld_cond_pr_table(var='Steel_Sec(kg/m2)', given_vars=['Supstr_Type'])
 cpt_found_type = pt.bld_cond_pr_table(var='Found_Type', given_vars=['No_storeys', 'Supstr_uw'])
 cpt_reinforcement = pt.bld_cond_pr_table(var='Reinf(kg/m2)', given_vars=['Supstr_Cr_elems', 'Found_Type'])
-cpt_concrete_qty = pt.bld_cond_pr_table(var='Concr(kg/m2)', given_vars=['Supstr_Cr_elems', 'Found_Type', 'Basement'], K=0.005)
+cpt_concrete_qty = pt.bld_cond_pr_table(var='Concr(kg/m2)', given_vars=['Supstr_Cr_elems', 'Found_Type', 'Basement'], K=0.)
 
 
 #print(cpt_concrete_qty)
@@ -56,7 +56,7 @@ figure = Plotter()
 x = pt.assign_evidence(prT=cpt_concrete_qty, assignment_vals=ass_vars_vals)
 #figure.plot_pr_distrib(prT=x, savefig_loc_folder='Figures', size_inches=9, break_text_label=True, y_axis='dynamic')
 
-print(mpt_superstr_type.table)
+print(cpt_masonry_BW.table)
 
 
 
