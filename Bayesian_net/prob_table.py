@@ -27,7 +27,7 @@ class ProbTable():
         
         An improper cond. table must have the Pr column summing up to 1 AND have exactly two columns (a Pr column and a query variable column).
         '''
-        tot_pr_col = round(self.table[self.table.keys().to_list()[-1]].sum(), 10)
+        tot_pr_col = round(self.table[self.table.keys().to_list()[-1]].sum(), 7)
         if self.is_conditional is False: 
             if tot_pr_col == 1.:
                 self.is_proper = True 
