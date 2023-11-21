@@ -55,7 +55,7 @@ class Build_ProbTables():
         Returns the probability table of a list of variables 'vars'.
         If 'vars' contains only one variable -> the marginal probability table of that variable is returned, 
         Else, the joint probability table of those variables is returned insted.
-        K is the Laplace smoothing parameter (default value = 0.0 i.e. no smoothing is applied). NOTE: it only applies to
+        K is the Laplace smoothing parameter (default value = 0.0 i.e. no smoothing is applied).  NOTE: it only applies to
         marginal prob tables i.e with one variable.
         '''
         
