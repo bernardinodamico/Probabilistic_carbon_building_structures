@@ -141,14 +141,14 @@ class Build_ProbTables():
     def assign_evidence(self, prT: ProbTable, assignment_vals: list[dict])-> ProbTable:
         '''
         Inputs:
-        - prob_table: a FULL conditional probability table (i.e. with all possible instantiation value combinations)
+        - prob_table: a conditional probability table
         - assignment_vals: a list of dictionaries with 'vr_name' and 'val' as keys. 'vr_name' is the variable to which
         a value 'val' is to be assigned. 
         
         Output:
-        - A subset of the input conditional probability table, containing only the instantions matching the assigned values.
-        
-        Note: if values are assigned to all evidence variables in 'prT': the resulting CPT output will contain only two
+        - A subset of the input conditional probability table, where some/all of the evidence variables have a value assigned.
+
+        NOTE: if values are assigned to all evidence variables in 'prT': the resulting CPT output will contain only two
         columns, i.e. the query variable and its probability distribution.
         '''
         if prT.is_conditional is True:
