@@ -43,13 +43,13 @@ cpt_concrete_qty = pt.bld_cond_pr_table(var='Concr(kg/m2)', given_vars=['Supstr_
 #print(cpt_concrete_qty)
 
 
-ass_vars_vals: dict = [
+ass_vars_vals = [
     {'vr_name': 'Supstr_Cr_elems', 
      'val': 'Frame&Floors'},
     {'vr_name': 'Found_Type', 
      'val': 'Piled(Ground-beams/Caps)'},
-     #{'vr_name': 'Basement', 
-     #'val': True}
+     {'vr_name': 'Basement', 
+     'val': True}
     ]
 
 figure = Plotter()

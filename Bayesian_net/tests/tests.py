@@ -17,6 +17,7 @@ class TestBuild_ProbTables(unittest.TestCase):
                 else:
                     l1.append(d1[key][k]) 
                     l2.append(d2[key][k]) 
+                print(d1[key][k])
         return l1, l2
 
     def test_marginal_probs(self):
@@ -27,6 +28,7 @@ class TestBuild_ProbTables(unittest.TestCase):
 
         mpt, bench = self.get_values(d1=mpt, d2=bench)
         self.assertEqual(mpt, bench, 'marginal prob table error')
+        #print(mpt)
 
         mpt2 = self.probTables.bld_pr_table(vars=['Weather'])
         mpt2 = mpt2.table.to_dict()
@@ -117,6 +119,8 @@ class TestBuild_ProbTables(unittest.TestCase):
 
         cpt2, bench2 = self.get_values(d1=cpt2, d2=bench2)
         self.assertEqual(cpt2, bench2, 'cond. prob. table error')
+
+
 
 #--------------------------------------------------------------------------------
 if __name__ == '__main__':
