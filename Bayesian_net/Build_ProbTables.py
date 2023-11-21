@@ -118,15 +118,14 @@ class Build_ProbTables():
             st_ev = st_ev+str(name)+", "
         st_ev = st_ev[:-2]
 
-        merged[key_prior_pr_col] = merged[key_prior_pr_col].fillna(0.) #replace NaN values with 0.0
         count_joint = self.dataset.shape[0] * merged[key_joint_pr_col]
         count_prior = self.dataset.shape[0] * merged[key_prior_pr_col]
         var_range = merged[var].nunique()
 
         merged['Pr('+st_ev+')'] = (count_joint + K) / (count_prior + var_range * K)
         cond_prob_table = merged.drop(columns=[key_joint_pr_col, key_prior_pr_col])
-        #print(cond_prob_table)
-        #cond_prob_table['Pr('+st_ev+')'].round(decimals=1)
+        
+        cond_prob_table['Pr('+st_ev+')'] = cond_prob_table['Pr('+st_ev+')'].fillna(0.) #replace NaN values with 0.0
         #----------------------------------------------------------------------------
 
         prob_table = ProbTable()
