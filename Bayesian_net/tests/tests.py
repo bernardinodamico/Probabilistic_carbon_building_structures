@@ -1,23 +1,20 @@
 import unittest
 from Bayesian_net.Build_ProbTables import Build_ProbTables
+from random import randint
 
 class TestBuild_ProbTables(unittest.TestCase):
     maxDiff = None
     probTables = Build_ProbTables()
     probTables.load_dataset(path="Bayesian_net/tests/dummy_dataset.csv")
     
-    def get_values(self, d1: dict, d2: dict, precision: int = 3) -> list | list:
+    def get_probs_as_list(self, d1: dict, d2: dict = None, precision: int = 3) -> list | list:
         l1 = []
         l2 = []
-        for key in d1:
-            for k in d1[key]:
-                if type(d1[key][k]) == float:
-                    l1.append(round(d1[key][k], precision)) 
-                    l2.append(round(d2[key][k], precision)) 
-                else:
-                    l1.append(d1[key][k]) 
-                    l2.append(d2[key][k]) 
-                print(d1[key][k])
+        pr_key = list(d1)[-1]
+        for k in d1[pr_key]:
+            l1.append(round(d1[pr_key][k], precision))
+            if d2 is not None: 
+                l2.append(round(d2[pr_key][k], precision)) 
         return l1, l2
 
     def test_marginal_probs(self):
@@ -26,23 +23,38 @@ class TestBuild_ProbTables(unittest.TestCase):
         mpt = mpt.table.to_dict()
         bench = {'Temp': {0: 3.5, 1: 10.2, 2: 26.8}, 'Pr(Temp)': {0: 0.5, 1: 0.2857142857142857, 2: 0.21428571428571427}}
 
-        mpt, bench = self.get_values(d1=mpt, d2=bench)
+        mpt, bench = self.get_probs_as_list(d1=mpt, d2=bench)
         self.assertEqual(mpt, bench, 'marginal prob table error')
-        #print(mpt)
-
+ 
         mpt2 = self.probTables.bld_pr_table(vars=['Weather'])
         mpt2 = mpt2.table.to_dict()
         bench2 = {'Weather': {0: 'cloudy', 1: 'rain', 2: 'sunny'}, 'Pr(Weather)': {0: 0.35714285714285715, 1: 0.35714285714285715, 2: 0.2857142857142857}}
 
-        mpt2, bench2 = self.get_values(d1=mpt2, d2=bench2)
+        mpt2, bench2 = self.get_probs_as_list(d1=mpt2, d2=bench2)
         self.assertEqual(mpt2, bench2, 'marginal prob table error')
 
         mpt3 = self.probTables.bld_pr_table(vars=['Wildfire'])
         mpt3 = mpt3.table.to_dict()
         bench3 = {'Wildfire': {0: False, 1: True}, 'Pr(Wildfire)': {0: 0.6428571428571429, 1: 0.35714285714285715}}
 
-        mpt3, bench3 = self.get_values(d1=mpt3, d2=bench3)
+        mpt3, bench3 = self.get_probs_as_list(d1=mpt3, d2=bench3)
         self.assertEqual(mpt3, bench3, 'marginal prob table error')
+
+        #test Laplace smoothing---------------------------------------------
+        param = randint(0, 8)
+        smoothed_mpt = self.probTables.bld_pr_table(vars=['Temp'], K=param)
+        smoothed_mpt, _ = self.get_probs_as_list(smoothed_mpt.table.to_dict())
+        self.assertEqual(round(sum(smoothed_mpt), 7), 1., f'Laplace smoothing error: marginal probs do not sum up to 1. with K={param}')
+
+        param = randint(0, 8)
+        smoothed_mpt = self.probTables.bld_pr_table(vars=['Weather'], K=param)
+        smoothed_mpt, _ = self.get_probs_as_list(smoothed_mpt.table.to_dict())
+        self.assertEqual(round(sum(smoothed_mpt), 7), 1., f'Laplace smoothing error: marginal probs do not sum up to 1. with K={param}')
+
+        param = randint(0, 8)
+        smoothed_mpt = self.probTables.bld_pr_table(vars=['Wildfire'], K=param)
+        smoothed_mpt, _ = self.get_probs_as_list(smoothed_mpt.table.to_dict())
+        self.assertEqual(round(sum(smoothed_mpt), 7), 1., f'Laplace smoothing error: marginal probs do not sum up to 1. with K={param}')
 
     def test_joint_probs(self):
         jpt = self.probTables.bld_pr_table(vars=['Temp', 'Weather', 'Wildfire'])
@@ -54,7 +66,7 @@ class TestBuild_ProbTables(unittest.TestCase):
                  'Pr(Temp, Weather, Wildfire)': {0: 0.14285714285714285, 1: 0.0, 2: 0.21428571428571427, 3: 0.07142857142857142, 4: 0.0, 5: 0.07142857142857142, 6: 0.07142857142857142, 7: 0.07142857142857142, 8: 0.07142857142857142, 9: 0.0, 10: 0.07142857142857142, 11: 0.0, 12: 0.07142857142857142, 13: 0.0, 14: 0.0, 15: 0.0, 16: 0.0, 17: 0.14285714285714285}
                  }
         
-        jpt, bench = self.get_values(d1=jpt, d2=bench)
+        jpt, bench = self.get_probs_as_list(d1=jpt, d2=bench)
         self.assertEqual(jpt, bench, 'joint prob table error')
 
 
@@ -67,7 +79,7 @@ class TestBuild_ProbTables(unittest.TestCase):
                   'Pr(Temp, Weather)': {0: 0.14285714285714285, 1: 0.2857142857142857, 2: 0.07142857142857142, 3: 0.14285714285714285, 4: 0.07142857142857142, 5: 0.07142857142857142, 6: 0.07142857142857142, 7: 0.0, 8: 0.14285714285714285}
                   }
         
-        jpt2, bench2 = self.get_values(d1=jpt2, d2=bench2)
+        jpt2, bench2 = self.get_probs_as_list(d1=jpt2, d2=bench2)
         self.assertEqual(jpt2, bench2, 'joint prob table error')
 
 
@@ -80,7 +92,7 @@ class TestBuild_ProbTables(unittest.TestCase):
                   'Pr(Temp, Wildfire)': {0: 0.35714285714285715, 1: 0.14285714285714285, 2: 0.21428571428571427, 3: 0.07142857142857142, 4: 0.07142857142857142, 5: 0.14285714285714285}
                   }
         
-        jpt3, bench3 = self.get_values(d1=jpt3, d2=bench3)
+        jpt3, bench3 = self.get_probs_as_list(d1=jpt3, d2=bench3)
         self.assertEqual(jpt3, bench3, 'joint prob table error')
 
 
@@ -92,12 +104,13 @@ class TestBuild_ProbTables(unittest.TestCase):
                   'Wildfire': {0: False, 1: True, 2: False, 3: True, 4: False, 5: True}, 'Pr(Weather, Wildfire)': {0: 0.2857142857142857, 1: 0.07142857142857142, 2: 0.2857142857142857, 3: 0.07142857142857142, 4: 0.07142857142857142, 5: 0.21428571428571427}
                   }
         
-        jpt4, bench4 = self.get_values(d1=jpt4, d2=bench4)
+        jpt4, bench4 = self.get_probs_as_list(d1=jpt4, d2=bench4)
         self.assertEqual(jpt4, bench4, 'joint prob table error')
 
     def test_conditional_probs(self):
         
         cpt = self.probTables.bld_cond_pr_table(var='Temp', given_vars=['Weather', 'Wildfire'])
+        print(cpt.table)
         cpt = cpt.table.to_dict()
 
         bench = {'Temp': {0: 3.5, 1: 3.5, 2: 3.5, 3: 3.5, 4: 3.5, 5: 3.5, 6: 10.2, 7: 10.2, 8: 10.2, 9: 10.2, 10: 10.2, 11: 10.2, 12: 26.8, 13: 26.8, 14: 26.8, 15: 26.8, 16: 26.8, 17: 26.8}, 
@@ -105,8 +118,8 @@ class TestBuild_ProbTables(unittest.TestCase):
                  'Wildfire': {0: False, 1: True, 2: False, 3: True, 4: False, 5: True, 6: False, 7: True, 8: False, 9: True, 10: False, 11: True, 12: False, 13: True, 14: False, 15: True, 16: False, 17: True}, 
                  'Pr(Temp | Weather, Wildfire)': {0: 0.5, 1: 0.0, 2: 0.75, 3: 1.0, 4: 0.0, 5: 0.3333333333333333, 6: 0.25, 7: 1.0, 8: 0.25, 9: 0.0, 10: 1.0, 11: 0.0, 12: 0.25, 13: 0.0, 14: 0.0, 15: 0.0, 16: 0.0, 17: 0.6666666666666666}
                  }
-        
-        cpt, bench = self.get_values(d1=cpt, d2=bench)
+
+        cpt, bench = self.get_probs_as_list(d1=cpt, d2=bench)
         self.assertEqual(cpt, bench, 'cond. prob. table error')
 
 
@@ -117,9 +130,19 @@ class TestBuild_ProbTables(unittest.TestCase):
                   'Wildfire': {0: False, 1: True, 2: False, 3: True, 4: False, 5: True}, 
                   'Pr(Temp | Wildfire)': {0: 0.5555555555555555, 1: 0.4, 2: 0.3333333333333333, 3: 0.2, 4: 0.11111111111111111, 5: 0.4}}
 
-        cpt2, bench2 = self.get_values(d1=cpt2, d2=bench2)
+        cpt2, bench2 = self.get_probs_as_list(d1=cpt2, d2=bench2)
         self.assertEqual(cpt2, bench2, 'cond. prob. table error')
 
+        #test Laplace smoothing---------------------------------------------
+        param = randint(0, 8)
+        smoothed_cpt = self.probTables.bld_cond_pr_table(var='Temp', given_vars=['Weather', 'Wildfire'], K=param)
+        smoothed_cpt, _ = self.get_probs_as_list(smoothed_cpt.table.to_dict())
+        self.assertEqual(round(sum(smoothed_cpt)/6., 3), 1., f'Laplace smoothing error: cond. probs do not sum up to 1. with K={param}')
+        
+        param = randint(0, 8)
+        smoothed_cpt2 = self.probTables.bld_cond_pr_table(var='Temp', given_vars=['Weather'], K=param)
+        smoothed_cpt2, _ = self.get_probs_as_list(smoothed_cpt2.table.to_dict())
+        self.assertEqual(round(sum(smoothed_cpt2)/3., 3), 1., f'Laplace smoothing error: cond. probs do not sum up to 1. with K={param}')
 
 
 #--------------------------------------------------------------------------------
