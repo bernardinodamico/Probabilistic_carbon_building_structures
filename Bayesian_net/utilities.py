@@ -3,14 +3,14 @@ from pandas import DataFrame
 from matplotlib import pyplot as plt
 from Bayesian_net.customExceptions import ProbTableError
 import time
-from Bayesian_net.prob_table import ProbTable
+from Bayesian_net.prob_table import ProbDistrib
 
 class Plotter():
 
     _bottom: float = 0.4
     _left: float = 0.2
 
-    def plot_pr_distrib(self, prT: ProbTable, savefig_loc_folder: str, size_inches: int = 6, dpi: int = 300, color: str = 'dodgerblue', break_text_label: bool = False, y_axis: str = 'dynamic') -> None:
+    def plot_pr_distrib(self, prT: ProbDistrib, savefig_loc_folder: str, size_inches: int = 6, dpi: int = 300, color: str = 'dodgerblue', break_text_label: bool = False, y_axis: str = 'dynamic') -> None:
         '''
         Plots a hystogram showing the probability distibution (marginal or conditional) of a variable
         Inputs: 

@@ -5,7 +5,7 @@ import numpy as np
 from pandas import DataFrame 
 from Bayesian_net.utilities import discretizer
 from Bayesian_net.customExceptions import *
-from Bayesian_net.prob_table import ProbTable
+from Bayesian_net.prob_table import ProbDistrib
 import copy
 
 class Build_ProbTables():
@@ -50,7 +50,7 @@ class Build_ProbTables():
 
         return _ini_series
 
-    def bld_pr_table(self, vars: list[str], K: float = 0.) -> ProbTable:
+    def bld_pr_table(self, vars: list[str], K: float = 0.) -> ProbDistrib:
         '''
         Returns the probability table of a list of variables 'vars'.
         If 'vars' contains only one variable -> the marginal probability table of that variable is returned, 
@@ -80,7 +80,7 @@ class Build_ProbTables():
             st = st+str(name)+", "
         st = st[:-2]
     
-        j_prob_table = ProbTable()
+        j_prob_table = ProbDistrib()
         j_prob_table.all_variables = vars
         j_prob_table.given_variables = None
         j_prob_table.assigned_ev_values = None
@@ -91,7 +91,7 @@ class Build_ProbTables():
         return j_prob_table
 
 
-    def bld_cond_pr_table(self, var: str, given_vars: list[str], K: float = 0.0) -> ProbTable:
+    def bld_cond_pr_table(self, var: str, given_vars: list[str], K: float = 0.0) -> ProbDistrib:
         '''
         Returns the conditional probability table of one single variable "var" given a list of evidence variables.
 
@@ -103,8 +103,8 @@ class Build_ProbTables():
         if K < 0.:
             raise NonPositiveValueError()
         
-        joint_prob_table = ProbTable()
-        margin_prob_table = ProbTable()
+        joint_prob_table = ProbDistrib()
+        margin_prob_table = ProbDistrib()
 
         joint_prob_table.table = self.bld_pr_table(vars=[var] + given_vars, K=0.).table 
         margin_prob_table.table = self.bld_pr_table(vars=given_vars, K=0.).table # containing the normalisation constant "Z"
@@ -128,7 +128,7 @@ class Build_ProbTables():
         cond_prob_table['Pr('+st_ev+')'] = cond_prob_table['Pr('+st_ev+')'].fillna(0.) #replace NaN values with 0.0
         #----------------------------------------------------------------------------
 
-        prob_table = ProbTable()
+        prob_table = ProbDistrib()
         prob_table.all_variables = [var] + given_vars
         prob_table.given_variables = given_vars
         prob_table.assigned_ev_values = None
@@ -138,7 +138,7 @@ class Build_ProbTables():
 
         return prob_table
     
-    def assign_evidence(self, prT: ProbTable, assignment_vals: list[dict])-> ProbTable:
+    def assign_evidence(self, prT: ProbDistrib, assignment_vals: list[dict])-> ProbDistrib:
         '''
         Inputs:
         - prob_table: a conditional probability table

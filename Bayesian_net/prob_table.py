@@ -2,7 +2,7 @@ import pandas as pd
 from pandas import DataFrame
 from Bayesian_net.customExceptions import *
 
-class ProbTable():
+class ProbDistrib():
     
     all_variables: list[str] = None
     given_variables: list[str] = None
@@ -13,7 +13,7 @@ class ProbTable():
 
     def is_proper_distribution(self) -> bool:
         '''
-        Checks whether it's a 'proper' prob table i.e. essentially any ProbTable that is not also a 'factor' table.
+        Checks whether it's a 'proper' prob table distribution i.e. essentially any ProbDistrib that is not also a 'factor' table.
         Examples of proper ProbTable(s):
         - P(A); P(A, B); P(A, B,...,Z)
         - P(A | B=b); P(A | B=b, C=c); P(A | B=b, C=c,...,Z=z)
