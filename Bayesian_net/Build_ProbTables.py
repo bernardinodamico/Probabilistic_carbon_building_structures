@@ -50,16 +50,20 @@ class Build_ProbTables():
 
         return _ini_series
 
-    def bld_pr_table(self, vars: list[str], K: float = 0.000001) -> ProbTable:
+    def bld_pr_table(self, vars: list[str], K: float = 0.) -> ProbTable:
         '''
         Returns the probability table of a list of variables 'vars'.
         If 'vars' contains only one variable -> the marginal probability table of that variable is returned, 
         Else, the joint probability table of those variables is returned insted.
-        K is the Laplace smoothing parameter (default value = 0.000001 i.e. almost no smoothing is applied).
+        K is the Laplace smoothing parameter (default value = 0.0 i.e. no smoothing is applied). NOTE: it only applies to
+        marginal prob tables i.e with one variable.
         '''
         
         ini_series = self._init_pr_table(vars=vars)
-        series = self.dataset.value_counts(vars, normalize=True)
+        if len(vars)  == 1:
+            series = self.dataset.value_counts(vars, normalize=False)
+        else:
+            series = self.dataset.value_counts(vars, normalize=True)
         series = ini_series.combine(other=series, func=max)
         
         if len(vars) > 1:
@@ -67,7 +71,10 @@ class Build_ProbTables():
         df_1 = series.index.to_frame().reset_index(drop=True)
         df_2 = series.to_frame().reset_index(drop=True)
         df_3 = df_1.join(other=df_2)
-        
+
+        if len(vars)  == 1:
+            df_3 = self.smooth_marginal(m_prob_table=df_3, K=K)
+
         st = ''
         for name in vars:
             st = st+str(name)+", "
@@ -84,14 +91,14 @@ class Build_ProbTables():
         return j_prob_table
 
 
-    def bld_cond_pr_table(self, var: str, given_vars: list[str], K: float = 0.000001) -> ProbTable:
+    def bld_cond_pr_table(self, var: str, given_vars: list[str], K: float = 0.0) -> ProbTable:
         '''
         Returns the conditional probability table of one single variable "var" given a list of evidence variables.
 
         Inputs:
         - var: query variable
         - given_vars: evidence variables
-        - K: Laplace smoothing parameter (default value = 0.000001 i.e. almost no smoothing is applied).
+        - K: Laplace smoothing parameter (default value = 0.0 i.e. no smoothing is applied).
         '''
         if K < 0.:
             raise NonPositiveValueError()
@@ -113,9 +120,7 @@ class Build_ProbTables():
 
         merged[key_prior_pr_col] = merged[key_prior_pr_col].fillna(0.) #replace NaN values with 0.0
 
-        var_range = merged[var].nunique()
-
-        merged['Pr('+st_ev+')'] = (merged[key_joint_pr_col] + K) / (merged[key_prior_pr_col] + var_range * K)
+        merged['Pr('+st_ev+')'] = merged[key_joint_pr_col] / merged[key_prior_pr_col]
         cond_prob_table = merged.drop(columns=[key_joint_pr_col, key_prior_pr_col])
 
         #----------------------------------------------------------------------------
@@ -176,4 +181,20 @@ class Build_ProbTables():
         else:
             raise NonConditionalProbTableError(variable=prT)
 
+    def smooth_marginal(self, m_prob_table: DataFrame, K: float = 0.) -> DataFrame:
+        '''
+        Inputs:
+        - m_prob_table: a marginal probability table (i.e. a two-column Dataframe)
+        - K: Laplace smoothing parameter (default value = 0.0 i.e. no smoothing is applied).
+        '''
+        if len(m_prob_table.columns) != 2:
+            raise ProbTableError(table=m_prob_table)
+        if K < 0.:
+            raise NonPositiveValueError()
+        
+        var_range: int = m_prob_table.shape[0]
+        key_frequency_col: str = m_prob_table.keys()[-1]
+ 
+        m_prob_table[key_frequency_col] = (m_prob_table[key_frequency_col] + K) / (self.dataset.shape[0] + var_range * K)
 
+        return m_prob_table 

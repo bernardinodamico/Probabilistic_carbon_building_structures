@@ -54,9 +54,9 @@ ass_vars_vals: dict = [
 
 figure = Plotter()
 x = pt.assign_evidence(prT=cpt_concrete_qty, assignment_vals=ass_vars_vals)
-figure.plot_pr_distrib(prT=x, savefig_loc_folder='Figures', size_inches=9, break_text_label=True, y_axis='dynamic')
+#figure.plot_pr_distrib(prT=x, savefig_loc_folder='Figures', size_inches=9, break_text_label=True, y_axis='dynamic')
 
-print(x.table)
+print(mpt_superstr_type.table)
 
 
 
