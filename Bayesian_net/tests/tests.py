@@ -44,17 +44,17 @@ class TestBuild_ProbTables(unittest.TestCase):
         param = randint(0, 8)
         smoothed_mpt = self.probTables.bld_pr_table(vars=['Temp'], K=param)
         smoothed_mpt, _ = self.get_probs_as_list(smoothed_mpt.table.to_dict())
-        self.assertEqual(round(sum(smoothed_mpt), 7), 1., f'Laplace smoothing error: marginal probs do not sum up to 1. with K={param}')
+        self.assertAlmostEqual(round(sum(smoothed_mpt), 7), 1., f'Laplace smoothing error: marginal probs do not sum up to 1. with K={param}')
 
         param = randint(0, 8)
         smoothed_mpt = self.probTables.bld_pr_table(vars=['Weather'], K=param)
         smoothed_mpt, _ = self.get_probs_as_list(smoothed_mpt.table.to_dict())
-        self.assertEqual(round(sum(smoothed_mpt), 7), 1., f'Laplace smoothing error: marginal probs do not sum up to 1. with K={param}')
+        self.assertAlmostEqual(round(sum(smoothed_mpt), 7), 1., f'Laplace smoothing error: marginal probs do not sum up to 1. with K={param}')
 
         param = randint(0, 8)
         smoothed_mpt = self.probTables.bld_pr_table(vars=['Wildfire'], K=param)
         smoothed_mpt, _ = self.get_probs_as_list(smoothed_mpt.table.to_dict())
-        self.assertEqual(round(sum(smoothed_mpt), 7), 1., f'Laplace smoothing error: marginal probs do not sum up to 1. with K={param}')
+        self.assertAlmostEqual(round(sum(smoothed_mpt), 7), 1., f'Laplace smoothing error: marginal probs do not sum up to 1. with K={param}')
 
     def test_joint_probs(self):
         jpt = self.probTables.bld_pr_table(vars=['Temp', 'Weather', 'Wildfire'])
@@ -136,12 +136,12 @@ class TestBuild_ProbTables(unittest.TestCase):
         param = randint(0, 8)
         smoothed_cpt = self.probTables.bld_cond_pr_table(var='Temp', given_vars=['Weather', 'Wildfire'], K=param)
         smoothed_cpt, _ = self.get_probs_as_list(smoothed_cpt.table.to_dict())
-        self.assertEqual(round(sum(smoothed_cpt)/6., 3), 1., f'Laplace smoothing error: cond. probs do not sum up to 1. with K={param}')
+        self.assertAlmostEqual(round(sum(smoothed_cpt)/6., 3), 1., f'Laplace smoothing error: cond. probs do not sum up to 1. with K={param}')
         
         param = randint(0, 8)
         smoothed_cpt2 = self.probTables.bld_cond_pr_table(var='Temp', given_vars=['Weather'], K=param)
         smoothed_cpt2, _ = self.get_probs_as_list(smoothed_cpt2.table.to_dict())
-        self.assertEqual(round(sum(smoothed_cpt2)/3., 3), 1., f'Laplace smoothing error: cond. probs do not sum up to 1. with K={param}')
+        self.assertAlmostEqual(round(sum(smoothed_cpt2)/3., 3), 1., f'Laplace smoothing error: cond. probs do not sum up to 1. with K={param}')
 
 
     def test_assign_evidence(self):
@@ -156,6 +156,17 @@ class TestBuild_ProbTables(unittest.TestCase):
         bench = {'Temp': {2: 3.5, 8: 10.2, 14: 26.8}, 'Pr(Temp | Weather=rain, Wildfire=False)': {2: 0.75, 8: 0.25, 14: 0.0}}
         
         self.assertEqual(out, bench, f'assign_evidence() method error.\n Expected table = {bench}\n Obtained table = {out}')
+
+        ass_vars_vals2 = [
+            {'vr_name': 'Temp', 'val': 3.5},
+            ]
+        
+        cpt2 = self.probTables.bld_cond_pr_table(var='Temp', given_vars=['Weather', 'Wildfire'])
+        ass_cpt2 = self.probTables.assign_evidence(prT=cpt2, assignment_vals=ass_vars_vals2)
+        out2 = ass_cpt2.table.to_dict()
+        bench2 = {'Weather': {0: 'cloudy', 1: 'cloudy', 2: 'rain', 3: 'rain', 4: 'sunny', 5: 'sunny'}, 'Wildfire': {0: False, 1: True, 2: False, 3: True, 4: False, 5: True}, 'Pr(Temp=3.5 | Weather, Wildfire)': {0: 0.5, 1: 0.0, 2: 0.75, 3: 1.0, 4: 0.0, 5: 0.3333333333333333}}
+        
+        self.assertEqual(out2, bench2, f'assign_evidence() method error.\n Expected table = {bench2}\n Obtained table = {out2}')
 
 #--------------------------------------------------------------------------------
 if __name__ == '__main__':
