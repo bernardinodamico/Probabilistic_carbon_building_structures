@@ -1,0 +1,5 @@
+M_calls,Alarm,Pr(M_calls | Alarm)
+yes,yes,0.7
+no,yes,0.3
+yes,no,0.01
+no,no,0.99

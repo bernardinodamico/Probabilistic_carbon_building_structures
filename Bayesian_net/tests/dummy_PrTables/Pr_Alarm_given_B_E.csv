@@ -1,0 +1,9 @@
+Alarm,Burgler,Earthqk,"Pr(Alarm | Burgler, Earthqk)"
+yes,yes,yes,0.95
+no,yes,yes,0.05
+yes,yes,no,0.94
+no,yes,no,0.06
+yes,no,yes,0.29
+no,no,yes,0.71
+yes,no,no,0.001
+no,no,no,0.999

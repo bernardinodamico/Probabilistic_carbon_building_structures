@@ -1,0 +1,5 @@
+J_calls,Alarm,Pr(J_calls | Alarm)
+yes,yes,0.9
+no,yes,0.1
+yes,no,0.05
+no,no,0.95

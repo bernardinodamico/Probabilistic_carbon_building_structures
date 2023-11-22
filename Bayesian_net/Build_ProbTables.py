@@ -90,7 +90,6 @@ class Build_ProbTables():
 
         return j_prob_table
 
-
     def bld_cond_pr_table(self, var: str, given_vars: list[str], K: float = 0.0) -> ProbDistrib:
         '''
         Returns the conditional probability table of one single variable "var" given a list of evidence variables.
@@ -133,6 +132,23 @@ class Build_ProbTables():
         prob_table.given_variables = given_vars
         prob_table.assigned_ev_values = None
         prob_table.table = cond_prob_table
+        prob_table.is_conditional = True
+        prob_table.is_proper = prob_table.is_proper_distribution()
+
+        return prob_table
+    
+    def fetch_cond_pr_table(self, csv_file_loc: str, given_vars: list[str]) -> ProbDistrib:
+        '''
+        Fetches a cond. probability table form a csv file. 
+        '''
+        table = pd.read_csv(filepath_or_buffer=csv_file_loc)
+        vars = table.columns.to_list().pop(-1)
+
+        prob_table = ProbDistrib()
+        prob_table.all_variables = vars
+        prob_table.given_variables = given_vars
+        prob_table.assigned_ev_values = None
+        prob_table.table = table 
         prob_table.is_conditional = True
         prob_table.is_proper = prob_table.is_proper_distribution()
 
@@ -204,3 +220,41 @@ class Build_ProbTables():
         m_prob_table[key_frequency_col] = (m_prob_table[key_frequency_col] + K) / (self.dataset.shape[0] + var_range * K)
 
         return m_prob_table 
+
+class Fetch_ProbTables(Build_ProbTables):
+
+    def fetch_pr_table(self, csv_file_loc: str) -> ProbDistrib:
+        '''
+        Fetches a probability table (joint or marginal) form a csv file. 
+        '''
+        table = pd.read_csv(filepath_or_buffer=csv_file_loc)
+        vars = table.columns.to_list().pop(-1)
+
+        j_prob_table = ProbDistrib()
+        j_prob_table.all_variables = vars
+        j_prob_table.given_variables = None
+        j_prob_table.assigned_ev_values = None
+        j_prob_table.table = table 
+        j_prob_table.is_conditional = False
+        j_prob_table.is_proper = j_prob_table.is_proper_distribution()
+
+        return j_prob_table
+
+
+    def fetch_cond_pr_table(self, csv_file_loc: str, given_vars: list[str]) -> ProbDistrib:
+        '''
+        Fetches a cond. probability table form a csv file. 
+        '''
+        table = pd.read_csv(filepath_or_buffer=csv_file_loc)
+        vars = table.columns.to_list().pop(-1)
+
+        prob_table = ProbDistrib()
+        prob_table.all_variables = vars
+        prob_table.given_variables = given_vars
+        prob_table.assigned_ev_values = None
+        prob_table.table = table 
+        prob_table.is_conditional = True
+        prob_table.is_proper = prob_table.is_proper_distribution()
+
+        return prob_table
+
