@@ -23,9 +23,9 @@ class ProbDistrib():
         - P(A, B=b); P(A, B,...Z=z)
         - P(A | B); P(A | B, C); P(A | B, C,...,Z); P(A | B=b, C,...,Z)
 
-        A proper joint/marginal table must have the Pr column summing up to 1.
+        A proper joint/marginal prob table must have the Pr column summing up to 1.
         
-        An improper cond. table must have the Pr column summing up to 1 AND have exactly two columns (a Pr column and a query variable column).
+        An proper cond. prob table must have the Pr column summing up to 1 AND have exactly two columns (a Pr column and a query variable column).
         '''
         tot_pr_col = round(self.table[self.table.keys().to_list()[-1]].sum(), 7)
         if self.is_conditional is False: 

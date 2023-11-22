@@ -240,7 +240,6 @@ class Fetch_ProbTables(Build_ProbTables):
 
         return j_prob_table
 
-
     def fetch_cond_pr_table(self, csv_file_loc: str, given_vars: list[str]) -> ProbDistrib:
         '''
         Fetches a cond. probability table form a csv file. 
