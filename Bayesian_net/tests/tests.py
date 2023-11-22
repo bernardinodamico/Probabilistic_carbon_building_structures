@@ -144,6 +144,19 @@ class TestBuild_ProbTables(unittest.TestCase):
         self.assertEqual(round(sum(smoothed_cpt2)/3., 3), 1., f'Laplace smoothing error: cond. probs do not sum up to 1. with K={param}')
 
 
+    def test_assign_evidence(self):
+        ass_vars_vals = [
+            {'vr_name': 'Weather', 'val': 'rain'},
+            {'vr_name': 'Wildfire', 'val': False}
+            ]
+        
+        cpt = self.probTables.bld_cond_pr_table(var='Temp', given_vars=['Weather', 'Wildfire'])
+        ass_cpt = self.probTables.assign_evidence(prT=cpt, assignment_vals=ass_vars_vals)
+        out = ass_cpt.table.to_dict()
+        bench = {'Temp': {2: 3.5, 8: 10.2, 14: 26.8}, 'Pr(Temp | Weather=rain, Wildfire=False)': {2: 0.75, 8: 0.25, 14: 0.0}}
+        
+        self.assertEqual(out, bench, f'assign_evidence() method error.\n Expected table = {bench}\n Obtained table = {out}')
+
 #--------------------------------------------------------------------------------
 if __name__ == '__main__':
     unittest.main()

@@ -172,7 +172,7 @@ class Build_ProbTables():
         '''
         if prT.is_conditional is True:
             for variable in assignment_vals:
-                if variable['vr_name'] not in prT.table.keys().to_list():
+                if variable['vr_name'] not in prT.all_variables:
                     raise Variable_assignmentError(variable=variable['vr_name'])
                 if variable['val'] not in prT.table.values:
                     raise Value_assignmentError(variable=variable['vr_name'], value=variable['val'])

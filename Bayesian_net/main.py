@@ -61,6 +61,7 @@ x = pt.assign_evidence(prT=cpt_concrete_qty, assignment_vals=ass_vars_vals)
 #in the manuscript appendix, based on independencies via d-separation etc. (see notes.txt) for the specific "example" of showing the figures in mind for the
 #paper.
 
+
 pt = Fetch_ProbTables()
 mpt_burgler = pt.fetch_pr_table(csv_file_loc='Bayesian_net/tests/dummy_PrTables/Pr_Burgler.csv')
 mpt_earthqk = pt.fetch_pr_table(csv_file_loc='Bayesian_net/tests/dummy_PrTables/Pr_Earthqk.csv')
