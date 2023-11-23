@@ -30,7 +30,7 @@ class VariableElimination():
                     raise Value_assignmentError(variable=variable['vr_name'], value=variable['val'])
 
             #--------------------------------------------------------------------
-            prT = copy.copy(prT)
+            prT = copy.deepcopy(prT)
             for i in range(len(assignment_vals)):
                 vr_name = assignment_vals[i]['vr_name']
                 val = assignment_vals[i]['val']
@@ -79,23 +79,23 @@ class VariableElimination():
         
         if sum_out_var not in unassigned_vars:
             raise Variable_Error(variable=sum_out_var)
-
-        prT = copy.copy(prT)
+ 
+        prT = copy.deepcopy(prT)
         
         Pr_heading: str = prT.table.keys().to_list()[-1]
-
+       
         sub_set = list(set(unassigned_vars) - set([sum_out_var])) 
+        if len(sub_set) == 0:
+            raise Variable_sum_outError(variable=sum_out_var)
         series = prT.table.groupby(sub_set)[Pr_heading].sum()
         df_1 = series.index.to_frame().reset_index(drop=True)
         df_2 = series.to_frame().reset_index(drop=True)
         prT.table = df_1.join(other=df_2)
-        
+         
         #------- rename Pr column------
-        #if series.shape[0] != prT.table.shape[0]:
         Pr_heading = Pr_heading.replace(f'{sum_out_var}, ', '')
         Pr_heading = Pr_heading.replace(f', {sum_out_var}', '')
         prT.table = prT.table.rename(columns={prT.table.keys().to_list()[-1]: Pr_heading})
-
 
         prT.all_variables.remove(sum_out_var)
         prT.is_proper = prT.is_proper_distribution()

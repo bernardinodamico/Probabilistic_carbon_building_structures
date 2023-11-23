@@ -47,8 +47,6 @@ class TestBuild_ProbTables(unittest.TestCase):
         param = randint(0, 8)
         smoothed_mpt = self.pt.bld_pr_table(vars=['Temp'], K=param)
         smoothed_mpt, _ = self.get_probs_as_list(smoothed_mpt.table.to_dict())
-        x = sum(smoothed_mpt)
-        print(type(x))
         self.assertAlmostEqual(first=sum(smoothed_mpt), second=1., places=7, msg=f'Laplace smoothing error: marginal probs do not sum up to 1. with K={param}', delta=0.001)
         
         param = randint(0, 8)
@@ -177,10 +175,15 @@ class TestBuild_ProbTables(unittest.TestCase):
     def test_sum_out_var(self):
 
         pt_Alarm_Earthqk_given_B = self.fetch_pt.fetch_cond_pr_table(csv_file_loc='Bayesian_net/tests/dummy_PrTables/Pr_Alarm_Earthqk_given_B.csv', given_vars=['Burgler'])
-        print(pt_Alarm_Earthqk_given_B.table)
-
-        y = self.ve.sum_out_var(prT=pt_Alarm_Earthqk_given_B, sum_out_var='Burgler')
-        print(y.table)
+        vars = ['Alarm', 'Burgler', 'Earthqk']
+        for var in vars:
+            y = self.ve.sum_out_var(prT=pt_Alarm_Earthqk_given_B, sum_out_var=var)
+            expected_sum = pt_Alarm_Earthqk_given_B.table[pt_Alarm_Earthqk_given_B.table.keys().to_list()[-1]].sum()
+            obtained_sum = y.table[y.table.keys().to_list()[-1]].sum()
+            self.assertEqual(expected_sum, 
+                            obtained_sum, 
+                            f'sum_out_var error: the total probability sum of the input table and summed up table do not match:\n'+
+                            'Expected sum={expected_sum}; Obtained sum={obtained_sum}')
 
 #--------------------------------------------------------------------------------
 if __name__ == '__main__':

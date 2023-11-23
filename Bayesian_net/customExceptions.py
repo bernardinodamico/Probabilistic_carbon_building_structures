@@ -41,6 +41,17 @@ class Value_assignmentError(Exception):
         self.message = f"the value <{self.value}> of variable <{self.variable}> does not exist in the probability table"
         super().__init__(self.message)
 
+class Variable_sum_outError(Exception):
+    '''
+    Exception raised for errors in the variable_elimination.sum_out_var method.
+    '''
+    def __init__(self, variable):
+        self.variable = variable
+
+        self.message = f"the variable <{self.variable}> is the only one left in the table. It cannot be summed out. Perhaps you wanted to assign a value to it?"
+        super().__init__(self.message)
+
+
 class NonPositiveValueError(Exception):
     def __init__(self):
 

@@ -73,8 +73,15 @@ cpt_M_calls = pt.fetch_cond_pr_table(csv_file_loc='Bayesian_net/tests/dummy_PrTa
 
 pt_Alarm_Earthqk_given_B = pt.fetch_cond_pr_table(csv_file_loc='Bayesian_net/tests/dummy_PrTables/Pr_Alarm_Earthqk_given_B.csv', given_vars=['Burgler'])
 print(pt_Alarm_Earthqk_given_B.table)
-
-y = ve.sum_out_var(prT=pt_Alarm_Earthqk_given_B, sum_out_var='Burgler')
+ass_vars_vals = [
+    {'vr_name': 'Earthqk', 
+     'val': 'yes'},
+     {'vr_name': 'Burgler', 
+     'val': 'yes'}
+    ]
+x = ve.assign_evidence(prT=pt_Alarm_Earthqk_given_B, assignment_vals=ass_vars_vals)
+print(x.table)
+y = ve.sum_out_var(prT=x, sum_out_var='Alarm')
 print(y.table)
 print("ddd")
 
