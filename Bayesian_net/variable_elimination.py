@@ -76,10 +76,12 @@ class VariableElimination():
             unassigned_vars = list(set(prT.all_variables) - set(assigned_vars))
         else:
             unassigned_vars = prT.all_variables
-        
+
         if sum_out_var not in unassigned_vars:
             raise Variable_Error(variable=sum_out_var)
- 
+        if sum_out_var in prT.given_variables:
+            raise Variable_sum_outError_2(variable=sum_out_var)
+        
         prT = copy.deepcopy(prT)
         
         Pr_heading: str = prT.table.keys().to_list()[-1]
