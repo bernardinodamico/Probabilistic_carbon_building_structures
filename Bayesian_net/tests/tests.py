@@ -1,10 +1,12 @@
 import unittest
 from Bayesian_net.Build_ProbTables import Build_ProbTables
+from Bayesian_net.variable_elimination import VariableElimination
 from random import randint
 
 class TestBuild_ProbTables(unittest.TestCase):
     maxDiff = None
     probTables = Build_ProbTables()
+    varElim = VariableElimination()
     probTables.load_dataset(path="Bayesian_net/tests/dummy_dataset.csv")
     
     def get_probs_as_list(self, d1: dict, d2: dict = None, precision: int = 3) -> list | list:
@@ -151,7 +153,7 @@ class TestBuild_ProbTables(unittest.TestCase):
             ]
         
         cpt = self.probTables.bld_cond_pr_table(var='Temp', given_vars=['Weather', 'Wildfire'])
-        ass_cpt = self.probTables.assign_evidence(prT=cpt, assignment_vals=ass_vars_vals)
+        ass_cpt = self.varElim.assign_evidence(prT=cpt, assignment_vals=ass_vars_vals)
         out = ass_cpt.table.to_dict()
         bench = {'Temp': {2: 3.5, 8: 10.2, 14: 26.8}, 'Pr(Temp | Weather=rain, Wildfire=False)': {2: 0.75, 8: 0.25, 14: 0.0}}
         
@@ -162,7 +164,7 @@ class TestBuild_ProbTables(unittest.TestCase):
             ]
         
         cpt2 = self.probTables.bld_cond_pr_table(var='Temp', given_vars=['Weather', 'Wildfire'])
-        ass_cpt2 = self.probTables.assign_evidence(prT=cpt2, assignment_vals=ass_vars_vals2)
+        ass_cpt2 = self.varElim.assign_evidence(prT=cpt2, assignment_vals=ass_vars_vals2)
         out2 = ass_cpt2.table.to_dict()
         bench2 = {'Weather': {0: 'cloudy', 1: 'cloudy', 2: 'rain', 3: 'rain', 4: 'sunny', 5: 'sunny'}, 'Wildfire': {0: False, 1: True, 2: False, 3: True, 4: False, 5: True}, 'Pr(Temp=3.5 | Weather, Wildfire)': {0: 0.5, 1: 0.0, 2: 0.75, 3: 1.0, 4: 0.0, 5: 0.3333333333333333}}
         

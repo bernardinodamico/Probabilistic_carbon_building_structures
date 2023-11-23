@@ -1,4 +1,5 @@
 from Bayesian_net.Build_ProbTables import Build_ProbTables, Fetch_ProbTables
+from Bayesian_net.variable_elimination import VariableElimination
 from utilities import Plotter
 
 pt = Build_ProbTables()
@@ -54,7 +55,8 @@ ass_vars_vals = [
 
 figure = Plotter()
 
-x = pt.assign_evidence(prT=cpt_concrete_qty, assignment_vals=ass_vars_vals)
+ve = VariableElimination()
+x = ve.assign_evidence(prT=cpt_concrete_qty, assignment_vals=ass_vars_vals)
 #figure.plot_pr_distrib(prT=x, savefig_loc_folder='Figures', size_inches=9, break_text_label=True, y_axis='dynamic')
 #print(x.table)
 # Then work out the equation for the belief prop (Variable Elimin algo) and write them down 
@@ -68,3 +70,12 @@ mpt_earthqk = pt.fetch_pr_table(csv_file_loc='Bayesian_net/tests/dummy_PrTables/
 cpt_alarm = pt.fetch_cond_pr_table(csv_file_loc='Bayesian_net/tests/dummy_PrTables/Pr_Alarm_given_B_E.csv', given_vars=['Burgler', 'Earthqk'])
 cpt_J_calls = pt.fetch_cond_pr_table(csv_file_loc='Bayesian_net/tests/dummy_PrTables/Pr_J_calls_given_Alarm.csv', given_vars=['Alarm'])
 cpt_M_calls = pt.fetch_cond_pr_table(csv_file_loc='Bayesian_net/tests/dummy_PrTables/Pr_M_calls_given_Alarm.csv', given_vars=['Alarm'])
+
+pt_Alarm_Earthqk_given_B = pt.fetch_cond_pr_table(csv_file_loc='Bayesian_net/tests/dummy_PrTables/Pr_Alarm_Earthqk_given_B.csv', given_vars=['Burgler'])
+print(pt_Alarm_Earthqk_given_B.table)
+
+y = ve.sum_out_var(prT=pt_Alarm_Earthqk_given_B, sum_out_var='Burgler')
+print(y.table)
+print("ddd")
+
+###Write test for sum_out_var() e.g. check total of I and O table matches or check against P(A | B) in the notes

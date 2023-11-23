@@ -5,8 +5,8 @@ from Bayesian_net.customExceptions import *
 class ProbDistrib():
     
     all_variables: list[str] = None
-    given_variables: list[str] = None
-    assigned_ev_values: list[str] = None
+    given_variables: list[str] = None      # those after the conditioning bar
+    assigned_evid_values: list[str] = None 
     table: DataFrame = None
     is_conditional: bool = None
     is_proper: bool = None

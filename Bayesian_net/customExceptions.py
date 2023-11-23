@@ -20,6 +20,16 @@ class Variable_assignmentError(Exception):
         self.message = f"the variable <{self.variable}> does not exist in the probability table"
         super().__init__(self.message)
 
+class Variable_Error(Exception):
+    '''
+    Exception raised for errors in the Build_ProbTables.assign_evidence method.
+    '''
+    def __init__(self, variable):
+        self.variable = variable
+
+        self.message = f"the variable <{self.variable}> does not exist in the probability table"
+        super().__init__(self.message)
+
 class Value_assignmentError(Exception):
     '''
     Exception raised for errors in the Build_ProbTables.assign_evidence method.

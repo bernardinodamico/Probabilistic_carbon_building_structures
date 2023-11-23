@@ -83,7 +83,7 @@ class Build_ProbTables():
         j_prob_table = ProbDistrib()
         j_prob_table.all_variables = vars
         j_prob_table.given_variables = None
-        j_prob_table.assigned_ev_values = None
+        j_prob_table.assigned_evid_values = None
         j_prob_table.table = df_3.rename(columns={df_3.columns[-1]: 'Pr('+st+')'})
         j_prob_table.is_conditional = False
         j_prob_table.is_proper = j_prob_table.is_proper_distribution()
@@ -130,79 +130,13 @@ class Build_ProbTables():
         prob_table = ProbDistrib()
         prob_table.all_variables = [var] + given_vars
         prob_table.given_variables = given_vars
-        prob_table.assigned_ev_values = None
+        prob_table.assigned_evid_values = None
         prob_table.table = cond_prob_table
         prob_table.is_conditional = True
         prob_table.is_proper = prob_table.is_proper_distribution()
 
         return prob_table
     
-    def fetch_cond_pr_table(self, csv_file_loc: str, given_vars: list[str]) -> ProbDistrib:
-        '''
-        Fetches a cond. probability table form a csv file. 
-        '''
-        table = pd.read_csv(filepath_or_buffer=csv_file_loc)
-        vars = table.columns.to_list().pop(-1)
-
-        prob_table = ProbDistrib()
-        prob_table.all_variables = vars
-        prob_table.given_variables = given_vars
-        prob_table.assigned_ev_values = None
-        prob_table.table = table 
-        prob_table.is_conditional = True
-        prob_table.is_proper = prob_table.is_proper_distribution()
-
-        return prob_table
-    
-    def assign_evidence(self, prT: ProbDistrib, assignment_vals: list[dict])-> ProbDistrib:
-        '''
-        Inputs:
-        - prob_table: a conditional probability table
-        - assignment_vals: a list of dictionaries with 'vr_name' and 'val' as keys. 'vr_name' is the variable to which
-        a value 'val' is to be assigned. 
-        
-        Output:
-        - A subset of the input conditional probability table, where some/all of the variables have a value assigned.
-
-        If values are assigned to all evidence variables in 'prT': the resulting CPT output will contain only two
-        columns, i.e. the query variable and its probability distribution.
-        NOTE: value assignments are not limited to evidence variables. The query variable can also be assigned a value. E.g. 
-        if all variables in the table are assigned a value, the output is a one-column one-row table. 
-        
-        '''
-        if prT.is_conditional is True:
-            for variable in assignment_vals:
-                if variable['vr_name'] not in prT.all_variables:
-                    raise Variable_assignmentError(variable=variable['vr_name'])
-                if variable['val'] not in prT.table.values:
-                    raise Value_assignmentError(variable=variable['vr_name'], value=variable['val'])
-
-            #--------------------------------------------------------------------
-            prT = copy.copy(prT)
-            for i in range(len(assignment_vals)):
-                vr_name = assignment_vals[i]['vr_name']
-                val = assignment_vals[i]['val']
-                prT.table = prT.table.loc[(prT.table[vr_name] == val)]
-            
-            for i in range(len(assignment_vals)):
-                vr_name = assignment_vals[i]['vr_name']
-                prT.table = prT.table.drop(labels=vr_name, axis='columns')
-
-            #------- rename Pr column-------------------------------------------
-            Pr_heading: str = prT.table.keys().to_list()[-1]
-            for i in range(len(assignment_vals)):
-                vr_name = assignment_vals[i]['vr_name']
-                val = str(assignment_vals[i]['val'])
-                Pr_heading = Pr_heading.replace(vr_name, vr_name+'='+val)
-            
-            prT.assigned_ev_values = assignment_vals
-            prT.table = prT.table.rename(columns={prT.table.keys().to_list()[-1]: Pr_heading})
-            prT.is_proper = prT.is_proper_distribution()
-
-            return prT
-        else:
-            raise NonConditionalProbTableError(variable=prT)
-
     def smooth_marginal(self, m_prob_table: DataFrame, K: float = 0.) -> DataFrame:
         '''
         Inputs:
@@ -228,12 +162,13 @@ class Fetch_ProbTables(Build_ProbTables):
         Fetches a probability table (joint or marginal) form a csv file. 
         '''
         table = pd.read_csv(filepath_or_buffer=csv_file_loc)
-        vars = table.columns.to_list().pop(-1)
+        vars = table.columns.to_list()
+        del vars[-1]
 
         j_prob_table = ProbDistrib()
         j_prob_table.all_variables = vars
         j_prob_table.given_variables = None
-        j_prob_table.assigned_ev_values = None
+        j_prob_table.assigned_evid_values = None
         j_prob_table.table = table 
         j_prob_table.is_conditional = False
         j_prob_table.is_proper = j_prob_table.is_proper_distribution()
@@ -245,12 +180,13 @@ class Fetch_ProbTables(Build_ProbTables):
         Fetches a cond. probability table form a csv file. 
         '''
         table = pd.read_csv(filepath_or_buffer=csv_file_loc)
-        vars = table.columns.to_list().pop(-1)
+        vars = table.columns.to_list()
+        del vars[-1]
 
         prob_table = ProbDistrib()
         prob_table.all_variables = vars
         prob_table.given_variables = given_vars
-        prob_table.assigned_ev_values = None
+        prob_table.assigned_evid_values = None
         prob_table.table = table 
         prob_table.is_conditional = True
         prob_table.is_proper = prob_table.is_proper_distribution()
