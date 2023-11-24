@@ -137,7 +137,7 @@ class TestBuild_ProbTables(unittest.TestCase):
 
         #test Laplace smoothing---------------------------------------------
         param = randint(0, 8)
-        smoothed_cpt = self.pt.bld_cond_pr_table(var='Temp', given_vars=['Weather', 'Wildfire'], K=param)
+        smoothed_cpt = self.pt.bld_cond_pr_table(var='Wildfire', given_vars=['Temp', 'Weather'], K=param)
         smoothed_cpt, _ = self.get_probs_as_list(smoothed_cpt.table.to_dict())
         self.assertAlmostEqual(round(sum(smoothed_cpt)/6., 3), 1., f'Laplace smoothing error: cond. probs do not sum up to 1. with K={param}')
         

@@ -26,3 +26,4 @@ threadpoolctl==3.2.0
 traceback2==1.4.0
 tzdata==2023.3
 unittest2==1.1.0
+pgmpy==0.1.24
