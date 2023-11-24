@@ -73,8 +73,8 @@ make a QueryMats class out of this, with properties:
 - print_mats_distributions()
 - run_inference()
 
-The call is then instantiated into another QueryCarbon class (to get all mats distributions given a variable set of evidences)
-that computes carbon distributions. This will have properties:
+The call is then instantiated into another InferenceEngine class (to get all mats distributions given a variable set of evidences)
+that computes carbon distributions. Anothe class QueryCarbon will also be istantiated in there. This will have properties:
 - carbon_distribution
 - confidence-interval
 - mean, mode
