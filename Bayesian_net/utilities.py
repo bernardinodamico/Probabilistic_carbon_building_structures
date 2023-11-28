@@ -4,6 +4,9 @@ from matplotlib import pyplot as plt
 from Bayesian_net.customExceptions import ProbTableError
 import time
 from Bayesian_net.prob_table import ProbDistrib
+import os
+import graphviz 
+os.environ["PATH"] += os.pathsep + 'C:/Program Files/Graphviz/bin/'
 
 class Plotter():
 
@@ -57,6 +60,48 @@ class Plotter():
         plt.savefig(path)
 
         return
+    
+    def plot_graph(self, nodes: list[str], edges: list[tuple[str]], g_type: str, savefig_loc_folder: str) -> None:
+        if g_type == "dag": link_head='normal'
+        elif g_type == "skeleton": link_head='none'
+
+        u = graphviz.Digraph('G', 
+                        engine= 'dot',#'dot', #fdp
+                        filename='DAG.gv',
+                        graph_attr={'splines': 'true',
+                                    'dim':'2',
+                                    'K': '100.6',
+                                    'sep': '5.2',
+                                    }
+                        )  
+        u.attr('edge',
+                arrowsize='0.7',
+                arrowhead=link_head,
+                color="gray30",
+                penwidth='1.2',
+                #weight='0.9'
+                )
+        u.attr('node', 
+                fontname='Sans',
+                fontsize='9',
+                shape='oval',
+                penwidth='1',
+                fillcolor='gray66', 
+                style='filled',
+                ) 
+        
+        for n in nodes:
+            u.node(n)
+        for edge in edges:
+            u.edge(edge[0], edge[1])
+        
+        c = u.unflatten(stagger=3) 
+
+        filename = 'DAG_' + current_time_millisecond()
+
+        c.render(directory=savefig_loc_folder, filename=filename)
+        return 
+
 
 def current_time_millisecond():
     return str(round(time.time() * 1000))
