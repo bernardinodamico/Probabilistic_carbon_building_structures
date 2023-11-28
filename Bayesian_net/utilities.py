@@ -1,9 +1,7 @@
 import pandas as pd 
 from pandas import DataFrame
 from matplotlib import pyplot as plt
-from Bayesian_net.customExceptions import ProbTableError
 import time
-from Bayesian_net.prob_table import ProbDistrib
 import os
 import graphviz 
 os.environ["PATH"] += os.pathsep + 'C:/Program Files/Graphviz/bin/'
@@ -30,7 +28,7 @@ class Plotter():
             x_labels.append(str(val))
 
         if len(prT.columns) != 2:
-            raise ProbTableError(table=prT)
+            print("Error in plot_pr_distrib(): the prob table must have exactly two columns")
         fig, ax = plt.subplots()
         fig.set_size_inches(size_inches, size_inches)
         fig.set_dpi(dpi)
