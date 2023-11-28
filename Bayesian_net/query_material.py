@@ -6,9 +6,10 @@ from pandas import DataFrame
 from pgmpy.factors.discrete.CPD import TabularCPD
 from pgmpy.inference import VariableElimination
 import pandas as pd
+from copy import deepcopy
 from utilities import Plotter
 
-class QueryMaterial():
+class QueryMaterials():
     
     model: BayesianNetwork = None
     dataset: DataFrame = None
@@ -56,7 +57,10 @@ class QueryMaterial():
         return self.CPDs
 
     def run_inference(self, query_var: str, evidence_vals: dict) -> DataFrame:
-
+        '''
+        each dict-key in 'evidence_vals' is a BN variable name whereas the dict-value is the value name assigned
+        to that variable, e.g.: {'Supstr_Type': 'Timber_Frame(Glulam&CLT)', 'Basement': False, etc.}
+        '''
         inference = VariableElimination(self.model)
         phi_query = inference.query(variables=[query_var], evidence=evidence_vals, elimination_order='MinFill',joint=True, show_progress=False)
 
@@ -76,23 +80,64 @@ class QueryMaterial():
 
         return query_cpd
     
-    def run_mats_queries(self, evidence_vals: dict) -> list[DataFrame]:
-        L = []
-        for mat in BNSettings.material_vars:
+    def run_mats_queries(self, evidence_vals: dict) -> dict[str: DataFrame]:
+        '''
+        returns a dictionary with dict-keys = material variable names and dict-values = the corresponding prob distribution
+        '''
+        L = {}
+        for mat in BNSettings._material_vars:
             query_cpd = self.run_inference(query_var=mat, evidence_vals=evidence_vals)
-            L.append(query_cpd)
+            #L.append(query_cpd)
+            L[mat] = query_cpd
 
         return L
 
 
-qm = QueryMaterial()
+
+class QueryCarbon():
+    qm: QueryMaterials = None
+
+    def __init__(self) -> None:
+        self.qm = QueryMaterials()
+        return
+
+    def run_carbon_mats_queries(self, evidence_vals: dict) -> dict[str: DataFrame]:
+        '''
+        Each dict-key in 'evidence_vals' is a BN variable name whereas the dict-value is the value name assigned
+        to that variable, e.g.: {'Supstr_Type': 'Timber_Frame(Glulam&CLT)', 'Basement': False, etc.}
+
+        Returns a dictionary with dict-keys = material variable names and dict-values = the corresponding prob carbon distribution
+        '''
+        
+        pr_distrib_all_mats = self.qm.run_mats_queries(evidence_vals=evidence_vals)
+
+        L = {}
+        for mat in pr_distrib_all_mats.keys():
+
+            mat_prb_dist: DataFrame = pr_distrib_all_mats[mat]
+
+            carbon_mat_prb_dist = deepcopy(mat_prb_dist)
+            carbon_mat_prb_dist[mat] = carbon_mat_prb_dist[mat] * BNSettings.carbon_coefficients[mat]
+
+            #-----rename Pr column----
+            pr_name_old: str = carbon_mat_prb_dist.keys().to_list()[-1]
+            pr_name: str = pr_name_old.replace(mat, 'Carbon_'+mat)
+            carbon_mat_prb_dist = carbon_mat_prb_dist.rename(columns={mat: 'Carbon_'+mat, pr_name_old: pr_name})
+
+            #print(carbon_mat_prb_dist)
+            L[mat] = carbon_mat_prb_dist
+
+        return L
+    
+
 
 evidence_vals = {'Supstr_Type': 'Timber_Frame(Glulam&CLT)', 'Basement': False } 
-query_cpd = qm.run_inference(query_var='Concr(kg/m2)', evidence_vals=evidence_vals)
 
-print(query_cpd)
+qmats = QueryMaterials()
+res = qmats.run_mats_queries(evidence_vals=evidence_vals)
+print(res['Concr(kg/m2)'])
 
-plot = Plotter()
-plot.plot_pr_distrib(prT=query_cpd, savefig_loc_folder='Figures',break_text_label=True)
+queryCarb = QueryCarbon()
+res = queryCarb.run_carbon_mats_queries(evidence_vals=evidence_vals)
 
-pr_distrib_all_mats = qm.run_mats_queries(evidence_vals=evidence_vals)
+print(res['Concr(kg/m2)'])

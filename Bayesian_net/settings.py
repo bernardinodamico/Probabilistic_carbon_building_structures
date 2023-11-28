@@ -57,7 +57,15 @@ class BNSettings():
         },
     ]
 
-    material_vars = [
+    carbon_coefficients = {
+        'Concr(kg/m2)': 0.1298, #kgCO2/kgMat
+        'Masnry&Blwk(m2/m2)': 42.9874, #kgCO2/m2Wall
+        'Reinf(kg/m2)': 2.1293, #kgCO2/kgMat
+        'Steel_Sec(kg/m2)': 1.5981, #kgCO2/kgMat
+        'Timber_Prod(kg/m2)': 0.5247, #kgCO2/kgMat
+    }
+
+    _material_vars = [
         'Concr(kg/m2)',
         'Masnry&Blwk(m2/m2)',
         'Reinf(kg/m2)',
