@@ -151,8 +151,8 @@ carbon_mat_b = pd.DataFrame(data_b, columns=['carbon_mat_b', 'Pr(b)'])
 
 bin_width_a = carbon_mat_a.iloc[-1, 0] - carbon_mat_a.iloc[-2, 0]    
 bin_width_b = carbon_mat_b.iloc[-1, 0] - carbon_mat_b.iloc[-2, 0]
-noise_a = (np.random.rand(sample_size) * bin_width_a) - (bin_width_a / 2.)
-noise_b = (np.random.rand(sample_size) * bin_width_b) - (bin_width_b / 2.)
+noise_a = (np.random.rand(sample_size) * bin_width_a) - (bin_width_a / 2.) #to sample uniformly from each bin and not just the bin's mid-value
+noise_b = (np.random.rand(sample_size) * bin_width_b) - (bin_width_b / 2.) #to sample uniformly from each bin and not just the bin's mid-value
 print(carbon_mat_a)
 #print(carbon_mat_b)
 
