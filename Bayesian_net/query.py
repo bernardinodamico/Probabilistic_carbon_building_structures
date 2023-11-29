@@ -7,6 +7,7 @@ from pgmpy.factors.discrete.CPD import TabularCPD
 from pgmpy.inference import VariableElimination
 import pandas as pd
 from copy import deepcopy
+import numpy as np
 from utilities import Plotter
 
 class QueryMaterials():
@@ -87,7 +88,6 @@ class QueryMaterials():
         L = {}
         for mat in BNSettings._material_vars:
             query_cpd = self.run_inference(query_var=mat, evidence_vals=evidence_vals)
-            #L.append(query_cpd)
             L[mat] = query_cpd
 
         return L
@@ -106,7 +106,7 @@ class QueryCarbon():
         Each dict-key in 'evidence_vals' is a BN variable name whereas the dict-value is the value name assigned
         to that variable, e.g.: {'Supstr_Type': 'Timber_Frame(Glulam&CLT)', 'Basement': False, etc.}
 
-        Returns a dictionary with dict-keys = material variable names and dict-values = the corresponding prob carbon distribution
+        Returns a dictionary with dict-keys = material variable names and dict-values = the corresponding carbon prob distribution
         '''
         
         pr_distrib_all_mats = self.qm.run_mats_queries(evidence_vals=evidence_vals)
@@ -131,13 +131,40 @@ class QueryCarbon():
     
 
 
-evidence_vals = {'Supstr_Type': 'Timber_Frame(Glulam&CLT)', 'Basement': False } 
+#evidence_vals = {'Supstr_Type': 'Timber_Frame(Glulam&CLT)', 'Basement': False } 
 
-qmats = QueryMaterials()
-res = qmats.run_mats_queries(evidence_vals=evidence_vals)
-print(res['Concr(kg/m2)'])
+#qmats = QueryMaterials()
+#res = qmats.run_mats_queries(evidence_vals=evidence_vals)
+#print(res['Concr(kg/m2)'])
 
-queryCarb = QueryCarbon()
-res = queryCarb.run_carbon_mats_queries(evidence_vals=evidence_vals)
+#queryCarb = QueryCarbon()
+#res = queryCarb.run_carbon_mats_queries(evidence_vals=evidence_vals)
 
-print(res['Concr(kg/m2)'])
+#print(res['Concr(kg/m2)'])
+
+sample_size: int = 10
+data_a = [[7.5, 0.7], [12.5, 0.3]] 
+data_b = [[5., 0.4], [11., 0.6]]
+carbon_mat_a = pd.DataFrame(data_a, columns=['carbon_mat_a', 'Pr(a)']) 
+carbon_mat_b = pd.DataFrame(data_b, columns=['carbon_mat_b', 'Pr(b)']) 
+
+
+bin_width_a = carbon_mat_a.iloc[-1, 0] - carbon_mat_a.iloc[-2, 0]    
+bin_width_b = carbon_mat_b.iloc[-1, 0] - carbon_mat_b.iloc[-2, 0]
+noise_a = (np.random.rand(sample_size) * bin_width_a) - (bin_width_a / 2.)
+noise_b = (np.random.rand(sample_size) * bin_width_b) - (bin_width_b / 2.)
+print(carbon_mat_a)
+#print(carbon_mat_b)
+
+
+weighted_draw_a = np.random.choice(a=carbon_mat_a.iloc[:, 0], size=sample_size, p=carbon_mat_a.iloc[:, -1])
+print(weighted_draw_a)
+weighted_draw_b = np.random.choice(a=carbon_mat_b.iloc[:, 0], size=sample_size, p=carbon_mat_b.iloc[:, -1])
+#print(weighted_draw_b)
+
+
+weighted_draw_a = np.add(weighted_draw_a, noise_a)
+print(weighted_draw_a)
+
+tot_carb_sample = np.add(weighted_draw_a, weighted_draw_b)
+#print(tot_carb_sample)
