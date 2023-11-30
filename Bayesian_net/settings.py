@@ -64,7 +64,7 @@ class BNSettings():
         },
         {
         'name': 'GIFA_(m2)',
-        'bins': 20
+        'bins': 16
         }
     ]
 

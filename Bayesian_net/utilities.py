@@ -3,6 +3,7 @@ from pandas import DataFrame
 from matplotlib import pyplot as plt
 import time
 import os
+import numpy as np
 import graphviz 
 os.environ["PATH"] += os.pathsep + 'C:/Program Files/Graphviz/bin/'
 
@@ -122,7 +123,9 @@ def discretizer(dataset: DataFrame, vars: list[str], bin_counts: list[int], mid_
     '''
     for i in range(0, len(vars)):
         col = dataset[vars[i]]
+
         new_col = pd.cut(x=col, bins=bin_counts[i])
+
         if mid_vals == True:
             bin_vals = []
             for cat in new_col.items():

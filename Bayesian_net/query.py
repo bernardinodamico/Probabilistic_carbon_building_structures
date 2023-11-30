@@ -10,7 +10,7 @@ from copy import deepcopy
 import numpy as np
 import matplotlib.pyplot as plt
 from numpy import ndarray
-from utilities import Plotter
+from utilities import discretizer, Plotter
 
 class QueryMaterials():
     
@@ -164,14 +164,14 @@ class QueryCarbon():
         
 
 
-evidence_vals = {'Supstr_Type': 'Timber_Frame(Glulam&CLT)', 'Basement': False } 
-evidence_vals = {'No_storeys': '1_to_3',
+#evidence_vals = {} 
+
+evidence_vals = {'No_storeys': '4_to_6',
                  'Found_Type': 'Piled(Ground-beams/Caps)',
-                 'Supstr_Type': 'Masonry&Timber',
-                 'Supstr_Cr_elems': 'No_elems',
-                 'Basement': False,
-                 'Supstr_uw': 'medium',
-                 'Clad_Type': 'Masonry'
+                 'Supstr_Type': 'RC_Frame',
+                 'Basement': True,
+                 'Clad_Type': 'Masonry',
+                 'GIFA_(m2)': 2045.532
                  }
 
 qmats = QueryMaterials(update_training_ds=True)
@@ -188,7 +188,12 @@ carbon_mats = queryCarb.run_carbon_mats_queries(evidence_vals=evidence_vals)
 #
 tot_carbon = queryCarb.run_tot_carbon(sample_size=20000, carbon_m=carbon_mats, bin_sampling='bin_width')
 
-print(tot_carbon)
+carbon_mode = discretizer(dataset=tot_carbon, vars=['tot_carbon(kgCO2/m2)'], bin_counts=[40], mid_vals = True).mode()
+
+print('co2_mean:', list(tot_carbon.mean())[0])
+print('co2_median:', list(tot_carbon.median())[0])
+print('co2_mode:', carbon_mode['tot_carbon(kgCO2/m2)'].values[0])
 
 plt.hist(x=tot_carbon, bins=40, density=True)
 plt.show() 
+
