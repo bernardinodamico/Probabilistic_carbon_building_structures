@@ -100,6 +100,13 @@ class QueryMaterials():
 
 class QueryCarbon():
     qm: QueryMaterials = None
+    evidence_vals: dict = None
+    tot_carbon_mean: float = None
+    tot_carbon_median: float = None
+    tot_carbon_mode: float = None #the value that shows up most often
+    prob_distrib_Totcarbon: DataFrame = None
+    tot_carbon_datapoints: DataFrame = None
+    tot_carb_bin_counts: int = None
 
     def __init__(self, query_mats: QueryMaterials) -> None:
         self.qm = query_mats
@@ -129,13 +136,24 @@ class QueryCarbon():
             carbon_mat_prb_dist = carbon_mat_prb_dist.rename(columns={mat: 'Carbon_'+mat, pr_name_old: pr_name})
 
             #print(carbon_mat_prb_dist)
+            self.evidence_vals = evidence_vals
             L[mat] = carbon_mat_prb_dist
 
         return L
     
+    def fetch_heading_compl(self) -> str:
+        if self.evidence_vals is None:
+            return ")"
+        else:
+            s = " | "
+            for var_namekey in self.evidence_vals.keys():
+                s = s + f"{var_namekey}={self.evidence_vals[var_namekey]}, " 
+            s = s + ")"
+            string = s.replace(", )", "")
+            return string
 
 
-    def run_tot_carbon(self, sample_size: int, carbon_m: dict[str: DataFrame], bin_sampling: str = 'mid_val') -> DataFrame:
+    def run_tot_carbon(self, sample_size: int, carbon_m: dict[str: DataFrame], bin_sampling: str = 'mid_val', bin_counts: int = 40) -> DataFrame:
         '''
         Montecarlo sampling to get the sample carbon pop of all carbon material distributions combined
 
@@ -143,7 +161,8 @@ class QueryCarbon():
 
         If bin_sampling = bin_width -> the carbon material sampling draws values across the continuous range (with probability of the bin where the value falls).
         '''
-        tot_carbon = np.zeros(sample_size)
+        
+        tot_carbon_datapoints = np.zeros(sample_size)
         
         for mat_name in carbon_m.keys():
             carbon_mat = carbon_m[mat_name]
@@ -156,44 +175,56 @@ class QueryCarbon():
                 weighted_draw = np.add(weighted_draw, noise)
             else:
                 pass
-            tot_carbon = np.add(tot_carbon, weighted_draw)
+            tot_carbon_datapoints = np.add(tot_carbon_datapoints, weighted_draw)
+        
+        tot_carbon_datapoints = pd.DataFrame(tot_carbon_datapoints, columns=['tot_carbon'])
 
-        tot_carbon = pd.DataFrame(tot_carbon, columns=['tot_carbon(kgCO2/m2)'])
+        self.tot_carbon_mean = list(tot_carbon_datapoints.mean())[0]
+        self.tot_carbon_median = list(tot_carbon_datapoints.median())[0]
 
-        return tot_carbon
+        tot_carb_disc = discretizer(dataset=tot_carbon_datapoints, vars=['tot_carbon'], bin_counts=[bin_counts], mid_vals = True) 
+        self.tot_carbon_mode = tot_carb_disc.mode()
+
+        series = tot_carb_disc.value_counts(subset='tot_carbon', normalize=True)
+        df_1 = series.index.to_frame().reset_index(drop=True)
+        df_2 = series.to_frame().reset_index(drop=True)
+        prT = df_1.join(other=df_2)
+
+        prT = prT.rename({'proportion': 'Pr(tot_carbon'+f'{self.fetch_heading_compl()})'}, axis='columns')
+        
+        self.prob_distrib_Totcarbon = prT
+        self.tot_carbon_datapoints = tot_carbon_datapoints
+        self.tot_carb_bin_counts = bin_counts
+
+        return 
+    
         
 
 
 #evidence_vals = {} 
 
-evidence_vals = {'No_storeys': '4_to_6',
-                 'Found_Type': 'Piled(Ground-beams/Caps)',
-                 'Supstr_Type': 'RC_Frame',
-                 'Basement': True,
-                 'Clad_Type': 'Masonry',
-                 'GIFA_(m2)': 2045.532
+evidence_vals = {#'No_storeys': '1_to_3',
+                 #'Found_Type': 'Reinforced(Pads/Strips/Raft)',
+                 #'Supstr_Type': 'Timber_Frame(Glulam&CLT)',
+                 #'Basement': True,
+                 #'Clad_Type': 'Other',
+                 #'GIFA_(m2)': 693.11
                  }
 
 qmats = QueryMaterials(update_training_ds=True)
-#Run 'run_mats_queries()' only if needing the method's output. 
-#It's already called internally when istantiating QueryCarbon()
-
+#Run 'run_mats_queries()' only if needing the method's output. It's already called internally when istantiating QueryCarbon()
 #res = qmats.run_mats_queries(evidence_vals=evidence_vals) 
-#print(res['Concr(kg/m2)'])
-
 queryCarb = QueryCarbon(query_mats=qmats)
 carbon_mats = queryCarb.run_carbon_mats_queries(evidence_vals=evidence_vals)
+queryCarb.run_tot_carbon(sample_size=20000, carbon_m=carbon_mats, bin_sampling='bin_width', bin_counts=40)
 
-#print(res['Concr(kg/m2)'])
-#
-tot_carbon = queryCarb.run_tot_carbon(sample_size=20000, carbon_m=carbon_mats, bin_sampling='bin_width')
+#print(queryCarb.tot_carbon_datapoints)
+print(queryCarb.tot_carbon_mode)
 
-carbon_mode = discretizer(dataset=tot_carbon, vars=['tot_carbon(kgCO2/m2)'], bin_counts=[40], mid_vals = True).mode()
 
-print('co2_mean:', list(tot_carbon.mean())[0])
-print('co2_median:', list(tot_carbon.median())[0])
-print('co2_mode:', carbon_mode['tot_carbon(kgCO2/m2)'].values[0])
+#try  project 59 to show progression (and save mats distrib as well)
 
-plt.hist(x=tot_carbon, bins=40, density=True)
+
+plt.hist(x=queryCarb.tot_carbon_datapoints, bins=queryCarb.tot_carb_bin_counts, density=True)
 plt.show() 
 
