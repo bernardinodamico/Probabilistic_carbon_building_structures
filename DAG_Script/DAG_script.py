@@ -50,6 +50,7 @@ u.node('Superstructure \ntype')#, pos='1.5,0!')
 
 u.node('Basement')#, pos='7.5,0!')
 u.node('Foundations \ntype')#, pos='7.5,1.25!')
+#u.node('GIFA')#, pos='7.5,1.25!')
 
 u.attr('node', 
         fontname='Sans',

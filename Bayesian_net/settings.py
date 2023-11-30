@@ -4,7 +4,7 @@
 class BNSettings():
 
     smoothCPT: bool = True #whether to smooth the cond prob tables of the bayes net.
-    eq_sample_size: int = 10 # parameter for smoothing. The higher the value to more the smoothing.
+    eq_sample_size: int = 0.2 # parameter for smoothing. The higher the value to more the smoothing.
 
     # Variables in the dataset to use for building the BN
     graph_nodes = [
@@ -19,7 +19,8 @@ class BNSettings():
     'Masnry&Blwk(m2/m2)',
     'Reinf(kg/m2)',
     'Steel_Sec(kg/m2)',
-    'Timber_Prod(kg/m2)'
+    'Timber_Prod(kg/m2)',
+    'GIFA_(m2)'
     ]
     # Directed edges between variables. Not needed if the graph structure is learned form data.
     graph_edges = [
@@ -35,7 +36,13 @@ class BNSettings():
             ('Found_Type', 'Concr(kg/m2)'),
             ('Supstr_Cr_elems', 'Reinf(kg/m2)'),
             ('Supstr_Cr_elems', 'Concr(kg/m2)'),
-            ('Basement', 'Concr(kg/m2)')
+            ('Basement', 'Concr(kg/m2)'),
+
+            ('GIFA_(m2)', 'Timber_Prod(kg/m2)'),
+            ('GIFA_(m2)', 'Steel_Sec(kg/m2)'),
+            ('GIFA_(m2)', 'Masnry&Blwk(m2/m2)'),
+            ('GIFA_(m2)', 'Reinf(kg/m2)'),
+            ('GIFA_(m2)', 'Concr(kg/m2)'),
     ]
 
     # Variables in the dataset to be discretized
@@ -55,6 +62,10 @@ class BNSettings():
         {'name': 'Timber_Prod(kg/m2)', 
         'bins': 4
         },
+        {
+        'name': 'GIFA_(m2)',
+        'bins': 20
+        }
     ]
 
     carbon_coefficients = {

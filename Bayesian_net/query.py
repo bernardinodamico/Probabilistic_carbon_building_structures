@@ -8,6 +8,7 @@ from pgmpy.inference import VariableElimination
 import pandas as pd
 from copy import deepcopy
 import numpy as np
+import matplotlib.pyplot as plt
 from numpy import ndarray
 from utilities import Plotter
 
@@ -164,10 +165,19 @@ class QueryCarbon():
 
 
 evidence_vals = {'Supstr_Type': 'Timber_Frame(Glulam&CLT)', 'Basement': False } 
+evidence_vals = {'No_storeys': '1_to_3',
+                 'Found_Type': 'Piled(Ground-beams/Caps)',
+                 'Supstr_Type': 'Masonry&Timber',
+                 'Supstr_Cr_elems': 'No_elems',
+                 'Basement': False,
+                 'Supstr_uw': 'medium',
+                 'Clad_Type': 'Masonry'
+                 }
 
 qmats = QueryMaterials(update_training_ds=True)
 #Run 'run_mats_queries()' only if needing the method's output. 
 #It's already called internally when istantiating QueryCarbon()
+
 #res = qmats.run_mats_queries(evidence_vals=evidence_vals) 
 #print(res['Concr(kg/m2)'])
 
@@ -175,7 +185,10 @@ queryCarb = QueryCarbon(query_mats=qmats)
 carbon_mats = queryCarb.run_carbon_mats_queries(evidence_vals=evidence_vals)
 
 #print(res['Concr(kg/m2)'])
-
-tot_carbon = queryCarb.run_tot_carbon(sample_size=10000, carbon_m=carbon_mats, bin_sampling='mid_val')
+#
+tot_carbon = queryCarb.run_tot_carbon(sample_size=20000, carbon_m=carbon_mats, bin_sampling='bin_width')
 
 print(tot_carbon)
+
+plt.hist(x=tot_carbon, bins=40, density=True)
+plt.show() 

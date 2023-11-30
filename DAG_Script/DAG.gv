@@ -75,4 +75,6 @@ qty.";
 	"Foundations 
 type" -> "Concrete 
 qty.";
+	GIFA	[fillcolor=cornflowerblue,
+		penwidth=1.];
 }
