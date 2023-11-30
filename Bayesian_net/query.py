@@ -136,88 +136,46 @@ class QueryCarbon():
 
     def run_tot_carbon(self, sample_size: int, carbon_m: dict[str: DataFrame], bin_sampling: str = 'mid_val') -> DataFrame:
         '''
-        Montecarlo sampling to get the sample carbon pop of two carbon material populations combined
+        Montecarlo sampling to get the sample carbon pop of all carbon material distributions combined
 
         If  bin_sampling = mid_val -> the carbon material sampling only draws values among the discrete range of bins' mid values.
 
         If bin_sampling = bin_width -> the carbon material sampling draws values across the continuous range (with probability of the bin where the value falls).
         '''
-
-        carbon_mat_a = carbon_m['Concr(kg/m2)']
-        carbon_mat_b = carbon_m['Masnry&Blwk(m2/m2)']
-        carbon_mat_c = carbon_m['Reinf(kg/m2)']
-        carbon_mat_d = carbon_m['Steel_Sec(kg/m2)']
-        carbon_mat_e = carbon_m['Timber_Prod(kg/m2)']
+        tot_carbon = np.zeros(sample_size)
         
-        bin_width_a = carbon_mat_a.iloc[-1, 0] - carbon_mat_a.iloc[-2, 0]    
-        bin_width_b = carbon_mat_b.iloc[-1, 0] - carbon_mat_b.iloc[-2, 0]
-        bin_width_c = carbon_mat_c.iloc[-1, 0] - carbon_mat_c.iloc[-2, 0]    
-        bin_width_d = carbon_mat_d.iloc[-1, 0] - carbon_mat_d.iloc[-2, 0]
-        bin_width_e = carbon_mat_e.iloc[-1, 0] - carbon_mat_e.iloc[-2, 0]    
+        for mat_name in carbon_m.keys():
+            carbon_mat = carbon_m[mat_name]
+            bin_width = carbon_mat.iloc[-1, 0] - carbon_mat.iloc[-2, 0] 
+            weighted_draw = np.random.choice(a=carbon_mat.iloc[:, 0], size=sample_size, p=carbon_mat.iloc[:, -1])
+            
+            if bin_sampling == 'bin_width':
+                # to pick uniformly within the bin(s) instead of picking the mid-value(s) all the time
+                noise = (np.random.rand(sample_size) * bin_width) - (bin_width / 2.)
+                weighted_draw = np.add(weighted_draw, noise)
+            else:
+                pass
+            tot_carbon = np.add(tot_carbon, weighted_draw)
 
-
-        
-        weighted_draw_a = np.random.choice(a=carbon_mat_a.iloc[:, 0], size=sample_size, p=carbon_mat_a.iloc[:, -1]) 
-        weighted_draw_b = np.random.choice(a=carbon_mat_b.iloc[:, 0], size=sample_size, p=carbon_mat_b.iloc[:, -1])
-        weighted_draw_c = np.random.choice(a=carbon_mat_c.iloc[:, 0], size=sample_size, p=carbon_mat_c.iloc[:, -1]) 
-        weighted_draw_d = np.random.choice(a=carbon_mat_d.iloc[:, 0], size=sample_size, p=carbon_mat_d.iloc[:, -1])
-        weighted_draw_e = np.random.choice(a=carbon_mat_e.iloc[:, 0], size=sample_size, p=carbon_mat_e.iloc[:, -1]) 
-        print(weighted_draw_a)
-        print(weighted_draw_b)
-
-        
-        if bin_sampling == 'bin_width':
-            # to pick uniformly within the bin(s) instead of picking the mid-value(s) all the time
-            noise_a = (np.random.rand(sample_size) * bin_width_a) - (bin_width_a / 2.)
-            noise_b = (np.random.rand(sample_size) * bin_width_b) - (bin_width_b / 2.)
-            noise_c = (np.random.rand(sample_size) * bin_width_c) - (bin_width_c / 2.)
-            noise_d = (np.random.rand(sample_size) * bin_width_d) - (bin_width_d / 2.)
-            noise_e = (np.random.rand(sample_size) * bin_width_e) - (bin_width_e / 2.)
-            weighted_draw_a = np.add(weighted_draw_a, noise_a)
-            weighted_draw_b = np.add(weighted_draw_b, noise_b)
-            weighted_draw_c = np.add(weighted_draw_c, noise_c)
-            weighted_draw_d = np.add(weighted_draw_d, noise_d)
-            weighted_draw_e = np.add(weighted_draw_e, noise_e)
-        elif bin_sampling == 'mid_val':
-            pass 
-
-        tot_carbon = np.add(weighted_draw_a, weighted_draw_b)
-        tot_carbon = np.add(tot_carbon, weighted_draw_c)
-        tot_carbon = np.add(tot_carbon, weighted_draw_d)
-        tot_carbon = np.add(tot_carbon, weighted_draw_e)
+        tot_carbon = pd.DataFrame(tot_carbon, columns=['tot_carbon(kgCO2/m2)'])
 
         return tot_carbon
         
 
 
-#evidence_vals = {'Supstr_Type': 'Timber_Frame(Glulam&CLT)', 'Basement': False } 
+evidence_vals = {'Supstr_Type': 'Timber_Frame(Glulam&CLT)', 'Basement': False } 
 
 qmats = QueryMaterials(update_training_ds=True)
-#res = qmats.run_mats_queries(evidence_vals=evidence_vals)
+#Run 'run_mats_queries()' only if needing the method's output. 
+#It's already called internally when istantiating QueryCarbon()
+#res = qmats.run_mats_queries(evidence_vals=evidence_vals) 
 #print(res['Concr(kg/m2)'])
 
 queryCarb = QueryCarbon(query_mats=qmats)
-#carbon_mats = queryCarb.run_carbon_mats_queries(evidence_vals=evidence_vals)
+carbon_mats = queryCarb.run_carbon_mats_queries(evidence_vals=evidence_vals)
 
 #print(res['Concr(kg/m2)'])
 
-
-data_a = [[7.5, 0.7], [12.5, 0.3]] 
-data_b = [[5., 0.4], [11., 0.6]]
-carb_mat_a = pd.DataFrame(data_a, columns=['carbon_mat_a', 'Pr(a)']) 
-carb_mat_b = pd.DataFrame(data_b, columns=['carbon_mat_b', 'Pr(b)']) 
-carb_mat_c = pd.DataFrame(data_a, columns=['carbon_mat_c', 'Pr(c)']) 
-carb_mat_d = pd.DataFrame(data_b, columns=['carbon_mat_d', 'Pr(d)'])
-carb_mat_e = pd.DataFrame(data_a, columns=['carbon_mat_e', 'Pr(e)']) 
-
-carbon_mats = {
-    'Concr(kg/m2)': carb_mat_a,
-    'Masnry&Blwk(m2/m2)': carb_mat_b,
-    'Reinf(kg/m2)': carb_mat_c,
-    'Steel_Sec(kg/m2)': carb_mat_d,
-    'Timber_Prod(kg/m2)': carb_mat_e
-}
-
-tot_carbon = queryCarb.run_tot_carbon(sample_size=10, carbon_m=carbon_mats, bin_sampling='mid_val')
+tot_carbon = queryCarb.run_tot_carbon(sample_size=10000, carbon_m=carbon_mats, bin_sampling='mid_val')
 
 print(tot_carbon)
