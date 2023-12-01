@@ -4,14 +4,13 @@ import graphviz
 os.environ["PATH"] += os.pathsep + 'C:/Program Files/Graphviz/bin/'
 
 u = graphviz.Digraph('G', 
-                     engine= 'dot',#'dot', #fdp
+                     engine= 'circo',#'dot', #fdp
                      filename='DAG.gv',
                      graph_attr={'splines': 'true',
-                                 'dim':'2',
-                                 'K': '100.6',
-                                 'sep': '5.2',
+                                 'mindist': '0.1',
+                                 'oneblock': 'true'
                                  }
-                     )  
+                     )
 
 u.attr('edge',
         arrowsize='0.7',
@@ -44,9 +43,11 @@ u.attr('node',
         ) 
 #u.node('Evidence')
 
-u.node('No. \nstoreys')#, pos='4.5,0!')
 u.node('Cladding \ntype')#, pos='0,0!')
 u.node('Superstructure \ntype')#, pos='1.5,0!')
+u.node('GIFA')#, pos='7.5,1.25!')
+u.node('No. \nstoreys')#, pos='4.5,0!')
+
 
 u.node('Basement')#, pos='7.5,0!')
 u.node('Foundations \ntype')#, pos='7.5,1.25!')
@@ -61,11 +62,13 @@ u.attr('node',
         ) 
 #u.node('Query')
 
-u.node('Reinforcement \nqty.')#, pos='5.75,3!')
-u.node('Masonry & \nblockworks qty.')#, pos='0.75,-2.5!')
+
 u.node('Concrete \nqty.')#, pos='5.25,2.5!')
 u.node('Timber \n(products) qty.')#, pos='2.25,2.5!')
 u.node('Steel \n(sections) qty.')#, pos='3.75,2.5!')
+u.node('Reinforcement \nqty.')#, pos='5.75,3!')
+u.node('Masonry & \nblockworks qty.')#, pos='0.75,-2.5!')
+
 
 
 u.edge('Cladding \ntype', 'Masonry & \nblockworks qty.')
@@ -73,6 +76,13 @@ u.edge('No. \nstoreys', 'Foundations \ntype')
 u.edge('Foundations \ntype', 'Concrete \nqty.')
 u.edge('Foundations \ntype', 'Reinforcement \nqty.')
 u.edge('Basement', 'Concrete \nqty.')
+
+u.edge('GIFA', 'Timber \n(products) qty.')
+u.edge('GIFA', 'Steel \n(sections) qty.')
+u.edge('GIFA', 'Masonry & \nblockworks qty.')
+u.edge('GIFA', 'Reinforcement \nqty.')
+u.edge('GIFA', 'Concrete \nqty.')
+
 
 u.edge('Superstructure \ntype', 'Masonry & \nblockworks qty.')
 u.edge('Superstructure \ntype', 'Concrete \nelements')
@@ -82,6 +92,7 @@ u.edge('Superstructure \ntype', 'Steel \n(sections) qty.')
 u.edge('Superstructure \ntype', 'Superstructure \nunit-weight')
 u.edge('Superstructure \nunit-weight', 'Foundations \ntype')
 u.edge('Concrete \nelements', 'Reinforcement \nqty.')
+
 
 
 #------------------------------

@@ -1,7 +1,6 @@
 digraph G {
-	graph [K=100.6,
-		dim=2,
-		sep=5.2,
+	graph [mindist=0.1,
+		oneblock=true,
 		splines=true
 	];
 	node [concentrate=true,
@@ -30,17 +29,11 @@ type";
 elements"	[concentrate="",
 		fillcolor=gray66];
 	"Concrete 
-elements" -> "Reinforcement 
-qty.";
-	"Concrete 
 elements" -> "Concrete 
 qty.";
-	"No. 
-storeys"	[fillcolor=cornflowerblue,
-		penwidth=1.];
-	"No. 
-storeys" -> "Foundations 
-type"	[minlen=1];
+	"Concrete 
+elements" -> "Reinforcement 
+qty.";
 	"Cladding 
 type"	[fillcolor=cornflowerblue,
 		penwidth=1.];
@@ -57,22 +50,40 @@ unit-weight";
 type" -> "Concrete 
 elements";
 	"Superstructure 
-type" -> "Masonry & 
-blockworks qty.";
-	"Superstructure 
 type" -> "Timber 
-(products) qty."	[minlen=1];
+(products) qty.";
 	"Superstructure 
 type" -> "Steel 
-(sections) qty."	[minlen=2];
+(sections) qty.";
+	"Superstructure 
+type" -> "Masonry & 
+blockworks qty.";
+	GIFA	[fillcolor=cornflowerblue,
+		penwidth=1.];
+	GIFA -> "Concrete 
+qty.";
+	GIFA -> "Timber 
+(products) qty.";
+	GIFA -> "Steel 
+(sections) qty.";
+	GIFA -> "Reinforcement 
+qty.";
+	GIFA -> "Masonry & 
+blockworks qty.";
+	"No. 
+storeys"	[fillcolor=cornflowerblue,
+		penwidth=1.];
+	"No. 
+storeys" -> "Foundations 
+type"	[minlen=1];
 	Basement	[fillcolor=cornflowerblue,
 		penwidth=1.];
 	Basement -> "Concrete 
 qty."	[minlen=1];
 	"Foundations 
-type" -> "Reinforcement 
+type" -> "Concrete 
 qty.";
 	"Foundations 
-type" -> "Concrete 
+type" -> "Reinforcement 
 qty.";
 }

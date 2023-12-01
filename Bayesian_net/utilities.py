@@ -1,16 +1,18 @@
 import pandas as pd 
 from pandas import DataFrame
 from matplotlib import pyplot as plt
-from Bayesian_net.customExceptions import ProbTableError
 import time
-from Bayesian_net.prob_table import ProbDistrib
+import os
+import numpy as np
+import graphviz 
+os.environ["PATH"] += os.pathsep + 'C:/Program Files/Graphviz/bin/'
 
 class Plotter():
 
     _bottom: float = 0.4
     _left: float = 0.2
 
-    def plot_pr_distrib(self, prT: ProbDistrib, savefig_loc_folder: str, size_inches: int = 6, dpi: int = 300, color: str = 'dodgerblue', break_text_label: bool = False, y_axis: str = 'dynamic') -> None:
+    def plot_pr_distrib(self, prT: DataFrame, savefig_loc_folder: str, size_inches: int = 6, dpi: int = 300, color: str = 'dodgerblue', break_text_label: bool = False, y_axis: str = 'dynamic') -> None:
         '''
         Plots a hystogram showing the probability distibution (marginal or conditional) of a variable
         Inputs: 
@@ -23,11 +25,11 @@ class Plotter():
         if y_axis='constant' the 'y' axis is scaled to 100% probability value.
         '''
         x_labels = []
-        for val in prT.table[list(prT.table.columns)[0]].tolist():
+        for val in prT[list(prT.columns)[0]].tolist():
             x_labels.append(str(val))
 
-        if len(prT.table.columns) != 2:
-            raise ProbTableError(table=prT.table)
+        if len(prT.columns) != 2:
+            print("Error in plot_pr_distrib(): the prob table must have exactly two columns")
         fig, ax = plt.subplots()
         fig.set_size_inches(size_inches, size_inches)
         fig.set_dpi(dpi)
@@ -35,20 +37,20 @@ class Plotter():
         plt.subplots_adjust(bottom=self._bottom, left=self._left)
 
         plt.bar(x=x_labels, 
-                height=prT.table[list(prT.table.columns)[1]],
+                height=prT[list(prT.columns)[1]],
                 width=0.96,
                 color=color,
                 )
         plt.xticks(rotation=90)
         
-        plt.xlabel(list(prT.table.columns)[0], fontweight='bold')
-        if break_text_label is True: y_label = break_labels(text=list(prT.table.columns)[1])
-        else: y_label = list(prT.table.columns)[1]
+        plt.xlabel(list(prT.columns)[0], fontweight='bold')
+        if break_text_label is True: y_label = break_labels(text=list(prT.columns)[1])
+        else: y_label = list(prT.columns)[1]
         plt.ylabel(y_label, fontweight='bold')
         #plt.show()
 
         #----Save figure---------------------------------
-        fn: str = list(prT.table.columns)[1]
+        fn: str = list(prT.columns)[1]
         fn = fn.replace('/', '@')
         filename = fn.replace('|', 'given')
         filename = filename + current_time_millisecond()
@@ -57,6 +59,48 @@ class Plotter():
         plt.savefig(path)
 
         return
+    
+    def plot_graph(self, nodes: list[str], edges: list[tuple[str]], g_type: str, savefig_loc_folder: str) -> None:
+        if g_type == "dag": link_head='normal'
+        elif g_type == "skeleton": link_head='none'
+
+        u = graphviz.Digraph('G', 
+                        engine= 'dot',#'dot', #fdp
+                        filename='DAG.gv',
+                        graph_attr={'splines': 'true',
+                                    'dim':'2',
+                                    'K': '100.6',
+                                    'sep': '5.2',
+                                    }
+                        )  
+        u.attr('edge',
+                arrowsize='0.7',
+                arrowhead=link_head,
+                color="gray30",
+                penwidth='1.2',
+                #weight='0.9'
+                )
+        u.attr('node', 
+                fontname='Sans',
+                fontsize='9',
+                shape='oval',
+                penwidth='1',
+                fillcolor='gray66', 
+                style='filled',
+                ) 
+        
+        for n in nodes:
+            u.node(n)
+        for edge in edges:
+            u.edge(edge[0], edge[1])
+        
+        c = u.unflatten(stagger=3) 
+
+        filename = 'DAG_' + current_time_millisecond()
+
+        c.render(directory=savefig_loc_folder, filename=filename)
+        return 
+
 
 def current_time_millisecond():
     return str(round(time.time() * 1000))
@@ -79,7 +123,9 @@ def discretizer(dataset: DataFrame, vars: list[str], bin_counts: list[int], mid_
     '''
     for i in range(0, len(vars)):
         col = dataset[vars[i]]
+
         new_col = pd.cut(x=col, bins=bin_counts[i])
+
         if mid_vals == True:
             bin_vals = []
             for cat in new_col.items():
