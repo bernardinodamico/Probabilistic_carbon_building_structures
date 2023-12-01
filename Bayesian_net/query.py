@@ -183,7 +183,7 @@ class QueryCarbon():
         self.tot_carbon_median = list(tot_carbon_datapoints.median())[0]
 
         tot_carb_disc = discretizer(dataset=tot_carbon_datapoints, vars=['tot_carbon'], bin_counts=[bin_counts], mid_vals = True) 
-        self.tot_carbon_mode = tot_carb_disc.mode()
+        self.tot_carbon_mode = tot_carb_disc.mode().iloc[0]['tot_carbon']
 
         series = tot_carb_disc.value_counts(subset='tot_carbon', normalize=True)
         df_1 = series.index.to_frame().reset_index(drop=True)
@@ -203,12 +203,12 @@ class QueryCarbon():
 
 #evidence_vals = {} 
 
-evidence_vals = {#'No_storeys': '1_to_3',
+evidence_vals = {'No_storeys': '7_to_10',
                  #'Found_Type': 'Reinforced(Pads/Strips/Raft)',
                  #'Supstr_Type': 'Timber_Frame(Glulam&CLT)',
                  #'Basement': True,
                  #'Clad_Type': 'Other',
-                 #'GIFA_(m2)': 693.11
+                 #'GIFA_(m2)': 20829.156
                  }
 
 qmats = QueryMaterials(update_training_ds=True)
@@ -219,8 +219,9 @@ carbon_mats = queryCarb.run_carbon_mats_queries(evidence_vals=evidence_vals)
 queryCarb.run_tot_carbon(sample_size=20000, carbon_m=carbon_mats, bin_sampling='bin_width', bin_counts=40)
 
 #print(queryCarb.tot_carbon_datapoints)
-print(queryCarb.tot_carbon_mode)
-
+print('mode=',queryCarb.tot_carbon_mode)
+print('mean=',queryCarb.tot_carbon_mean)
+print('median=',queryCarb.tot_carbon_median)
 
 #try  project 59 to show progression (and save mats distrib as well)
 
