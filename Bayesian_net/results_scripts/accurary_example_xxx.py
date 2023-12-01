@@ -11,7 +11,7 @@ def single_carbon_query_call(evidence_vals: dict) -> dict:
     #res = qmats.run_mats_queries(evidence_vals=evidence_vals) 
     queryCarb = QueryCarbon(query_mats=qmats)
     carbon_mats = queryCarb.run_carbon_mats_queries(evidence_vals=evidence_vals)
-    queryCarb.run_tot_carbon(sample_size=30000, carbon_m=carbon_mats, bin_sampling='bin_width', bin_counts=40)
+    queryCarb.run_tot_carbon(sample_size=40000, carbon_m=carbon_mats, bin_sampling='bin_width', bin_counts=60)
 
     #print('mode=',queryCarb.tot_carbon_mode)
     print('mean=',queryCarb.tot_carbon_mean)
@@ -31,50 +31,40 @@ design_vars =   {'No_storeys': '1_to_3',
                  'Found_Type': 'Mass(Pads/Strips)',
                  'Supstr_Type': 'Timber_Frame(Glulam&CLT)',
                  'GIFA_(m2)': 3387.218,
-                 #'Clad_Type': 'Other',
+                 'Clad_Type': 'Other',
                  'Basement': False,
                  }
 
 evidence_vals = {}
 
-list_queries = []
-out_query = single_carbon_query_call(evidence_vals={})
-list_queries.append(out_query)
+single_carbon_query_call(evidence_vals=evidence_vals)
 
+colors = ['deeppink', 'purple', 'blueviolet', 'dodgerblue', 'lime', 'orange', 'red']
+list_queries = []
 for var in design_vars.keys():
     evidence_vals[var] = design_vars[var]
     out_query = single_carbon_query_call(evidence_vals=evidence_vals)
     list_queries.append(out_query)
-
-alphas = [0.35, 0.4, 0.45, 0.5, 0.55, 0.6]
-ylabels = [r'$P(C_T)$', r'$P(C_T | n)$', r'$P(C_T | n,f)$', r'$P(C_T | n,f,s^*)$', r'$P(C_T | n,f,s^*,g)$', r'$P(C_T | n,f,s^*,g,b)$']
-
-fig, axs = plt.subplots(2, 3)
-fig.set_size_inches(12, 8)
-k = 0
-for j in range(0, 2):
-    for i in range(0, 3):
-        axs[j, i].hist(x=list_queries[k]['tot_carbon_datapoints'], 
-                    bins=list_queries[k]['bins'], 
-                    density=True, 
-                    alpha=alphas[k], 
-                    #label=ylabels[k],
-                    color='blue',
-                    edgecolor='black', 
-                    linewidth=0.4)
-        axs[j, i].axvline(x=list_queries[k]['mean'], color = 'red', linewidth=1.2, alpha=1., label=r'$c_{mean}=$'+str(round(list_queries[k]['mean'], 1)))
-        axs[j, i].axvline(x=256.7, color = 'black', linewidth=1.2, alpha=1., linestyle='dashed', label=r'$c_{true}=256.7$')
-        axs[j, i].legend(loc='upper right')
-        axs[j,i].set(xlabel=r'$kgCO_{2e}/m^2$', ylabel=r'$norm. freq.$')
-        axs[j, i].set_title(ylabels[k])
-        axs[j, i].set_xlim(left=0., right=1200.)
-        axs[j, i].set_ylim(top=0.0065)
-        k = k + 1
+    print(out_query['evidence_vals'])
 
 
+i = 0
+for query_res in list_queries:
 
-for ax in axs.flat:
-    ax.label_outer()
-    
+    plt.hist(x=query_res['tot_carbon_datapoints'], 
+             bins=query_res['bins'], 
+             density=True, 
+             alpha=0.7, 
+             label="aspe",
+             color = colors[i],
+             edgecolor='black', 
+             linewidth=0.75)
+    plt.axvline(x=query_res['mean'],
+                color = colors[i],
+                linewidth=1.5,
+                alpha=1.)
+    i = i+1
 
-plt.savefig(fname='Figures/accuracy_example.jpeg', dpi=600)
+plt.axvline(x=256.7, color='black', linewidth=1.5, alpha=1.) 
+plt.legend(loc='upper right')
+plt.show()
