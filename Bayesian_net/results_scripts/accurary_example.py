@@ -77,4 +77,4 @@ for ax in axs.flat:
     ax.label_outer()
     
 
-plt.savefig(fname='Figures/accuracy_example.jpeg', dpi=600)
+plt.savefig(fname='Figures/accuracy_example.jpeg', dpi=300)
