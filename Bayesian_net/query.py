@@ -8,7 +8,8 @@ from pgmpy.inference import VariableElimination
 import pandas as pd
 from copy import deepcopy
 import numpy as np
-from Bayesian_net.utilities import discretizer, Plotter
+from Bayesian_net.utilities import discretizer
+import scipy.stats as st
 
 class QueryMaterials():
     
@@ -105,6 +106,7 @@ class QueryCarbon():
     prob_distrib_Totcarbon: DataFrame = None
     tot_carbon_datapoints: DataFrame = None
     tot_carb_bin_counts: int = None
+    confidence_interval: float = None
 
     def __init__(self, query_mats: QueryMaterials) -> None:
         self.qm = query_mats
@@ -193,9 +195,11 @@ class QueryCarbon():
         self.prob_distrib_Totcarbon = prT
         self.tot_carbon_datapoints = tot_carbon_datapoints
         self.tot_carb_bin_counts = bin_counts
+        self.confidence_interval = self.mean_confidence_interval(data=tot_carbon_datapoints, confidence_interv=0.95)
 
         return 
     
-        
+    def mean_confidence_interval(self, data: DataFrame, confidence_interv=0.95) -> float:
+        return st.t.interval(confidence_interv, len(data)-1, loc=np.mean(data), scale=st.sem(data))
 
 
