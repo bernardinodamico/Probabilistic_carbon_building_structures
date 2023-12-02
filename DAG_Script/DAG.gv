@@ -1,14 +1,13 @@
 digraph G {
-	graph [mindist=0.1,
-		oneblock=true,
-		splines=true
+	graph [pack=true,
+		splines=false
 	];
-	node [concentrate=true,
-		fillcolor=darksalmon,
+	node [fillcolor=azure2,
 		fontname=Sans,
 		fontsize=9,
 		penwidth=1,
-		shape=oval,
+		rank=sink,
+		shape=octagon,
 		style=filled
 	];
 	edge [arrowhead=normal,
@@ -16,74 +15,72 @@ digraph G {
 		color=gray30,
 		penwidth=1.2
 	];
-	"Superstructure 
-unit-weight"	[concentrate="",
-		fillcolor=gray66];
-	"Foundations 
-type"	[fillcolor=cornflowerblue,
-		penwidth=1.];
-	"Superstructure 
-unit-weight" -> "Foundations 
-type";
-	"Concrete 
-elements"	[concentrate="",
-		fillcolor=gray66];
-	"Concrete 
-elements" -> "Concrete 
-qty.";
-	"Concrete 
-elements" -> "Reinforcement 
-qty.";
 	"Cladding 
-type"	[fillcolor=cornflowerblue,
-		penwidth=1.];
+type"	[shape=box];
+	"Masonry & 
+blockworks qty."	[shape=oval];
 	"Cladding 
 type" -> "Masonry & 
 blockworks qty."	[minlen=1];
 	"Superstructure 
-type"	[fillcolor=cornflowerblue,
-		penwidth=1.];
-	"Superstructure 
-type" -> "Superstructure 
-unit-weight";
-	"Superstructure 
-type" -> "Concrete 
-elements";
+type"	[shape=box];
+	"Timber 
+(products) qty."	[shape=oval];
 	"Superstructure 
 type" -> "Timber 
 (products) qty.";
+	"Steel 
+(sections) qty."	[shape=oval];
 	"Superstructure 
 type" -> "Steel 
 (sections) qty.";
 	"Superstructure 
 type" -> "Masonry & 
 blockworks qty.";
-	GIFA	[fillcolor=cornflowerblue,
-		penwidth=1.];
-	GIFA -> "Concrete 
-qty.";
+	"Superstructure 
+type" -> "Concrete 
+elements";
+	"Superstructure 
+type" -> "Superstructure 
+unit-weight";
+	GIFA	[shape=box];
 	GIFA -> "Timber 
 (products) qty.";
 	GIFA -> "Steel 
 (sections) qty.";
-	GIFA -> "Reinforcement 
-qty.";
 	GIFA -> "Masonry & 
 blockworks qty.";
+	"Reinforcement 
+qty."	[shape=oval];
+	GIFA -> "Reinforcement 
+qty.";
+	"Concrete 
+qty."	[shape=oval];
+	GIFA -> "Concrete 
+qty.";
 	"No. 
-storeys"	[fillcolor=cornflowerblue,
-		penwidth=1.];
+storeys"	[shape=box];
+	"Foundations 
+type"	[shape=box];
 	"No. 
 storeys" -> "Foundations 
 type"	[minlen=1];
-	Basement	[fillcolor=cornflowerblue,
-		penwidth=1.];
+	Basement	[shape=box];
 	Basement -> "Concrete 
 qty."	[minlen=1];
 	"Foundations 
-type" -> "Concrete 
-qty.";
-	"Foundations 
 type" -> "Reinforcement 
 qty.";
+	"Foundations 
+type" -> "Concrete 
+qty.";
+	"Concrete 
+elements" -> "Reinforcement 
+qty.";
+	"Concrete 
+elements" -> "Concrete 
+qty.";
+	"Superstructure 
+unit-weight" -> "Foundations 
+type";
 }
