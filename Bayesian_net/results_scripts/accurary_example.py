@@ -76,17 +76,17 @@ for j in range(0, 2):
         axs[j, i].hist(x=list_queries[k]['tot_carbon_datapoints'], 
                     bins=list_queries[k]['bins'], 
                     density=True, 
-                    alpha=0.8, 
-                    label=r'$CI_{95\%}=$'+str(round(list_queries[k]['CI_95'][0][0], 1)),
-                    color='lightgray',
+                    alpha=0.7, 
+                    label=r'$CI_{95\%}=$'+str(int(list_queries[k]['CI_95'][0][0])),
+                    color='moccasin',
                     edgecolor='black', 
                     linewidth=0.3)
         mode, lnspc, pdf_gamma = get_mode(ser=list_queries[k]['tot_carbon_datapoints'])
 
-        axs[j, i].plot(lnspc, pdf_gamma, label=None, color = 'black', linewidth=0.9)
+        axs[j, i].plot(lnspc, pdf_gamma, label=None, color = 'black', linewidth=0.6)
         axs[j, i].axvline(x=mode, color = 'red', linewidth=1.5, alpha=1., label=r'$c_{mode}$')
         axs[j, i].axvline(x=256.7, color = 'black', linewidth=1.2, alpha=1., linestyle='dashed', label=r'$c_{true}$')
-        deviation = r'$\|c_{mode} - c_{true}\|=$'+str(round(mode - 256.7, 1))
+        deviation = r'$\|c_{mode} - c_{true}\|=$'+str(int(mode - 256.7))
         axs[j, i].legend(loc='upper right', title=deviation)
         axs[j,i].set_xlabel(r'$C_T$'+' '+ r'$(kgCO_{2e}/m^2)$')
         axs[j, i].set_title(titles[k])
