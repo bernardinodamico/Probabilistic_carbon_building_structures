@@ -1,5 +1,7 @@
 from Bayesian_net.query import QueryMaterials, QueryCarbon
 from matplotlib import pyplot as plt
+from scipy import stats
+import numpy as np
 
 def single_carbon_query_call(evidence_vals: dict) -> dict:
 
@@ -11,7 +13,7 @@ def single_carbon_query_call(evidence_vals: dict) -> dict:
     queryCarb.run_tot_carbon(sample_size=50000, carbon_m=carbon_mats, bin_sampling='bin_width', bin_counts=40)
 
     #print('mode=',queryCarb.tot_carbon_mode)
-    print('mean=',queryCarb.tot_carbon_mean)
+    #print('mean=',queryCarb.tot_carbon_mean)
     #print('median=',queryCarb.tot_carbon_median)
 
     return {
@@ -21,6 +23,23 @@ def single_carbon_query_call(evidence_vals: dict) -> dict:
         'bins': queryCarb.tot_carb_bin_counts,
         'CI_95': queryCarb.confidence_interval
             }
+
+def get_mode(ser)-> float:
+
+    #ser = list_queries[k]['tot_carbon_datapoints']
+
+    #plt.hist(ser, density=True)
+
+    lnspc = np.arange(0,2000) # the range of x should be specificied
+
+    ag,bg,cg = stats.gamma.fit(ser)  
+    pdf_gamma = stats.gamma.pdf(lnspc, ag, bg,cg)  
+    #plt.plot(lnspc, pdf_gamma, label="Gamma")
+
+    mode = lnspc[stats.gamma.pdf(lnspc, ag, bg,cg).argmax()] # find the x value to maximize pdf
+    print(mode)
+
+    return mode, lnspc, pdf_gamma
 
 #----------------------------------------------------------------------------------------------------------------------
 
@@ -53,17 +72,21 @@ plt.subplots_adjust(wspace=0.2, hspace=0.32)
 k = 0
 for j in range(0, 2):
     for i in range(0, 3):
+        
         axs[j, i].hist(x=list_queries[k]['tot_carbon_datapoints'], 
                     bins=list_queries[k]['bins'], 
                     density=True, 
-                    alpha=alphas[k], 
+                    alpha=0.8, 
                     label=r'$CI_{95\%}=$'+str(round(list_queries[k]['CI_95'][0][0], 1)),
-                    color='blue',
+                    color='lightgray',
                     edgecolor='black', 
-                    linewidth=0.4)
-        axs[j, i].axvline(x=list_queries[k]['mean'], color = 'red', linewidth=1.2, alpha=1., label=r'$c_{mean}$')
+                    linewidth=0.3)
+        mode, lnspc, pdf_gamma = get_mode(ser=list_queries[k]['tot_carbon_datapoints'])
+
+        axs[j, i].plot(lnspc, pdf_gamma, label=None, color = 'black', linewidth=0.9)
+        axs[j, i].axvline(x=mode, color = 'red', linewidth=1.5, alpha=1., label=r'$c_{mode}$')
         axs[j, i].axvline(x=256.7, color = 'black', linewidth=1.2, alpha=1., linestyle='dashed', label=r'$c_{true}$')
-        deviation = r'$\|c_{mean} - c_{true}\|=$'+str(round(list_queries[k]['mean'] - 256.7, 1))
+        deviation = r'$\|c_{mode} - c_{true}\|=$'+str(round(mode - 256.7, 1))
         axs[j, i].legend(loc='upper right', title=deviation)
         axs[j,i].set_xlabel(r'$C_T$'+' '+ r'$(kgCO_{2e}/m^2)$')
         axs[j, i].set_title(titles[k])
@@ -80,3 +103,5 @@ for j in range(0, 2):
     
 
 plt.savefig(fname='Figures/accuracy_example.jpeg', dpi=300)
+
+
