@@ -7,7 +7,8 @@ from Bayesian_net.utilities import discretizer
 full_dataset = pd.read_csv(filepath_or_buffer='Data/training_dataset.csv') 
 
 
-
+# need a method that generates a list of different query calls for each validation datapoint.
+# there are 5 vars in each datapoint. 
 
 
 
