@@ -2,12 +2,14 @@ from Bayesian_net.query import QueryMaterials, QueryCarbon
 from matplotlib import pyplot as plt
 from scipy import stats
 import numpy as np
+from Bayesian_net.settings import BNSettings
+
 
 def single_carbon_query_call(evidence_vals: dict) -> dict:
 
     qmats = QueryMaterials(update_training_ds=True)
     #Run 'run_mats_queries()' only if needing the method's output. It's already called internally when istantiating QueryCarbon()
-    #res = qmats.run_mats_queries(evidence_vals=evidence_vals) 
+    mats_qtys = qmats.run_mats_queries(evidence_vals=evidence_vals) 
     queryCarb = QueryCarbon(query_mats=qmats)
     carbon_mats = queryCarb.run_carbon_mats_queries(evidence_vals=evidence_vals)
     queryCarb.run_tot_carbon(sample_size=50000, carbon_m=carbon_mats, bin_sampling='bin_width', bin_counts=40)
@@ -21,7 +23,8 @@ def single_carbon_query_call(evidence_vals: dict) -> dict:
         'tot_carbon_datapoints': queryCarb.tot_carbon_datapoints,
         'mean': queryCarb.tot_carbon_mean,
         'bins': queryCarb.tot_carb_bin_counts,
-        'CI_95': queryCarb.confidence_interval
+        'CI_95': queryCarb.confidence_interval,
+        'mats_qtys': mats_qtys
             }
 
 def get_mode(ser)-> float:
@@ -42,7 +45,7 @@ def get_mode(ser)-> float:
     return mode, lnspc, pdf_gamma
 
 #----------------------------------------------------------------------------------------------------------------------
-
+ylabels = [r'$P(Q)$', r'$P(Q | n)$', r'$P(Q | n,f)$', r'$P(Q | n,f,s^*)$', r'$P(Q | n,f,s^*,g)$', r'$P(Q | n,f,s^*,g,b)$']
 # sample 144 in the training dataset: true c = 256.7
 design_vars =   {'No_storeys': '1_to_3',
                  'Found_Type': 'Mass(Pads/Strips)',
@@ -63,6 +66,58 @@ for var in design_vars.keys():
     out_query = single_carbon_query_call(evidence_vals=evidence_vals)
     list_queries.append(out_query)
 
+#---Plotting material distributions----------
+vline= [[6, 6, 6, 6, 6, 6],
+        [-0.49, -0.49, -0.49, -0.49, -0.49, -0.49],
+        [0.14, 0.14, 0.14, 0.14, 0.14, 0.14],
+        [-0.45, -0.45, -0.45, -0.45, -0.45, -0.45],
+        [1.1, 1.1, 1.1, 1.1, 1.1, 1.1]]
+
+
+fig, axs = plt.subplots(nrows=6, ncols=5, gridspec_kw={'width_ratios': [16./41., 4./41., 7./41., 10./41., 4./41]})
+
+fig.set_size_inches(12.5, 12.5)
+plt.subplots_adjust(wspace=0.15, hspace=0.0)
+
+titles = [1163.4, 0.01, 19.65, 0.1, 114.7]
+mat_labels = ['Concrete', 'Masonry&Blockw.\n', 'Reinf.\n', 'Steel(sections)\n', 'Timber(products)\n']
+
+for j in range(0, 6):
+    for i in range(0, 5):
+        mat_name = BNSettings._material_vars[i]
+        Pr_conc = list_queries[j]['mats_qtys'][mat_name]
+
+        x_labels = []
+        for val in Pr_conc[list(Pr_conc.columns)[0]].tolist():
+            if mat_labels[i] == 'Masonry&Blockw.\n': x_labels.append(str(round(val,2)))
+            else: x_labels.append(str(int(val)))
+        axs[j, i].bar(x=x_labels, 
+                height=Pr_conc[list(Pr_conc.columns)[1]],
+                width=1.,
+                color='steelblue',
+                edgecolor='black', 
+                linewidth=0.3
+                )
+        axs[j, i].axvline(x=vline[i][j], color = 'black', linewidth=1.2, alpha=1., linestyle='dashed', label=r'$q_{true}$')
+
+        axs[j, i].set_ylabel(ylabels[j], fontsize=12)
+        if mat_labels[i] == 'Masonry&Blockw.\n': axs[j, i].set_xlabel(mat_labels[i]+r' $(m^2/m^2)$', fontsize=12)
+        else: axs[j, i].set_xlabel(mat_labels[i]+r' $(kg/m^2)$', fontsize=12)
+        axs[j, i].set_xticks(ticks=x_labels, labels=x_labels, rotation=90)
+        #axs[j, i].set_yticks(ticks=[0.], labels=None)
+        #axs[j, i].set_ylim(top=1.)
+        axs[j, i].tick_params('x', labelleft=False)
+        if j == 0 and i == 0: axs[j, i].set_title(r'$q_{true}= $'+str(titles[i]), fontsize=12)
+        elif j == 0: axs[j, i].set_title(str(titles[i]), fontsize=12)
+
+for ax in axs.flat:
+    ax.label_outer()
+    ax.set_facecolor('whitesmoke')
+
+plt.savefig(fname='Figures/accuracy_example_mats.jpeg', dpi=300)
+
+
+#---Plotting Tot carbon-----------------------
 alphas = [0.35, 0.4, 0.45, 0.5, 0.55, 0.6]
 ylabels = [r'$P(C_T)$', r'$P(C_T | n)$', r'$P(C_T | n,f)$', r'$P(C_T | n,f,s^*)$', r'$P(C_T | n,f,s^*,g)$', r'$P(C_T | n,f,s^*,g,b)$']
 titles = ['(a)', '(b)', '(c)', '(d)', '(e)', '(f)']
