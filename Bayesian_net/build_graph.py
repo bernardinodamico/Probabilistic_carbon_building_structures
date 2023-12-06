@@ -3,16 +3,19 @@ import pandas as pd
 from Bayesian_net.utilities import Plotter
 from pandas import DataFrame
 from Bayesian_net.utilities import discretizer
-
+from copy import deepcopy
 
 class BuildGraph():
 
-    dataset: DataFrame = None
+    continuous_full_dataset: DataFrame = None
+    discrete_full_dataset: DataFrame = None
+    tr_dataset: DataFrame = None
+    vald_dataset: DataFrame = None
     nodes: list[str] = None
     edges: list[tuple[str]] = None
 
     def load_dataset(self, path: str) -> None:
-            self.dataset = pd.read_csv(filepath_or_buffer=path)  
+            self.continuous_full_dataset = pd.read_csv(filepath_or_buffer=path)  
             
             return
     
@@ -23,20 +26,36 @@ class BuildGraph():
             vars_list.append(v['name'])
             bins_list.append(v['bins'])
         
-        self.dataset = discretizer(dataset=self.dataset,
-                                   vars=vars_list,
-                                   bin_counts=bins_list,
-                                   mid_vals=mid_vals)
+        self.discrete_full_dataset = discretizer(dataset=self.continuous_full_dataset,
+                                      vars=vars_list,
+                                      bin_counts=bins_list,
+                                      mid_vals=mid_vals)
         
-        return self.dataset
+        return self.discrete_full_dataset
+
+    def extract_vald_dataset(self, ID_projs: list[int])-> None:
+        '''
+        ID_projs = a list containing Project refs in the "full_dataset.csv" to be used for the validation dataset
+        '''
+        self.vald_dataset = deepcopy(self.discrete_full_dataset)
+        self.tr_dataset = deepcopy(self.discrete_full_dataset)
+
+        indexRows = self.discrete_full_dataset[self.discrete_full_dataset['Proj_Ref'].isin(ID_projs)].index
+        self.tr_dataset = self.tr_dataset.drop(indexRows)
+
+        indexRows = self.discrete_full_dataset[~self.discrete_full_dataset['Proj_Ref'].isin(ID_projs)].index
+        self.vald_dataset = self.vald_dataset.drop(indexRows)
+
+        return
+
 
     def learn_G_from_data(self, signif_lev: float, nodes: list[str]) -> list[str] | list[tuple[str]]:
 
 
         ds = pd.DataFrame()
         for var in nodes:
-            if var in self.dataset.columns:
-                ds[var] = self.dataset[var]
+            if var in self.tr_dataset.columns:
+                ds[var] = self.tr_dataset[var]
 
         est = PC(data=ds)
 
@@ -47,7 +66,7 @@ class BuildGraph():
 
         self.nodes = estimated_model.nodes
         self.edges = estimated_model.edges
-        self.dataset = ds
+        self.tr_dataset = ds
 
         #print("nodes=", nodes)
         #print("edges=", edges)
@@ -57,12 +76,12 @@ class BuildGraph():
     def set_G_manually(self, nodes: list[str], edges: list[tuple[str]]) -> list[str] | list[tuple[str]]:
         ds = pd.DataFrame()
         for var in nodes:
-            if var in self.dataset.columns:
-                ds[var] = self.dataset[var]
+            if var in self.tr_dataset.columns:
+                ds[var] = self.tr_dataset[var]
         
         self.nodes = nodes
         self.edges = edges
-        self.dataset = ds
+        self.tr_dataset = ds
 
         return self.nodes, self.edges
 

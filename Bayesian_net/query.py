@@ -18,21 +18,23 @@ class QueryMaterials():
     CPDs: list[TabularCPD] = None
 
     def __init__(self, update_training_ds: bool = True) -> None:
-        self._init_BN_model(update_training_ds=update_training_ds)
+        self._init_BN_model(update_tr_vald_ds=update_training_ds)
         self._buildCPTs()
 
         return
     
-    def _init_BN_model(self, update_training_ds: bool) -> None:
+    def _init_BN_model(self, update_tr_vald_ds: bool) -> None:
         g_nodes = BNSettings.graph_nodes
         g_edges = BNSettings.graph_edges
         continuous_vars = BNSettings.continuous_vars
 
         G = BuildGraph()
-        if update_training_ds is True:
-            G.load_dataset(path='Data/training_dataset.csv')
+        if update_tr_vald_ds is True:
+            G.load_dataset(path='Data/full_dataset.csv')
             G.discretize_cont_vars(cont_vars=continuous_vars, mid_vals=True)
-            G.dataset.to_csv(path_or_buf='Data/discrete_training_dataset.csv', index=False)
+            G.extract_vald_dataset(ID_projs=[3, 18, 25, 33, 60, 99, 117, 123])
+            G.tr_dataset.to_csv(path_or_buf='Data/discrete_training_dataset.csv', index=False)
+            G.vald_dataset.to_csv(path_or_buf='Data/discrete_validation_dataset.csv', index=False)
         else:
             G.load_dataset(path='Data/discrete_training_dataset.csv')
         
@@ -42,7 +44,7 @@ class QueryMaterials():
         model = BayesianNetwork(ebunch=edges)
 
         self.model = model
-        self.dataset = G.dataset
+        self.dataset = G.tr_dataset
 
         return
     

@@ -14,9 +14,6 @@ def single_carbon_query_call(evidence_vals: dict) -> dict:
     carbon_mats = queryCarb.run_carbon_mats_queries(evidence_vals=evidence_vals)
     queryCarb.run_tot_carbon(sample_size=50000, carbon_m=carbon_mats, bin_sampling='bin_width', bin_counts=40)
 
-    #print('mode=',queryCarb.tot_carbon_mode)
-    #print('mean=',queryCarb.tot_carbon_mean)
-    #print('median=',queryCarb.tot_carbon_median)
 
     return {
         'evidence_vals': evidence_vals,
@@ -29,15 +26,11 @@ def single_carbon_query_call(evidence_vals: dict) -> dict:
 
 def get_mode(ser)-> float:
 
-    #ser = list_queries[k]['tot_carbon_datapoints']
 
-    #plt.hist(ser, density=True)
-
-    lnspc = np.arange(0,2000) # the range of x should be specificied
+    lnspc = np.arange(0,2000) # the range of x 
 
     ag,bg,cg = stats.gamma.fit(ser)  
     pdf_gamma = stats.gamma.pdf(lnspc, ag, bg,cg)  
-    #plt.plot(lnspc, pdf_gamma, label="Gamma")
 
     mode = lnspc[stats.gamma.pdf(lnspc, ag, bg,cg).argmax()] # find the x value to maximize pdf
     print(mode)
@@ -46,7 +39,7 @@ def get_mode(ser)-> float:
 
 #----------------------------------------------------------------------------------------------------------------------
 ylabels = [r'$P(Q)$', r'$P(Q | n)$', r'$P(Q | n,f)$', r'$P(Q | n,f,s^*)$', r'$P(Q | n,f,s^*,g)$', r'$P(Q | n,f,s^*,g,b)$']
-# sample 144 in the training dataset: true c = 256.7
+# sample 144 in the training dataset: c_true = 256.7
 design_vars =   {'No_storeys': '1_to_3',
                  'Found_Type': 'Mass(Pads/Strips)',
                  'Supstr_Type': 'Timber_Frame(Glulam&CLT)',
@@ -104,8 +97,7 @@ for j in range(0, 6):
         if mat_labels[i] == 'Masonry&Blockw.\n': axs[j, i].set_xlabel(mat_labels[i]+r' $(m^2/m^2)$', fontsize=12)
         else: axs[j, i].set_xlabel(mat_labels[i]+r' $(kg/m^2)$', fontsize=12)
         axs[j, i].set_xticks(ticks=x_labels, labels=x_labels, rotation=90)
-        #axs[j, i].set_yticks(ticks=[0.], labels=None)
-        #axs[j, i].set_ylim(top=1.)
+
         axs[j, i].tick_params('x', labelleft=False)
         if j == 0 and i == 0: axs[j, i].set_title(r'$q_{true}= $'+str(titles[i]), fontsize=12)
         elif j == 0: axs[j, i].set_title(str(titles[i]), fontsize=12)
@@ -152,11 +144,7 @@ for j in range(0, 2):
         k = k + 1
 
 
-
-#for ax in axs.flat:
-    #ax.label_outer()
     
-
 plt.savefig(fname='Figures/accuracy_example.jpeg', dpi=300)
 
 
