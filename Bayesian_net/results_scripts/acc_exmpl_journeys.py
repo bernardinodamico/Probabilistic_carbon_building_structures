@@ -9,13 +9,46 @@ validation_dataset = pd.read_csv(filepath_or_buffer='Data/discrete_validation_da
 # there are 5 vars in each datapoint. 
 
 
-def powerset(s: list):
-    x = len(s)
+def powerset(s: set) -> list[set]:
+    '''
+    given a set "s" of items returns a list containing all subsets of "s", including "s" itself 
+    '''
+    x = len(list(s))
+    list_subsets = []
     for i in range(1 << x):
-        print([s[j] for j in range(x) if (i & (1 << j))])
+        subset = set([list(s)[j] for j in range(x) if (i & (1 << j))])
+        list_subsets.append(subset)
+        #print(subset)
+    
+    return list_subsets
 
 
-powerset(['n', 'f', 's*', 'g', 'b'])
+full_vars_set = set(['n', 'f', 's*', 'g', 'b'])
+l_sets = powerset(s=full_vars_set)
+l_sets = sorted(l_sets, key=len)
+
+
+for ss in l_sets:
+    print(ss)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 design_vars =   {'No_storeys': '1_to_3',
@@ -31,5 +64,5 @@ design_vars =   {'No_storeys': '1_to_3',
 #heading for the output dataframe:
 
 '''
-Validation_Proj_Ref, True_tot_Carbon, Mode_tot_Carbon, No_evidence_vars, ID_design_journey
+Validation_Proj_Ref, True_tot_Carbon, Mode_tot_Carbon, Num_evidence_vars, ID_design_journey
 '''
