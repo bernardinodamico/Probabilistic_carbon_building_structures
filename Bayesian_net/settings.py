@@ -6,6 +6,10 @@ class BNSettings():
     smoothCPT: bool = True #whether to smooth the cond prob tables of the bayes net.
     eq_sample_size: int = 2.0 # parameter for smoothing. The higher the value to more the smoothing.
 
+    #Each value in the 'test_samples_IDs' list corresponds to
+    # the 'Proj_Ref' value of the datapoint to use for testing
+    test_samples_IDs = [3, 18, 25, 33, 60, 99, 117, 123]
+
     # Variables in the dataset to use for building the BN
     graph_nodes = [
     'No_storeys',

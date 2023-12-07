@@ -10,6 +10,7 @@ from copy import deepcopy
 import numpy as np
 from Bayesian_net.utilities import discretizer
 import scipy.stats as st
+from Bayesian_net.settings import BNSettings
 
 class QueryMaterials():
     
@@ -32,7 +33,7 @@ class QueryMaterials():
         if update_tr_vald_ds is True:
             G.load_dataset(path='Data/full_dataset.csv')
             G.discretize_cont_vars(cont_vars=continuous_vars, mid_vals=True)
-            G.extract_vald_dataset(ID_projs=[3, 18, 25, 33, 60, 99, 117, 123])
+            G.extract_vald_dataset(ID_projs=BNSettings.test_samples_IDs)
             G.tr_dataset.to_csv(path_or_buf='Data/discrete_training_dataset.csv', index=False)
             G.vald_dataset.to_csv(path_or_buf='Data/discrete_validation_dataset.csv', index=False)
         else:
