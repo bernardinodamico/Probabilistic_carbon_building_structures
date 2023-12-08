@@ -71,7 +71,7 @@ def inference_results(list_sets: list[set], design_vars: dict, Validation_Proj_R
         inference_res.to_csv(path_or_buf=path)
     
     else:
-        inference_res = pd.read_csv(path_or_buf=path)
+        inference_res = pd.read_csv(filepath_or_buffer=path)
     
     return inference_res
 

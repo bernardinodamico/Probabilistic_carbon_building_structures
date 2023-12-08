@@ -32,7 +32,7 @@ inf_results = inference_results(list_sets=list_sets,
                                 Validation_Proj_Ref=144, 
                                 True_tot_Carbon=256.7, 
                                 update_csv_res=True,
-                                path='Bayesian_net/results_scripts/Data_res/acc_exmpl_journeys.csv') #where the csv results are saved or read
+                                path='Bayesian_net/results_scripts/Data_res/accuracy_journeys.csv') #where the save (or read from) the csv results
 
 
 
