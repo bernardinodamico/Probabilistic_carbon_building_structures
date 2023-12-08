@@ -79,7 +79,7 @@ def inference_results(list_sets: list[set], design_vars: dict, Validation_Proj_R
 
 def get_connectivity_Hasse_diag(list_sets: list[set]) ->list[list[set]]:
     '''
-    given a list of sets returns a list containing a two-item list of start node (set) and end node (set) of the Hasse diagram
+    given a list of sets returns a list containing a two-item list of start node (set) and end node (set) of the Hasse diagram of the power set
     see: https://demonstrations.wolfram.com/HasseDiagramOfPowerSets/
     '''
     connectivity_L = []
