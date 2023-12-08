@@ -66,7 +66,7 @@ def inference_results(list_sets: list[set], design_vars: dict, Validation_Proj_R
 
             mode, lnspc, pdf_gamma = get_mode(ser=out['tot_carbon_datapoints'])
             print(f'query {list_sets.index(ss)} out of {len(list_sets)}')
-            t.append({'Validation_Proj_Ref': Validation_Proj_Ref, 'True_tot_Carbon': True_tot_Carbon, 'Mode_tot_Carbon': mode, 'Evidence_vars': ss})
+            t.append({'Validation_Proj_Ref': Validation_Proj_Ref, 'True_tot_Carbon': True_tot_Carbon, 'Mode_tot_Carbon': mode, 'Evidence_vars': sorted(ss)})
         inference_res = pd.DataFrame(t)
         inference_res.to_csv(path_or_buf=path)
     
@@ -89,7 +89,7 @@ def get_connectivity_Hasse_diag(list_sets: list[set]) ->list[list[set]]:
             if len(list_sets[j]) == len(list_sets[i]) + 1:
                 if st_node.issubset(list_sets[j]) is True:
                     end_node = list_sets[j]
-                    connectivity_L.append([st_node, end_node])
+                    connectivity_L.append([sorted(st_node), sorted(end_node)])
                     #print([st_node, end_node])
     
     return connectivity_L
