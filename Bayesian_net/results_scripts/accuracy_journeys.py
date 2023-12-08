@@ -33,3 +33,12 @@ inf_results = inference_results(list_sets=list_sets,
 
 
 #-----Plottting design journeys--------------------------------------
+
+'''
+draw a line for each connection in the hasse_conn list in mathplotlib. to draw the line a x list and a y list are needed
+
+[x_st_node, x_end_node]; [y_st_node, y_end_node]
+
+x coords = number of vars e.g. for st_node = {F, S*, N} then x_st_node = 3
+y_coord = the accuracy gap in the csv matching the value in the 'Evidence_vars' column
+'''
