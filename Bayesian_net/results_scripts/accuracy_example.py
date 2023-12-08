@@ -3,7 +3,6 @@ from Bayesian_net.results_scripts.single_carbon_query import get_mode, single_ca
 from Bayesian_net.settings import BNSettings
 
 
-#----------------------------------------------------------------------------------------------------------------------
 ylabels = [r'$P(Q)$', r'$P(Q | n)$', r'$P(Q | n,f)$', r'$P(Q | n,f,s^*)$', r'$P(Q | n,f,s^*,g)$', r'$P(Q | n,f,s^*,g,b)$']
 # sample 144 in the training dataset: c_true = 256.7
 design_vars =   {'No_storeys': '1_to_3',
