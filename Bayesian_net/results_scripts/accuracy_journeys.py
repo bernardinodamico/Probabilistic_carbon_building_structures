@@ -2,11 +2,10 @@ from Bayesian_net.results_scripts.single_carbon_query import powerset, get_conne
 from matplotlib import pyplot as plt
 from matplotlib.pyplot import figure
 import pandas as pd
-from pandas import DataFrame
 
 #validation_dataset = pd.read_csv(filepath_or_buffer='Data/discrete_validation_dataset.csv') 
 
-
+'''
 # sample 144 in the training dataset: c_true = 256.7
 design_vars =   {'No_storeys': '1_to_3',
                  'Found_Type': 'Mass(Pads/Strips)',
@@ -14,6 +13,27 @@ design_vars =   {'No_storeys': '1_to_3',
                  'GIFA_(m2)': 3387.218,
                  #'Clad_Type': 'Other',
                  'Basement': False,
+                 }
+'''
+
+
+proj_ref = 144
+
+training_dataset = pd.read_csv(filepath_or_buffer='Data/discrete_training_dataset.csv') 
+
+n_storeys = training_dataset.loc[training_dataset['Proj_Ref'] == proj_ref, 'No_storeys']
+found_type = training_dataset.loc[training_dataset['Proj_Ref'] == proj_ref, 'Found_Type']
+ss_type = training_dataset.loc[training_dataset['Proj_Ref'] == proj_ref, 'Supstr_Type']
+gifa = training_dataset.loc[training_dataset['Proj_Ref'] == proj_ref, 'GIFA_(m2)']
+#clad_type = training_dataset.loc[training_dataset['Proj_Ref'] == proj_ref, 'Clad_Type']
+basement = training_dataset.loc[training_dataset['Proj_Ref'] == proj_ref, 'Basement']
+
+design_vars =   {'No_storeys': n_storeys.values[0],
+                 'Found_Type': found_type.values[0],
+                 'Supstr_Type': ss_type.values[0],
+                 'GIFA_(m2)': gifa.values[0],
+                 #'Clad_Type': 'Other',
+                 'Basement': basement.values[0],
                  }
 
 
@@ -61,16 +81,16 @@ for i in range(0, len(list_x)):
     plt.plot(list_x[i], list_y[i], marker = 'o', color="black", linewidth=0.4, ms = marker_size, mfc = mcface, mec = 'grey')
 
 plt.plot([0, 1], [155.3, 149.3], marker = 'o', color="black", linewidth=1.2, ms = marker_size, mfc = mcface, mec = 'black')
-plt.plot([1, 2], [149.3, 122.3], marker = 'o', color="black", linewidth=1.2, ms = marker_size, mfc = mcface, mec = 'black')
-plt.plot([2, 3], [122.3, 81], marker = 'o', color="black", linewidth=1.2, ms = marker_size, mfc = mcface, mec = 'black')
-plt.plot([3, 4], [81, 45], marker = 'o', color="black", linewidth=1.2, ms = marker_size, mfc = mcface, mec = 'black')
-plt.plot([4, 5], [45, 14.3], marker = 'o', color="black", linewidth=1.2, ms = marker_size, mfc = mcface, mec = 'black')
+plt.plot([1, 2], [149.3, 125.3], marker = 'o', color="black", linewidth=1.2, ms = marker_size, mfc = mcface, mec = 'black')
+plt.plot([2, 3], [125.3, 81], marker = 'o', color="black", linewidth=1.2, ms = marker_size, mfc = mcface, mec = 'black')
+plt.plot([3, 4], [81, 23], marker = 'o', color="black", linewidth=1.2, ms = marker_size, mfc = mcface, mec = 'black')
+plt.plot([4, 5], [23, 14.3], marker = 'o', color="black", linewidth=1.2, ms = marker_size, mfc = mcface, mec = 'black')
 
 plt.ylabel(ylabel=r'$\|c_{mode} - c_{true}\|$'+' '+r'$(kgCO_{2e}/m^2)$', fontsize=9)
 plt.xlabel(xlabel='No. of evidence variables', fontsize=9)
 
 plt.xticks(fontsize=8)
 plt.yticks(fontsize=8)
-plt.ylim(0, 170)
+#plt.ylim(0, 170)
 plt.savefig(fname='Figures/accuracy_journeys.jpeg', dpi=300)
 
