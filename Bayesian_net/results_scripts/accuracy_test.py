@@ -8,7 +8,6 @@ import random
 import ast
 from matplotlib.pyplot import figure
 
-
 update_csv_results=False
 test_sample_IDs = BNSettings.test_samples_IDs
 QueryMaterials(update_datasets=True) # to update the training and validation datasets before running the queries
@@ -62,17 +61,31 @@ df = pd.read_csv(filepath_or_buffer='Bayesian_net/results_scripts/Data_res/accur
 data_x = []
 data_y = []
 
-for i in range(0, len(df)):
-    
-    x = len(ast.literal_eval(df.iloc[i]['Evidence_vars'])) + (random.uniform(0, 1) - 0.5) * 0.3
+bins = [[] for v in range(7)]
+
+
+for i in range(0, len(df)): 
+    x = len(ast.literal_eval(df.iloc[i]['Evidence_vars'])) 
     error = abs((df.iloc[i]['Mode_tot_Carbon'] - df.iloc[i]['True_tot_Carbon']) / df.iloc[i]['True_tot_Carbon'])*100
     
-    data_x.append(x)
+    data_x.append(x + (random.uniform(0, 1) - 0.5) * 0.3)
     data_y.append(error)
 
+    bins[int(x)].append(error)
 
-figure(figsize=(8, 8))
-plt.scatter(data_x, data_y)
- 
+average_x = [0, 1, 2, 3, 4, 5, 6]
+average_y = []
+for b in bins:
+    average_error = sum(b) / len(b) 
+    average_y.append(average_error)
+
+labels = 'MAPE'
+
+figure(figsize=(5, 5))
+plt.scatter(data_x, data_y, marker = 'o', s = 19, c = 'grey', edgecolors = 'black', alpha=0.55)
+plt.plot(average_x, average_y, marker = 'o', color="red", linewidth=1., ms = 5, mfc = 'orangered', mec = 'red', label=labels)
+plt.legend(loc='upper right')
+plt.ylabel(r'Absolute percent. error')
+plt.xlabel(r'No. of evidence variables')
 
 plt.savefig(fname='Figures/accuracy_test.jpeg', dpi=300)
