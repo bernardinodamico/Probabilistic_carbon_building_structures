@@ -4,10 +4,12 @@ from matplotlib.pyplot import figure
 import pandas as pd
 from Bayesian_net.settings import BNSettings
 from Bayesian_net.query import QueryMaterials
+import random
+import ast
+from matplotlib.pyplot import figure
 
 
-
-update_csv_results=True
+update_csv_results=False
 test_sample_IDs = BNSettings.test_samples_IDs
 QueryMaterials(update_datasets=True) # to update the training and validation datasets before running the queries
 validation_dataset = pd.read_csv(filepath_or_buffer='Data/discrete_validation_dataset.csv')
@@ -54,35 +56,23 @@ if update_csv_results is True:
 
 #-----Plottting prediction error--------------------------------------
 
+
 df = pd.read_csv(filepath_or_buffer='Bayesian_net/results_scripts/Data_res/accuracy_test.csv')
 
-list_x = []
-list_y = []
-for link in hasse_conn:
-    x_st_node = len(link[0])
-    x_end_node = len(link[1])
-    list_x.append([x_st_node, x_end_node])
+data_x = []
+data_y = []
+
+for i in range(0, len(df)):
     
-    evid_st = str(link[0])
-    evid_end = str(link[1])
-
-    y_st_node = abs(df.loc[df['Evidence_vars'] == evid_st, 'Mode_tot_Carbon'] - df.loc[df['Evidence_vars'] == evid_st, 'True_tot_Carbon'])
-    y_end_node = abs(df.loc[df['Evidence_vars'] == evid_end, 'Mode_tot_Carbon'] - df.loc[df['Evidence_vars'] == evid_end, 'True_tot_Carbon'])
-    #print(y_st_node.values[0], y_end_node.values[0])
-    list_y.append([y_st_node, y_end_node])
-
-marker_size = 12
-mcface = 'lightgrey'
-figure(figsize=(8, 4))
-for i in range(0, len(list_x)):
-    plt.plot(list_x[i], list_y[i], marker = 'o', color="black", linewidth=0.4, ms = marker_size, mfc = mcface, mec = 'grey')
+    x = len(ast.literal_eval(df.iloc[i]['Evidence_vars'])) + (random.uniform(0, 1) - 0.5) * 0.3
+    error = abs((df.iloc[i]['Mode_tot_Carbon'] - df.iloc[i]['True_tot_Carbon']) / df.iloc[i]['True_tot_Carbon'])*100
+    
+    data_x.append(x)
+    data_y.append(error)
 
 
-plt.ylabel(ylabel=r'$\|c_{mode} - c_{true}\|$'+' '+r'$(kgCO_{2e}/m^2)$', fontsize=9)
-plt.xlabel(xlabel='No. of evidence variables', fontsize=9)
+figure(figsize=(8, 8))
+plt.scatter(data_x, data_y)
+ 
 
-plt.xticks(fontsize=8)
-plt.yticks(fontsize=8)
-#plt.ylim(0, 170)
 plt.savefig(fname='Figures/accuracy_test.jpeg', dpi=300)
-

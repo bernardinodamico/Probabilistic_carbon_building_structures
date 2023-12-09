@@ -5,7 +5,7 @@ import pandas as pd
 from Bayesian_net.query import QueryMaterials
 
 proj_ref = 153
-update_csv_results=True
+update_csv_results = False
 QueryMaterials(update_datasets=True) # to update the training and validation datasets before running the queries
 training_dataset = pd.read_csv(filepath_or_buffer='Data/discrete_training_dataset.csv') 
 
