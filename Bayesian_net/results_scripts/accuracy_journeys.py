@@ -2,23 +2,11 @@ from Bayesian_net.results_scripts.single_carbon_query import powerset, get_conne
 from matplotlib import pyplot as plt
 from matplotlib.pyplot import figure
 import pandas as pd
+from Bayesian_net.query import QueryMaterials
 
-#validation_dataset = pd.read_csv(filepath_or_buffer='Data/discrete_validation_dataset.csv') 
-
-'''
-# sample 144 in the training dataset: c_true = 256.7
-design_vars =   {'No_storeys': '1_to_3',
-                 'Found_Type': 'Mass(Pads/Strips)',
-                 'Supstr_Type': 'Timber_Frame(Glulam&CLT)',
-                 'GIFA_(m2)': 3387.218,
-                 #'Clad_Type': 'Other',
-                 'Basement': False,
-                 }
-'''
-
-
-proj_ref = 144
-
+proj_ref = 153
+update_csv_results=True
+QueryMaterials(update_datasets=True) # to update the training and validation datasets before running the queries
 training_dataset = pd.read_csv(filepath_or_buffer='Data/discrete_training_dataset.csv') 
 
 n_storeys = training_dataset.loc[training_dataset['Proj_Ref'] == proj_ref, 'No_storeys']
@@ -32,7 +20,7 @@ design_vars =   {'No_storeys': n_storeys.values[0],
                  'Found_Type': found_type.values[0],
                  'Supstr_Type': ss_type.values[0],
                  'GIFA_(m2)': gifa.values[0],
-                 #'Clad_Type': 'Other',
+                 #'Clad_Type': clad_type.values[0],
                  'Basement': basement.values[0],
                  }
 
@@ -49,9 +37,9 @@ hasse_conn = get_connectivity_Hasse_diag(list_sets=list_sets)
     
 inf_results = inference_results(list_sets=list_sets, 
                                 design_vars=design_vars, 
-                                Validation_Proj_Ref=144, 
-                                True_tot_Carbon=256.7, 
-                                update_csv_res=False,
+                                Validation_Proj_Ref=proj_ref, 
+                                True_tot_Carbon=training_dataset.loc[training_dataset['Proj_Ref'] == proj_ref, 'Total_Carbon_(A1-A5)_(kgCO2e/m2)'].iloc[0], 
+                                update_csv_res=update_csv_results,
                                 path='Bayesian_net/results_scripts/Data_res/accuracy_journeys.csv') #where the save (or read from) the csv results
 
 
@@ -80,17 +68,17 @@ figure(figsize=(8, 4))
 for i in range(0, len(list_x)):
     plt.plot(list_x[i], list_y[i], marker = 'o', color="black", linewidth=0.4, ms = marker_size, mfc = mcface, mec = 'grey')
 
-plt.plot([0, 1], [155.3, 149.3], marker = 'o', color="black", linewidth=1.2, ms = marker_size, mfc = mcface, mec = 'black')
-plt.plot([1, 2], [149.3, 125.3], marker = 'o', color="black", linewidth=1.2, ms = marker_size, mfc = mcface, mec = 'black')
-plt.plot([2, 3], [125.3, 81], marker = 'o', color="black", linewidth=1.2, ms = marker_size, mfc = mcface, mec = 'black')
-plt.plot([3, 4], [81, 23], marker = 'o', color="black", linewidth=1.2, ms = marker_size, mfc = mcface, mec = 'black')
-plt.plot([4, 5], [23, 14.3], marker = 'o', color="black", linewidth=1.2, ms = marker_size, mfc = mcface, mec = 'black')
+plt.plot([0, 1], [276., 271.], marker = 'o', color="black", linewidth=1.2, ms = marker_size, mfc = mcface, mec = 'black')
+plt.plot([1, 2], [271., 265.], marker = 'o', color="black", linewidth=1.2, ms = marker_size, mfc = mcface, mec = 'black')
+plt.plot([2, 3], [265., 250.], marker = 'o', color="black", linewidth=1.2, ms = marker_size, mfc = mcface, mec = 'black')
+plt.plot([3, 4], [250., 128.], marker = 'o', color="black", linewidth=1.2, ms = marker_size, mfc = mcface, mec = 'black')
+plt.plot([4, 5], [128., 72.], marker = 'o', color="black", linewidth=1.2, ms = marker_size, mfc = mcface, mec = 'black')
 
 plt.ylabel(ylabel=r'$\|c_{mode} - c_{true}\|$'+' '+r'$(kgCO_{2e}/m^2)$', fontsize=9)
 plt.xlabel(xlabel='No. of evidence variables', fontsize=9)
 
 plt.xticks(fontsize=8)
 plt.yticks(fontsize=8)
-#plt.ylim(0, 170)
+plt.ylim(0, 350)
 plt.savefig(fname='Figures/accuracy_journeys.jpeg', dpi=300)
 

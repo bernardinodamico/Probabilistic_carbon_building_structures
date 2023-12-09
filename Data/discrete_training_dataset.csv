@@ -1,5 +1,6 @@
 Proj_Ref,Calc_Stage,GIFA_(m2),No_storeys,Basement,Found_Type,Supstr_Type,Supstr_Cr_elems,Supstr_uw,Clad_Type,Concr(kg/m2),Masnry&Blwk(m2/m2),Reinf(kg/m2),Steel_Sec(kg/m2),Timber_Prod(kg/m2),Concrete_Carbon_(A1-A5)_(kgCO2e/m2),Masonry_& Blockwork_Carbon_(A1-A5)_(kgCO2e/m2),Reinforcement_Carbon_(A1-A5)_(kgCO2e/m2),Steel_(Sections)_Carbon_(A1-A5)_(kgCO2e/m2),Timber_(Products)_Carbon_(A1-A5)_(kg/m2),Total_Carbon_(A1-A5)_(kgCO2e/m2)
 1,Stage_4,6070.594,1_to_3,False,Mass(Pads/Strips),Masonry&Timber,No_elems,medium,Masonry,516.702,4.116,14.718,6.39,33.475,37.7088,116.0068,2.8747,0.694,18.9907,176.2749
+3,As_Built,10095.656,1_to_3,False,Piled(Ground-beams/Caps),RC_Frame,Frame&Floors,high,Masonry,1299.684,0.819,44.464,6.39,33.475,195.5656,30.2956,116.8594,9.0121,0.0,351.7327
 7,As_Built,693.11,1_to_3,False,Mass(Pads/Strips),Masonry&Timber,No_elems,medium,Masonry,1691.174,4.116,14.718,19.402,33.475,144.9978,143.8644,10.1397,38.0503,0.0,337.0522
 9,As_Built,2045.532,1_to_3,False,Piled(Ground-beams/Caps),Masonry&Concrete,Floors,high,Masonry,777.696,2.47,14.718,6.39,33.475,111.6186,98.4062,37.9554,0.0,0.0,247.9801
 10,As_Built,2045.532,1_to_3,True,Reinforced(Pads/Strips/Raft),Masonry&Concrete,Floors,high,Masonry,1169.186,2.47,44.464,6.39,33.475,144.6764,92.0837,97.2469,13.4892,0.0,347.4962
@@ -9,6 +10,7 @@ Proj_Ref,Calc_Stage,GIFA_(m2),No_storeys,Basement,Found_Type,Supstr_Type,Supstr_
 16,As_Built,7412.282,7_to_10,True,Reinforced(Pads/Strips/Raft),RC_Frame,Frame&Floors,high,Masonry,908.192,0.819,44.464,6.39,33.475,144.1732,13.7618,121.0091,4.8779,0.0,283.822
 19,As_Built,2045.532,1_to_3,False,Piled(Ground-beams/Caps),Masonry&Concrete,Floors,high,Masonry,647.198,0.819,14.718,6.39,33.475,88.8072,43.3171,45.542,9.6553,0.0,187.3215
 24,As_Built,693.11,1_to_3,False,Piled(Ground-beams/Caps),Masonry&Timber,No_elems,medium,Masonry,516.702,2.47,14.718,6.39,33.475,56.9482,59.6753,54.5423,6.7289,5.5184,183.4131
+25,Stage_5,693.11,1_to_3,False,Piled(Ground-beams/Caps),Steel_Frame&Precast/Composite,Floors,medium,Masonry,1560.678,2.47,14.718,58.206,33.475,204.7479,82.3497,28.1171,95.5457,4.3442,415.1045
 26,As_Built,693.11,4_to_6,True,Piled(Ground-beams/Caps),RC_Frame,Frame&Floors,high,Masonry,2213.162,0.819,103.75,6.39,33.475,288.8591,41.9642,228.8572,0.0,0.0,559.6804
 28,As_Built,693.11,1_to_3,False,Piled(Ground-beams/Caps),Masonry&Timber,No_elems,medium,Masonry,385.03,2.47,14.718,6.39,33.475,32.0422,74.094,26.4053,0.0,0.0,132.5414
 29,Stage_5,693.11,1_to_3,True,Piled(Ground-beams/Caps),Masonry&Timber,No_elems,medium,Other,1691.174,2.47,74.107,6.39,33.475,234.4795,45.4416,189.3254,15.9184,11.2351,496.4
@@ -76,8 +78,6 @@ Proj_Ref,Calc_Stage,GIFA_(m2),No_storeys,Basement,Found_Type,Supstr_Type,Supstr_
 140,As_Built,2045.532,1_to_3,True,Piled(Ground-beams/Caps),Steel_Frame&Precast/Composite,Floors,medium,Masonry,1038.69,0.819,44.464,148.748,33.475,191.8603,0.0,155.1039,1.331,0.0,348.2952
 141,As_Built,2045.532,4_to_6,False,Mass(Pads/Strips),RC_Frame,Frame&Floors,high,Masonry,1169.186,0.819,74.107,6.39,33.475,91.5066,0.0,72.2074,8.2558,0.0,171.9698
 142,As_Built,2045.532,1_to_3,False,Piled(Ground-beams/Caps),Steel_Frame&Precast/Composite,Floors,medium,Masonry,908.192,0.819,44.464,6.39,33.475,82.8114,0.0,62.1933,0.0,0.0,145.0047
-143,As_Built,693.11,1_to_3,False,Reinforced(Pads/Strips/Raft),RC_Frame,Frame&Floors,high,Other,1038.69,0.819,44.464,6.39,33.475,392.6849,0.0,381.3037,0.0,0.0,773.9885
-144,Stage_5,3387.218,1_to_3,False,Mass(Pads/Strips),Timber_Frame(Glulam&CLT),No_elems,low,Other,1169.186,0.819,14.718,6.39,100.828,144.0748,0.0,41.853,1.5404,69.2775,256.7457
 149,As_Built,693.11,1_to_3,False,Piled(Ground-beams/Caps),RC_Frame,Frame&Floors,high,Other,1821.671,0.819,163.036,32.336,33.475,231.5603,0.0,359.3547,43.1491,0.0,634.0641
 150,As_Built,2045.532,1_to_3,True,Piled(Ground-beams/Caps),Steel_Frame&Precast/Composite,Floors,medium,Other,1691.174,0.819,14.718,58.206,33.475,177.5406,0.0,61.3853,97.7205,0.0,336.6463
 151,As_Built,3387.218,1_to_3,False,Mass(Pads/Strips),RC_Frame,Frame&Floors,high,Masonry,1430.18,0.819,44.464,6.39,33.475,151.0297,0.0,91.135,0.7835,0.0,242.9481

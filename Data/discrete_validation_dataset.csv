@@ -1,9 +1,9 @@
 Proj_Ref,Calc_Stage,GIFA_(m2),No_storeys,Basement,Found_Type,Supstr_Type,Supstr_Cr_elems,Supstr_uw,Clad_Type,Concr(kg/m2),Masnry&Blwk(m2/m2),Reinf(kg/m2),Steel_Sec(kg/m2),Timber_Prod(kg/m2),Concrete_Carbon_(A1-A5)_(kgCO2e/m2),Masonry_& Blockwork_Carbon_(A1-A5)_(kgCO2e/m2),Reinforcement_Carbon_(A1-A5)_(kgCO2e/m2),Steel_(Sections)_Carbon_(A1-A5)_(kgCO2e/m2),Timber_(Products)_Carbon_(A1-A5)_(kg/m2),Total_Carbon_(A1-A5)_(kgCO2e/m2)
-3,As_Built,10095.656,1_to_3,False,Piled(Ground-beams/Caps),RC_Frame,Frame&Floors,high,Masonry,1299.684,0.819,44.464,6.39,33.475,195.5656,30.2956,116.8594,9.0121,0.0,351.7327
 18,Stage_5,693.11,4_to_6,True,Reinforced(Pads/Strips/Raft),Masonry&Concrete,Floors,high,Masonry,1299.684,2.47,74.107,6.39,33.475,191.0267,205.0861,149.9267,2.5564,0.0,548.5959
-25,Stage_5,693.11,1_to_3,False,Piled(Ground-beams/Caps),Steel_Frame&Precast/Composite,Floors,medium,Masonry,1560.678,2.47,14.718,58.206,33.475,204.7479,82.3497,28.1171,95.5457,4.3442,415.1045
 33,Stage_4,693.11,4_to_6,True,Reinforced(Pads/Strips/Raft),Steel_Frame&CLT,No_elems,low,Masonry,777.696,2.47,44.464,19.402,33.475,102.0053,108.8219,89.2747,33.3391,12.3957,345.8367
 60,Stage_4,693.11,4_to_6,True,Reinforced(Pads/Strips/Raft),Steel_Frame&CLT,No_elems,low,Masonry,1038.69,0.819,44.464,19.402,33.475,135.3598,14.2584,118.7148,39.4828,0.0,307.8158
 99,As_Built,693.11,1_to_3,False,Piled(Ground-beams/Caps),Timber_Frame(Glulam&CLT),No_elems,low,Other,777.696,0.819,14.718,6.39,100.828,88.1679,1.7459,54.5801,13.304,33.8202,191.618
 117,Stage_5,11437.344,7_to_10,False,Piled(Ground-beams/Caps),RC_Frame,Frame&Floors,high,Masonry,1169.186,0.819,44.464,6.39,33.475,158.6327,0.0,105.2892,0.0,0.0,263.9219
 123,As_Built,2045.532,4_to_6,True,Piled(Ground-beams/Caps),RC_Frame,Frame&Floors,high,Other,2213.162,0.819,103.75,6.39,33.475,231.4302,0.0,229.2565,0.2856,0.0,460.9724
+143,As_Built,693.11,1_to_3,False,Reinforced(Pads/Strips/Raft),RC_Frame,Frame&Floors,high,Other,1038.69,0.819,44.464,6.39,33.475,392.6849,0.0,381.3037,0.0,0.0,773.9885
+144,Stage_5,3387.218,1_to_3,False,Mass(Pads/Strips),Timber_Frame(Glulam&CLT),No_elems,low,Other,1169.186,0.819,14.718,6.39,100.828,144.0748,0.0,41.853,1.5404,69.2775,256.7457

@@ -5,6 +5,7 @@ from pandas import DataFrame
 from Bayesian_net.utilities import discretizer
 from copy import deepcopy
 
+
 class BuildGraph():
 
     continuous_full_dataset: DataFrame = None

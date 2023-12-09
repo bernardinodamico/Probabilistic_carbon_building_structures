@@ -1,17 +1,29 @@
 from matplotlib import pyplot as plt
 from Bayesian_net.results_scripts.single_carbon_query import get_mode, single_carbon_query_call
 from Bayesian_net.settings import BNSettings
-
+import pandas as pd
+from Bayesian_net.query import QueryMaterials
 
 ylabels = [r'$P(Q)$', r'$P(Q | n)$', r'$P(Q | n,f)$', r'$P(Q | n,f,s^*)$', r'$P(Q | n,f,s^*,g)$', r'$P(Q | n,f,s^*,g,b)$']
 
-# sample 144 in the training dataset: c_true = 256.7
-design_vars =   {'No_storeys': '1_to_3',
-                 'Found_Type': 'Mass(Pads/Strips)',
-                 'Supstr_Type': 'Timber_Frame(Glulam&CLT)',
-                 'GIFA_(m2)': 3387.218,
-                 #'Clad_Type': 'Other',
-                 'Basement': False,
+proj_ref = 153
+QueryMaterials(update_datasets=True) # to update the training and validation datasets before running the queries
+training_dataset = pd.read_csv(filepath_or_buffer='Data/discrete_training_dataset.csv') 
+
+n_storeys = training_dataset.loc[training_dataset['Proj_Ref'] == proj_ref, 'No_storeys']
+found_type = training_dataset.loc[training_dataset['Proj_Ref'] == proj_ref, 'Found_Type']
+ss_type = training_dataset.loc[training_dataset['Proj_Ref'] == proj_ref, 'Supstr_Type']
+gifa = training_dataset.loc[training_dataset['Proj_Ref'] == proj_ref, 'GIFA_(m2)']
+#clad_type = training_dataset.loc[training_dataset['Proj_Ref'] == proj_ref, 'Clad_Type']
+basement = training_dataset.loc[training_dataset['Proj_Ref'] == proj_ref, 'Basement']
+c_true = int(training_dataset.loc[training_dataset['Proj_Ref'] == proj_ref, 'Total_Carbon_(A1-A5)_(kgCO2e/m2)'])
+
+design_vars =   {'No_storeys': n_storeys.values[0],
+                 'Found_Type': found_type.values[0],
+                 'Supstr_Type': ss_type.values[0],
+                 'GIFA_(m2)': gifa.values[0],
+                 #'Clad_Type': clad_type[0],
+                 'Basement': basement.values[0],
                  }
 
 evidence_vals = {}
@@ -26,11 +38,11 @@ for var in design_vars.keys():
     list_queries.append(out_query)
 
 #---Plotting material distributions----------
-vline= [[6, 6, 6, 6, 6, 6],
+vline= [[0.81, 0.81, 0.81, 0.81, 0.81, 0.81],
         [-0.49, -0.49, -0.49, -0.49, -0.49, -0.49],
         [0.14, 0.14, 0.14, 0.14, 0.14, 0.14],
-        [-0.45, -0.45, -0.45, -0.45, -0.45, -0.45],
-        [1.1, 1.1, 1.1, 1.1, 1.1, 1.1]]
+        [-0.01, -0.01, -0.01, -0.01, -0.01, -0.01],
+        [1.2, 1.2, 1.2, 1.2, 1.2, 1.2]]
 
 
 fig, axs = plt.subplots(nrows=6, ncols=5, gridspec_kw={'width_ratios': [16./41., 4./41., 7./41., 10./41., 4./41]})
@@ -38,7 +50,7 @@ fig, axs = plt.subplots(nrows=6, ncols=5, gridspec_kw={'width_ratios': [16./41.,
 fig.set_size_inches(12.5, 12.5)
 plt.subplots_adjust(wspace=0.15, hspace=0.0)
 
-titles = [1163.4, 0.01, 19.65, 0.1, 114.7]
+titles = [484.15, 0.001, 16.01, 5.94, 120.9]
 mat_labels = ['Concrete', 'Masonry&Blockw.\n', 'Reinf.\n', 'Steel(sections)\n', 'Timber(products)\n']
 
 for j in range(0, 6):
@@ -98,8 +110,8 @@ for j in range(0, 2):
 
         axs[j, i].plot(lnspc, pdf_gamma, label=None, color = 'black', linewidth=0.6)
         axs[j, i].axvline(x=mode, color = 'red', linewidth=1.5, alpha=1., label=r'$c_{mode}$')
-        axs[j, i].axvline(x=256.7, color = 'black', linewidth=1.2, alpha=1., linestyle='dashed', label=r'$c_{true}$')
-        deviation = r'$\|c_{mode} - c_{true}\|=$'+str(int(mode - 256.7))
+        axs[j, i].axvline(x=c_true, color = 'black', linewidth=1.2, alpha=1., linestyle='dashed', label=r'$c_{true}$')
+        deviation = r'$\|c_{mode} - c_{true}\|=$'+str(int(mode - c_true))
         axs[j, i].legend(loc='upper right', title=deviation)
         axs[j,i].set_xlabel(r'$C_T$'+' '+ r'$(kgCO_{2e}/m^2)$')
         axs[j, i].set_title(titles[k])
@@ -108,6 +120,7 @@ for j in range(0, 2):
         axs[j, i].set_ylabel(ylabels[k])
         axs[j, i].ticklabel_format(axis='y', style='sci', scilimits=(0, 0))
         k = k + 1
+
 
 
     

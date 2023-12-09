@@ -12,14 +12,15 @@ from Bayesian_net.utilities import discretizer
 import scipy.stats as st
 from Bayesian_net.settings import BNSettings
 
+
 class QueryMaterials():
     
     model: BayesianNetwork = None
     dataset: DataFrame = None
     CPDs: list[TabularCPD] = None
 
-    def __init__(self, update_training_ds: bool = True) -> None:
-        self._init_BN_model(update_tr_vald_ds=update_training_ds)
+    def __init__(self, update_datasets: bool = True) -> None:
+        self._init_BN_model(update_tr_vald_ds=update_datasets)
         self._buildCPTs()
 
         return

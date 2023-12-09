@@ -7,12 +7,12 @@ from pandas import DataFrame
 
 def single_carbon_query_call(evidence_vals: dict) -> dict:
 
-    qmats = QueryMaterials(update_training_ds=True)
+    qmats = QueryMaterials(update_datasets=True)
     #Run 'run_mats_queries()' only if needing the method's output. It's already called internally when istantiating QueryCarbon()
     mats_qtys = qmats.run_mats_queries(evidence_vals=evidence_vals) 
     queryCarb = QueryCarbon(query_mats=qmats)
     carbon_mats = queryCarb.run_carbon_mats_queries(evidence_vals=evidence_vals)
-    queryCarb.run_tot_carbon(sample_size=50000, carbon_m=carbon_mats, bin_sampling='bin_width', bin_counts=40)
+    queryCarb.run_tot_carbon(sample_size=60000, carbon_m=carbon_mats, bin_sampling='bin_width', bin_counts=40)
 
 
     return {
@@ -74,6 +74,24 @@ def inference_results(list_sets: list[set], design_vars: dict, Validation_Proj_R
         inference_res = pd.read_csv(filepath_or_buffer=path)
     
     return inference_res
+
+def inference_results_mupti_p(list_sets: list[set], design_vars: dict, Validation_Proj_Ref: int, True_tot_Carbon: float) -> list[dict]:
+
+    t = []
+    for ss in list_sets:
+        #print(ss)
+        evidence_vals = {}
+        for var in ss:
+            evidence_vals[var] = design_vars[var]
+        #print(evidence_vals)
+        out = single_carbon_query_call(evidence_vals=evidence_vals)
+
+        mode, lnspc, pdf_gamma = get_mode(ser=out['tot_carbon_datapoints'])
+        print(f'query {list_sets.index(ss)} out of {len(list_sets)}')
+        t.append({'Validation_Proj_Ref': Validation_Proj_Ref, 'True_tot_Carbon': True_tot_Carbon, 'Mode_tot_Carbon': mode, 'Evidence_vars': sorted(ss)})
+
+    return t
+
 
 
 

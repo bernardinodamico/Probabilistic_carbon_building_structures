@@ -8,7 +8,7 @@ class BNSettings():
 
     #Each value in the 'test_samples_IDs' list corresponds to
     # the 'Proj_Ref' value of the datapoint to use for testing
-    test_samples_IDs = [3, 18, 25, 33, 60, 99, 117, 123]
+    test_samples_IDs = [18, 33, 60, 99, 117, 123, 143, 144]
 
     # Variables in the dataset to use for building the BN
     graph_nodes = [
