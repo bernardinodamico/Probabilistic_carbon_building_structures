@@ -1,12 +1,10 @@
 from Bayesian_net.results_scripts.single_carbon_query import powerset, get_connectivity_Hasse_diag, inference_results_mupti_p
 from matplotlib import pyplot as plt
-from matplotlib.pyplot import figure
 import pandas as pd
 from Bayesian_net.settings import BNSettings
 from Bayesian_net.query import QueryMaterials
-import random
 import ast
-from matplotlib.pyplot import figure
+import numpy as np
 
 update_csv_results=False
 test_sample_IDs = BNSettings.test_samples_IDs
@@ -42,7 +40,7 @@ if update_csv_results is True:
         list_sets = sorted(list_sets, key=len)
 
         hasse_conn = get_connectivity_Hasse_diag(list_sets=list_sets)
-        print(f'====== Project datapoint {i} out of {len(test_sample_IDs)}===========')
+        print(f'====== Project datapoint {i+1} out of {len(test_sample_IDs)} ===========')
         inf_results = inference_results_mupti_p(list_sets=list_sets, 
                                                 design_vars=design_vars, 
                                                 Validation_Proj_Ref=proj_ref, 
@@ -58,34 +56,34 @@ if update_csv_results is True:
 
 df = pd.read_csv(filepath_or_buffer='Bayesian_net/results_scripts/Data_res/accuracy_test.csv')
 
-data_x = []
-data_y = []
-
 bins = [[] for v in range(7)]
 
 
 for i in range(0, len(df)): 
     x = len(ast.literal_eval(df.iloc[i]['Evidence_vars'])) 
-    error = abs((df.iloc[i]['Mode_tot_Carbon'] - df.iloc[i]['True_tot_Carbon']) / df.iloc[i]['True_tot_Carbon'])*100
+    inference_error = abs((df.iloc[i]['Mode_tot_Carbon'] - df.iloc[i]['True_tot_Carbon']) / df.iloc[i]['True_tot_Carbon'])*100
     
-    data_x.append(x + (random.uniform(0, 1) - 0.5) * 0.3)
-    data_y.append(error)
+    bins[int(x)].append(inference_error)
 
-    bins[int(x)].append(error)
-
-average_x = [0, 1, 2, 3, 4, 5, 6]
-average_y = []
+x_vals = [0, 1, 2, 3, 4, 5, 6]
+mape_vals = []
+mape_st_dev_vals = []
 for b in bins:
-    average_error = sum(b) / len(b) 
-    average_y.append(average_error)
+    mape = sum(b) / len(b) 
+    mape_vals.append(mape)
+    #mape_st_dev = np.std(b)
+    #mape_st_dev_vals.append(mape_st_dev)
 
-labels = 'MAPE'
+fig, ax = plt.subplots(figsize=(4.5, 4.5))
+#ax.yaxis.grid(True)
 
-figure(figsize=(5, 5))
-plt.scatter(data_x, data_y, marker = 'o', s = 19, c = 'grey', edgecolors = 'black', alpha=0.55)
-plt.plot(average_x, average_y, marker = 'o', color="red", linewidth=1., ms = 5, mfc = 'orangered', mec = 'red', label=labels)
-plt.legend(loc='upper right')
-plt.ylabel(r'Absolute percent. error')
+plt.bar(x=x_vals, height=mape_vals, align='center', alpha=0.9, color='lightgrey', edgecolor='black', linewidth=0.8)#, yerr=mape_st_dev_vals)
+
+plt.ylabel('MAPE '+r'$(\%)$')
 plt.xlabel(r'No. of evidence variables')
+plt.ylim(bottom=0, top=50)
+
+for i in range(0, len(x_vals)):
+    plt.text(x=x_vals[i]-0.3, y=mape_vals[i]+1., s=str(round(mape_vals[i], 1)))
 
 plt.savefig(fname='Figures/accuracy_test.jpeg', dpi=300)

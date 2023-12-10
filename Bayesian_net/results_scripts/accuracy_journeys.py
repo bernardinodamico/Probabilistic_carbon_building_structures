@@ -68,9 +68,9 @@ figure(figsize=(8, 4))
 for i in range(0, len(list_x)):
     plt.plot(list_x[i], list_y[i], marker = 'o', color="black", linewidth=0.4, ms = marker_size, mfc = mcface, mec = 'grey')
 
-plt.plot([0, 1], [276., 271.], marker = 'o', color="black", linewidth=1.2, ms = marker_size, mfc = mcface, mec = 'black')
-plt.plot([1, 2], [271., 265.], marker = 'o', color="black", linewidth=1.2, ms = marker_size, mfc = mcface, mec = 'black')
-plt.plot([2, 3], [265., 250.], marker = 'o', color="black", linewidth=1.2, ms = marker_size, mfc = mcface, mec = 'black')
+plt.plot([0, 1], [277., 272.], marker = 'o', color="black", linewidth=1.2, ms = marker_size, mfc = mcface, mec = 'black')
+plt.plot([1, 2], [272., 262.], marker = 'o', color="black", linewidth=1.2, ms = marker_size, mfc = mcface, mec = 'black')
+plt.plot([2, 3], [262., 250.], marker = 'o', color="black", linewidth=1.2, ms = marker_size, mfc = mcface, mec = 'black')
 plt.plot([3, 4], [250., 128.], marker = 'o', color="black", linewidth=1.2, ms = marker_size, mfc = mcface, mec = 'black')
 plt.plot([4, 5], [128., 72.], marker = 'o', color="black", linewidth=1.2, ms = marker_size, mfc = mcface, mec = 'black')
 

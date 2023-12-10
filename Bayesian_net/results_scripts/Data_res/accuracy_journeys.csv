@@ -1,33 +1,33 @@
 ,Validation_Proj_Ref,True_tot_Carbon,Mode_tot_Carbon,Evidence_vars
-0,153,136,413,[]
-1,153,136,433,['Basement']
-2,153,136,341,['GIFA_(m2)']
-3,153,136,407,['No_storeys']
-4,153,136,371,['Supstr_Type']
-5,153,136,405,['Found_Type']
-6,153,136,345,"['Basement', 'GIFA_(m2)']"
-7,153,136,427,"['Basement', 'No_storeys']"
-8,153,136,349,"['GIFA_(m2)', 'No_storeys']"
-9,153,136,384,"['Basement', 'Supstr_Type']"
-10,153,136,285,"['GIFA_(m2)', 'Supstr_Type']"
-11,153,136,374,"['No_storeys', 'Supstr_Type']"
-12,153,136,415,"['Basement', 'Found_Type']"
-13,153,136,330,"['Found_Type', 'GIFA_(m2)']"
-14,153,136,399,"['Found_Type', 'No_storeys']"
-15,153,136,387,"['Found_Type', 'Supstr_Type']"
-16,153,136,354,"['Basement', 'GIFA_(m2)', 'No_storeys']"
-17,153,136,275,"['Basement', 'GIFA_(m2)', 'Supstr_Type']"
-18,153,136,386,"['Basement', 'No_storeys', 'Supstr_Type']"
-19,153,136,287,"['GIFA_(m2)', 'No_storeys', 'Supstr_Type']"
-20,153,136,291,"['Basement', 'Found_Type', 'GIFA_(m2)']"
-21,153,136,405,"['Basement', 'Found_Type', 'No_storeys']"
-22,153,136,336,"['Found_Type', 'GIFA_(m2)', 'No_storeys']"
-23,153,136,394,"['Basement', 'Found_Type', 'Supstr_Type']"
-24,153,136,263,"['Found_Type', 'GIFA_(m2)', 'Supstr_Type']"
-25,153,136,388,"['Found_Type', 'No_storeys', 'Supstr_Type']"
-26,153,136,284,"['Basement', 'GIFA_(m2)', 'No_storeys', 'Supstr_Type']"
-27,153,136,293,"['Basement', 'Found_Type', 'GIFA_(m2)', 'No_storeys']"
-28,153,136,226,"['Basement', 'Found_Type', 'GIFA_(m2)', 'Supstr_Type']"
-29,153,136,394,"['Basement', 'Found_Type', 'No_storeys', 'Supstr_Type']"
-30,153,136,265,"['Found_Type', 'GIFA_(m2)', 'No_storeys', 'Supstr_Type']"
-31,153,136,208,"['Basement', 'Found_Type', 'GIFA_(m2)', 'No_storeys', 'Supstr_Type']"
+0,153,136.4166,414,[]
+1,153,136.4166,411,['No_storeys']
+2,153,136.4166,371,['Supstr_Type']
+3,153,136.4166,432,['Basement']
+4,153,136.4166,405,['Found_Type']
+5,153,136.4166,341,['GIFA_(m2)']
+6,153,136.4166,375,"['No_storeys', 'Supstr_Type']"
+7,153,136.4166,430,"['Basement', 'No_storeys']"
+8,153,136.4166,381,"['Basement', 'Supstr_Type']"
+9,153,136.4166,395,"['Found_Type', 'No_storeys']"
+10,153,136.4166,386,"['Found_Type', 'Supstr_Type']"
+11,153,136.4166,413,"['Basement', 'Found_Type']"
+12,153,136.4166,347,"['GIFA_(m2)', 'No_storeys']"
+13,153,136.4166,285,"['GIFA_(m2)', 'Supstr_Type']"
+14,153,136.4166,345,"['Basement', 'GIFA_(m2)']"
+15,153,136.4166,329,"['Found_Type', 'GIFA_(m2)']"
+16,153,136.4166,390,"['Basement', 'No_storeys', 'Supstr_Type']"
+17,153,136.4166,386,"['Found_Type', 'No_storeys', 'Supstr_Type']"
+18,153,136.4166,400,"['Basement', 'Found_Type', 'No_storeys']"
+19,153,136.4166,392,"['Basement', 'Found_Type', 'Supstr_Type']"
+20,153,136.4166,288,"['GIFA_(m2)', 'No_storeys', 'Supstr_Type']"
+21,153,136.4166,352,"['Basement', 'GIFA_(m2)', 'No_storeys']"
+22,153,136.4166,275,"['Basement', 'GIFA_(m2)', 'Supstr_Type']"
+23,153,136.4166,334,"['Found_Type', 'GIFA_(m2)', 'No_storeys']"
+24,153,136.4166,265,"['Found_Type', 'GIFA_(m2)', 'Supstr_Type']"
+25,153,136.4166,292,"['Basement', 'Found_Type', 'GIFA_(m2)']"
+26,153,136.4166,392,"['Basement', 'Found_Type', 'No_storeys', 'Supstr_Type']"
+27,153,136.4166,284,"['Basement', 'GIFA_(m2)', 'No_storeys', 'Supstr_Type']"
+28,153,136.4166,265,"['Found_Type', 'GIFA_(m2)', 'No_storeys', 'Supstr_Type']"
+29,153,136.4166,295,"['Basement', 'Found_Type', 'GIFA_(m2)', 'No_storeys']"
+30,153,136.4166,208,"['Basement', 'Found_Type', 'GIFA_(m2)', 'Supstr_Type']"
+31,153,136.4166,208,"['Basement', 'Found_Type', 'GIFA_(m2)', 'No_storeys', 'Supstr_Type']"

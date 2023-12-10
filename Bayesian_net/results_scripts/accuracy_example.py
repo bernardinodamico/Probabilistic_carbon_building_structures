@@ -16,7 +16,7 @@ ss_type = training_dataset.loc[training_dataset['Proj_Ref'] == proj_ref, 'Supstr
 gifa = training_dataset.loc[training_dataset['Proj_Ref'] == proj_ref, 'GIFA_(m2)']
 #clad_type = training_dataset.loc[training_dataset['Proj_Ref'] == proj_ref, 'Clad_Type']
 basement = training_dataset.loc[training_dataset['Proj_Ref'] == proj_ref, 'Basement']
-c_true = int(training_dataset.loc[training_dataset['Proj_Ref'] == proj_ref, 'Total_Carbon_(A1-A5)_(kgCO2e/m2)'])
+c_true = training_dataset.loc[training_dataset['Proj_Ref'] == proj_ref, 'Total_Carbon_(A1-A5)_(kgCO2e/m2)'].iloc[0]
 
 design_vars =   {'No_storeys': n_storeys.values[0],
                  'Found_Type': found_type.values[0],
@@ -48,7 +48,7 @@ vline= [[0.81, 0.81, 0.81, 0.81, 0.81, 0.81],
 fig, axs = plt.subplots(nrows=6, ncols=5, gridspec_kw={'width_ratios': [16./41., 4./41., 7./41., 10./41., 4./41]})
 
 fig.set_size_inches(12.5, 12.5)
-plt.subplots_adjust(wspace=0.15, hspace=0.0)
+plt.subplots_adjust(wspace=0.15, hspace=0.05)
 
 titles = [484.15, 0.001, 16.01, 5.94, 120.9]
 mat_labels = ['Concrete', 'Masonry&Blockw.\n', 'Reinf.\n', 'Steel(sections)\n', 'Timber(products)\n']

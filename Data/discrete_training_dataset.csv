@@ -78,6 +78,8 @@ Proj_Ref,Calc_Stage,GIFA_(m2),No_storeys,Basement,Found_Type,Supstr_Type,Supstr_
 140,As_Built,2045.532,1_to_3,True,Piled(Ground-beams/Caps),Steel_Frame&Precast/Composite,Floors,medium,Masonry,1038.69,0.819,44.464,148.748,33.475,191.8603,0.0,155.1039,1.331,0.0,348.2952
 141,As_Built,2045.532,4_to_6,False,Mass(Pads/Strips),RC_Frame,Frame&Floors,high,Masonry,1169.186,0.819,74.107,6.39,33.475,91.5066,0.0,72.2074,8.2558,0.0,171.9698
 142,As_Built,2045.532,1_to_3,False,Piled(Ground-beams/Caps),Steel_Frame&Precast/Composite,Floors,medium,Masonry,908.192,0.819,44.464,6.39,33.475,82.8114,0.0,62.1933,0.0,0.0,145.0047
+143,As_Built,693.11,1_to_3,False,Reinforced(Pads/Strips/Raft),RC_Frame,Frame&Floors,high,Other,1038.69,0.819,44.464,6.39,33.475,392.6849,0.0,381.3037,0.0,0.0,773.9885
+144,Stage_5,3387.218,1_to_3,False,Mass(Pads/Strips),Timber_Frame(Glulam&CLT),No_elems,low,Other,1169.186,0.819,14.718,6.39,100.828,144.0748,0.0,41.853,1.5404,69.2775,256.7457
 149,As_Built,693.11,1_to_3,False,Piled(Ground-beams/Caps),RC_Frame,Frame&Floors,high,Other,1821.671,0.819,163.036,32.336,33.475,231.5603,0.0,359.3547,43.1491,0.0,634.0641
 150,As_Built,2045.532,1_to_3,True,Piled(Ground-beams/Caps),Steel_Frame&Precast/Composite,Floors,medium,Other,1691.174,0.819,14.718,58.206,33.475,177.5406,0.0,61.3853,97.7205,0.0,336.6463
 151,As_Built,3387.218,1_to_3,False,Mass(Pads/Strips),RC_Frame,Frame&Floors,high,Masonry,1430.18,0.819,44.464,6.39,33.475,151.0297,0.0,91.135,0.7835,0.0,242.9481

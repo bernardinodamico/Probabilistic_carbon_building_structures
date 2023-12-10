@@ -5,5 +5,3 @@ Proj_Ref,Calc_Stage,GIFA_(m2),No_storeys,Basement,Found_Type,Supstr_Type,Supstr_
 99,As_Built,693.11,1_to_3,False,Piled(Ground-beams/Caps),Timber_Frame(Glulam&CLT),No_elems,low,Other,777.696,0.819,14.718,6.39,100.828,88.1679,1.7459,54.5801,13.304,33.8202,191.618
 117,Stage_5,11437.344,7_to_10,False,Piled(Ground-beams/Caps),RC_Frame,Frame&Floors,high,Masonry,1169.186,0.819,44.464,6.39,33.475,158.6327,0.0,105.2892,0.0,0.0,263.9219
 123,As_Built,2045.532,4_to_6,True,Piled(Ground-beams/Caps),RC_Frame,Frame&Floors,high,Other,2213.162,0.819,103.75,6.39,33.475,231.4302,0.0,229.2565,0.2856,0.0,460.9724
-143,As_Built,693.11,1_to_3,False,Reinforced(Pads/Strips/Raft),RC_Frame,Frame&Floors,high,Other,1038.69,0.819,44.464,6.39,33.475,392.6849,0.0,381.3037,0.0,0.0,773.9885
-144,Stage_5,3387.218,1_to_3,False,Mass(Pads/Strips),Timber_Frame(Glulam&CLT),No_elems,low,Other,1169.186,0.819,14.718,6.39,100.828,144.0748,0.0,41.853,1.5404,69.2775,256.7457
