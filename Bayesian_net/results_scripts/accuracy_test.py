@@ -49,9 +49,9 @@ if update_csv_results is True:
         for r in inf_results:
             all_results.append(r)
     inference_res = pd.DataFrame(all_results)
-    inference_res.to_csv(path_or_buf='Bayesian_net/results_scripts/Data_res/accuracy_test.csv') #where the save (or read from) the csv results
+    inference_res.to_csv(path_or_buf='Bayesian_net/results_scripts/Data_res/accuracy_test.csv') #where to save (or read from) the csv results
 
-#-----Plottting prediction error--------------------------------------
+#-----Plottting prediction error-------------------------------------
 
 
 df = pd.read_csv(filepath_or_buffer='Bayesian_net/results_scripts/Data_res/accuracy_test.csv')
@@ -67,23 +67,41 @@ for i in range(0, len(df)):
 
 x_vals = [0, 1, 2, 3, 4, 5, 6]
 mape_vals = []
-mape_st_dev_vals = []
+ape_st_dev_vals = []
 for b in bins:
     mape = sum(b) / len(b) 
     mape_vals.append(mape)
-    #mape_st_dev = np.std(b)
-    #mape_st_dev_vals.append(mape_st_dev)
+    mape_st_dev = np.std(b)
+    ape_st_dev_vals.append(mape_st_dev)
 
-fig, ax = plt.subplots(figsize=(4.5, 4.5))
+fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(9, 4.5))
 #ax.yaxis.grid(True)
 
-plt.bar(x=x_vals, height=mape_vals, align='center', alpha=0.9, color='lightgrey', edgecolor='black', linewidth=0.8)#, yerr=mape_st_dev_vals)
 
-plt.ylabel('MAPE '+r'$(\%)$')
-plt.xlabel(r'No. of evidence variables')
-plt.ylim(bottom=0, top=50)
+ax[0].bar(x=x_vals, height=mape_vals, align='center', alpha=0.9, color='lightgrey', edgecolor='black', linewidth=0.8)
+
+ax[0].set(ylabel='MAPE '+r'$(\%)$')
+ax[0].set(xlabel=r'No. of evidence variables')
+ax[0].set_ylim(bottom=0, top=50)
+ax[0].set_title('(a)')
+ax[0].set_xticks(x_vals)
 
 for i in range(0, len(x_vals)):
-    plt.text(x=x_vals[i]-0.3, y=mape_vals[i]+1., s=str(round(mape_vals[i], 1)))
+    ax[0].text(x=x_vals[i]-0.3, y=mape_vals[i]+1., s=str(round(mape_vals[i], 1)))
+
+
+
+ax[1].bar(x=x_vals, height=ape_st_dev_vals, align='center', alpha=0.9, color='lightgrey', edgecolor='black', linewidth=0.8)
+
+ax[1].set(ylabel='St. dev. of Absolute Percentage Errors '+r'$(\%)$')
+ax[1].set(xlabel=r'No. of evidence variables')
+ax[1].set_ylim(bottom=0, top=50)
+ax[1].set_title('(b)')
+ax[1].set_xticks(x_vals)
+
+for i in range(0, len(x_vals)):
+    ax[1].text(x=x_vals[i]-0.3, y=ape_st_dev_vals[i]+1., s=str(round(ape_st_dev_vals[i], 1)))
+
 
 plt.savefig(fname='Figures/accuracy_test.jpeg', dpi=300)
+
